@@ -1,0 +1,38 @@
+Reviewer #2: This paper provides an incremental contribution (more powerful solution methods and extension of optimization model) for the container pre-marshalling problem (CPMP). Actually, I wonder whether container terminal management is in the scope of OMEGA but this should be decided by the editors. In any case, the paper needs substantial rework before it can be considered for publication.
+Major comments:
+
+1. I actually doubt that the dummy stack extension of the CPMP (CPMPDS) can be applied in practice. The 'dummy stack' is placed at the truck lane that spans the whole length of a block. Since there is only one such lane (see Fig. 2), trucks cannot bypass a dummy container stack. Hence, it is impossible to serve any trucks at a block while the pre-marshalling is performed at one of the block's bays. I expect that this severely disturbs the operations of truck handling at a container terminal and that the pre-marshalling process may actually lower the productivity of the terminal.
+
+2. According to the references, several parts of Section 4 stem from Wang et al. (2013). It needs to be stated more clearly, which parts of the material are reproduced from Wang et al. and which parts are actually new contributions of the OMEGA submission.
+
+3. The paper provides comprehensive computational experiments but, from my perspective, the most relevant research questions are not covered by the experimental evaluation:
+o The authors propose new lower bounds and they claim that these bounds are better than those proposed by other researchers. However, the quality of these bounds is not evaluated against each other.
+o The heuristics are compared with each other. An objective evaluation of their capabilities would require to take into account proven optimal solution or lower bounds. Actually, the bounds proposed in this paper do not appear at all in the computational study.
+o This paper proposed to extent the CPMP to the CPMPDS. However, there is no experiment, which shows how many container moves a terminal can actually save from switching to the more complex problem. Therefore, it remains an open question, whether (and to which extent) the CPMPDS provides a benefit for a terminal.
+
+Further comments:
+
+1. I do not understand the meaning of the sentence 'Existing algorithms for the CPMP have not taken the dummy stack into consideration, hence they cannot be implemented directly at terminals using gantry cranes.'. Why is it impossible for these terminals to implement CPMP methods? They cannot benefit from the expected advantages of CPMPDS but, of course, they can use CPMP methods to improve terminal performance.
+
+2. Is the beam search significantly different from the corridor method proposed by Caserta & Voss (2009)? Actually, both methods do restrict the 'sight field' when looking for a promising container movement, don't they?
+
+3. The sentence 'A heuristic algorithm and two advanced beam search algorithms are elaborated in Section 5 and Section 6 respectively.' sounds like the beam search wouldn't be a heuristic. However, since these methods are also heuristics, the sentence needs to be rephrased.
+
+4. The recent survey 'Storage yard operations in container terminals: Literature overview, trends, and research directions' by Carlos et al. in EJOR, 2014, might be relevant for this research and should be included into section 2.
+
+5. Figures 3, 4 and 5 are used for illustrating the problem. However, there is hardly any link between these figures and the text. I recommend to stronger connect them by either adding labels to the figures (e.g. to show H, G, g(c) etc. in Fig. 3) or to add more details to the text (e.g. saying that H=6 in Figure 3.). This would help readers to follow the verbal explanations.
+
+6. In Figure 4 there are cases 1 and 2, but I did not find a reference to these two cases in the text.
+
+7. Section 4.2.1: In order to make sure that an instance is feasible, it has to hold that the immovable containers are all clean already in the initial layout. Is this ensured by (2) or is this an additional requirement which needs to be mentioned in 4.2.1?
+
+8. Since set AS is introduced on page 14, line 13, I recommend to use '\sum_{s \in AS}' in the next line.
+
+9. The concept of 'fulfillment' (page 16-17) is not clear to me. Maybe, this part can be rewritten to make the idea more clear.
+
+10. Section 6: Please describe clearly, whether the two beam search methods can be applied to both, the CPMP and the CPMPDS, as described or whether there are any modifications required if switching from one problem to the other.
+
+11. Page 21: The phrase '… solved to the optimality …' is weird. First, there are no lower bounds reported which justify this statement. Second, Fig. 8 reports even lower values than those in Fig. 7.
+
+12. I'm not a native speaker but I've got the impression that this paper could benefit from checking grammar and language. There are also a couple of obvious typos (page 12: 'lest' > 'least', page 15: 'snlot' > 'nslot', page 19: 'bench mark' > 'benchmark').
+
