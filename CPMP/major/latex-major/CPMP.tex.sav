@@ -207,7 +207,7 @@ In a given layout, for any stack $s$, only the top $\sum\limits_{i\neq s}e(i)$ c
 \label{lem:1}
 Given a layout, the numbers of immovable containers in every stack are the same, equal to
 \begin{equation}
-\id{im}=\max\left\{0, H-\sum_{s=1}^S e(s)\right\}
+\id{im}=\max\left\{0, H-\sum_{i=1}^S e(i)\right\}
 \end{equation}
 \end{lemma}
 \begin{proof}
@@ -306,7 +306,7 @@ Before proceeding to explain the calculation, the concept of skyline is first in
 \label{fig5}
 \end{figure*}
 
-Supply and demand vectors, denoted as $\mathbf S^\id{SL}$ and $\mathbf D^\id{SL}$, record the numbers of slots and containers above \id{SL}. The $g$-th element of $\mathbf S^\id{SL}$ is $\mathbf S^\id{SL}_g=\sum\limits_{s:g(\id{SL}_s)=g}H-\id{tn}(\id{SL}_s)$, while the $g$-th element of $\mathbf D^\id{SL}$ is the number of containers above $\id{SL}$ with group label $g$.
+Supply and demand vectors, denoted as $\mathbf S^\id{SL}$ and $\mathbf D^\id{SL}$, record the numbers of slots and containers above \id{SL}. The $g$-th element of $\mathbf S^\id{SL}$ is $\mathbf S^\id{SL}_g=\sum\limits_{i:g(\id{SL}_i)=g}H-\id{tn}(\id{SL}_i)$, while the $g$-th element of $\mathbf D^\id{SL}$ is the number of containers above $\id{SL}$ with group label $g$.
 
 For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as Clean--X movements. The number of moved clean containers is a lower bound of the number of Clean--X movements. Ideally, pre-marshalling work involves dirty containers only and leaves clean containers unmoved. In some cases, however, achieving a clean layout is impossible without moving clean containers. The number of clean containers that need to be moved can be counted by the following process: given a bay, all dirty containers and a set of clean containers $C$ are removed from the layout, then slots are reassigned to removed containers. The resultant layout is required to be clean. Removed containers within a stack should be consecutive, i.e., if two containers from the same stack are removed, containers between them are also removed. The size of smallest $C$ is the number of Clean--X movements $\id{num}_{CX}$. Finding the smallest $C$ is equivalent to finding the skyline with the fewest clean containers in its higher part (smallest skyline) as well as non-negative surpluses (Equation \ref{equ:3}).
 
@@ -317,21 +317,21 @@ For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as C
 
 To find the smallest skyline, a basic skyline $\id{SL}$ that separates clean and dirty containers is drawn. Next a depth-first-search (DFS) is deployed to push a certain segment of $\id{SL}$ one tier down in each branching. The leaves of the search tree are all the skylines with non-negative surpluses; the one with the fewest pushes is selected and the number of pushes is $\id{num}_\id{CX}$.
 
-To conclude, the lower bound can be defined as $\id{LB}_\id{DFS}=\id{num}_\id{DC}+\id{num}_\id{DD}+\id{num}_\id{CX}$.
+To conclude, the lower bound can be defined as $\id{LB}_\id{DFS}=\id{num}_\id{DC}+\id{num}_\id{DD}+\id{num}_\id{CX}$. 
 
 \subsubsection{Clean--X movements by maximum knapsack}
 
-The lower bound $\id{LB}_\id{DFS}$ is time-consuming because a DFS is used to calculate $\id{num}_{\id{CX}}$. A maximum knapsack method (MKM) is proposed to approximate $\id{num}_{CX}$. A basic skyline SL that separates clean and dirty containers is drawn, then the smallest skyline with non-negative surplus for a single group is obtained instead of for all groups. This search is repeated for each group, and the maximum skyline is selected amongst all obtained skylines.
+The lower bound $\id{LB}_\id{DFS}$ is time-consuming because a DFS is used to calculate $\id{num}_{\id{CX}}$. A maximum knapsack method (MKM) is proposed to approximate $\id{num}_{CX}$. The smallest skyline with non-negative surplus for a single group is obtained instead of for all groups. This search is repeated for each group, and the maximum skyline is selected amongst all obtained skylines.
 
-For a given group label $g$, a knapsack-like problem is solved to find the smallest skyline with non-negative surplus in terms of $g$. Stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g$, while $v_s$ is the resultant number of slots available for group $g$, i.e., $v_s=c_s+e(s)$. $V$ is the number of dirty containers with group label $g(c)\ge g$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model of this knapsack-like problem is show in Equation \ref{equ:4} and can be easily solved by dynamic programming.
+For a given group label $g$, a knapsack-like problem is solved to find the smallest skyline with non-negative surplus in terms of $g$. Stacks in the bay are regarded as items, where each item $i\in\{1,\dots,S\}$ has value $v_i$ and cost $c_i$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_i$ is the number of clean containers in stack $i$ to be moved to accommodate group $g$, while $v_i$ is the resultant number of slots available for group $g$, i.e., $v_i=c_i+e(i)$. $V$ is the number of dirty containers with group label $g(c)\ge g$. The decision variable $x_i$ is 1 if stack $i$ is selected; otherwise, $x_i=0$. The integer programming model of this knapsack-like problem is show in Equation \ref{equ:4} and can be easily solved by dynamic programming.
 
 
 \begin{equation}
 \label{equ:4}
 \begin{array}{rl}
-\min & \sum\limits_{s=1}^S c_s x_s\\
-\mathrm{s.t.} &\sum\limits_{s=1}^S v_s x_s\ge V\\
-&x_s\in\{0,1\}, \quad s=1,\dots,S
+\min & \sum\limits_{i=1}^S c_i x_i\\
+\mathrm{s.t.} &\sum\limits_{i=1}^S v_i x_i\ge V\\
+&x_i\in\{0,1\}, \quad i=1,\dots,S
 \end{array}
 \end{equation}
 
@@ -339,21 +339,10 @@ MKM is not as precise as DFS, but the solution gap is quite small and the comput
 
 \subsubsection{Comparison with Existing Lower Bound}
 The current state-of-the-art lower bound $\id{LB}_\id{BF}$ was proposed by \cite{BF2012}, which also consists of three parts: Dirty--Clean, Dirty--Dirty and Clean--X movements.
-The first two types are calculated in the same manner as $\id{LB}_\id{DFS}$ and $\id{LB}_\id{MKM}$ in this paper. For Clean--X movements, a basic skyline SL that separates clean and dirty containers is drawn, then they only take the group label $g^*$ with the smallest surplus $\id{min}=\min\limits_g\sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i$. If $\id{min}$ is negative, $\sum\limits_{i\ge g^*}\mathbf D^\id{SL}_i$ surpasses $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$ by $|\id{min}|$, which means that clean containers need to be moved to accommodate these $|\id{min}|$ dirty containers. The number of moved clean containers $\id{num}_\id{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (although in fact it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\id{min}|$ dirty containers need at least $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks. As slots supply of stacks with $g(\id{SL}_s)\ge g^*$ have been calculated into $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$, only stacks with $g(\id{SL}_s)< g^*$ (denote as set \id{AS}) can provide slots for $|\id{min}|$ dirty containers. Suppose $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, sort $c_s$ of stacks in set $\id{AS}$ ascendingly. The first $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks are selected and $\id{num}_\id{CX}=\sum\limits_{s=1}^{s=\left\lceil\frac{|\id{min}|}{H}\right\rceil}c_s$.
+The first two types are calculated in the same manner as $\id{LB}_\id{DFS}$ and $\id{LB}_\id{MKM}$ in this paper. For Clean--X movements, they only take the group label $g^*$ with the smallest surplus $\id{min}=\min\limits_g\sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i$. If $\id{min}$ is negative, $\id{num}_\id{CX}$ is estimated. 
+at least $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ extra stacks are needed to store $|\id{min}|$ extra containers apart from stacks with slots computed as $\sum\limits_{i\ge g}\mathbf S^\id{SL}_i$. Available stacks were sorted by the number of moved clean containers to accommodate group label $g$. Finally, the first $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks were selected, and the resultant numbers of moved clean containers were added to obtain the lower bound of the number of Clean--X movements.
 
-From the mathematical perspective, the method of \cite{BF2012} is equivalent to solve the following model, stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s'$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, while $v_s'$ is the resultant number of slots available for group $g^*$. According to \cite{BF2012} $v_s'=H$ if $g(\id{SL}_s)<g^*$, otherwise $v_s'=c_s+e(s)$. $V$ is the number of dirty containers with group label $g(c)\ge g^*$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model is show in Equation \ref{equ:5}.
-
-
-\begin{equation}
-\label{equ:5}
-\begin{array}{rl}
-\min & \sum\limits_{s=1}^S c_s x_s\\
-\mathrm{s.t.} &\sum\limits_{s=1}^S v_s' x_s\ge V\\
-&x_s\in\{0,1\}, \quad s=1,\dots,S
-\end{array}
-\end{equation}
-
-Compare Model \ref{equ:4} with Model \ref{equ:5}, all parameters are the same except for $v_s$ ($v_s'$). The solution to Model \ref{equ:5} is the solution to Model \ref{equ:4}, while the reverse does not stand. The solution space of Model \ref{equ:5} is larger than Model \ref{equ:4}, thus the optimal solution to Model \ref{equ:4} is no smaller than that to Model \ref{equ:5}. Furthermore, \cite{BF2012} only solve Model \ref{equ:5} once for $g^*$, whereas this paper solves Model \ref{equ:4} for every group and then take the maximal result as $\id{num}_\id{CX}$. As a result, the lower bound $\id{LB}_\id{MKM}$ dominates $\id{LB}_\id{BF}$: $\id{LB}_\id{BF}\le \id{LB}_\id{MKM}\le \id{LB}_\id{DFS}$.
+The lower bound $\id{LB}_\id{MKM}$ also dominates $\id{LB}_\id{BF}$: $\id{LB}_\id{BF}\le \id{LB}_\id{MKM}\le \id{LB}_\id{DFS}$.
 \subsubsection{Lower bound of the CPMPDS}
 
 The lower bound of the CPMPDS consists of three parts: Dirty--Clean, Dirty--Dirty, and Clean--X movements.
