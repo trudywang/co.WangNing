@@ -108,7 +108,7 @@ public class LowerBound
 
 				int surplus = totalDemand - totalSupply;
 
-				if (surplus > maxsurplus)
+				if (surplus >= maxsurplus)//prefer small g when surplus=maxsurplus
 				{
 					maxsurplus = surplus;
 					gstar = g;
