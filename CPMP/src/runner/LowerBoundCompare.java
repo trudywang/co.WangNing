@@ -28,7 +28,6 @@ public class LowerBoundCompare
 			{
 				String author = AUTHORS[whoseData];
 				String resultpath = "experiments/lowerboundcompare/";
-				new File(resultpath + author).mkdirs();
 				File summary = new File(resultpath + author + "summary.csv");
 				PrintStream sumps = new PrintStream(summary);
 				sumps.println("group,case,lb-dfs,t-dfs,lb-maxknap,t-maxkanap,lb-fb,t-fb");

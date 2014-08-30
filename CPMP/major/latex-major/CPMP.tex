@@ -337,7 +337,7 @@ For a given group label $g$, a knapsack-like problem is solved to find the small
 
 MKM is not as precise as DFS, but the solution gap is quite small and the computation speed is improved. The lower bound provided by MKM is denoted as $\id{LB}_{\id{MKM}}$.
 
-\subsubsection{Comparison with Existing Lower Bound}
+\subsubsection{Comparison with existing lower bound}
 The current state-of-the-art lower bound $\id{LB}_\id{BF}$ was proposed by \cite{BF2012}, which also consists of three parts: Dirty--Clean, Dirty--Dirty and Clean--X movements.
 The first two types are calculated in the same manner as $\id{LB}_\id{DFS}$ and $\id{LB}_\id{MKM}$ in this paper. For Clean--X movements, a basic skyline SL that separates clean and dirty containers is drawn, then they only take the group label $g^*$ with the smallest surplus $\id{min}=\min\limits_g\sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i$. If $\id{min}$ is negative, $\sum\limits_{i\ge g^*}\mathbf D^\id{SL}_i$ surpasses $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$ by $|\id{min}|$, which means that clean containers need to be moved to accommodate these $|\id{min}|$ dirty containers. The number of moved clean containers $\id{num}_\id{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (although in fact it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\id{min}|$ dirty containers need at least $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks. As slots supply of stacks with $g(\id{SL}_s)\ge g^*$ have been calculated into $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$, only stacks with $g(\id{SL}_s)< g^*$ (denote as set \id{AS}) can provide slots for $|\id{min}|$ dirty containers. Suppose $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, sort $c_s$ of stacks in set $\id{AS}$ ascendingly. The first $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks are selected and $\id{num}_\id{CX}=\sum\limits_{s=1}^{s=\left\lceil\frac{|\id{min}|}{H}\right\rceil}c_s$.
 
@@ -698,24 +698,24 @@ We first conduct a series of experiments to evaluate the performance of the algo
 It is followed by the performance on the bench mark data.
 At the last of this section, a data set for the new CPMPDS is generated and the result is presented for further reference. All of our experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz. The operating system is Windows 7.
 
-%\subsection {Lower Bound Comparison}
-%We use the data of {\em BF2012} to compare the performance of $LB_{DFS}$, $LB_{MKM}$ with that of \cite{BF2012}. In Table \ref{tab:lowerbound}, BF$n$ denotes the $n$th group data. $DFS$, $MKM$ and $BF$ are the average lower bound numbers of the 20 instances in a group calculated by $LB_{DFS}$, $LB_{MKM}$ and \cite{BF2012}, receptively. As such, $T_D$, $T_M$ and $T_B$ are the average computation time of three lower bounds on instances of a group. It can be seen that $DFS$ and $MKM$ dominate $BF$ and the computation time does not increase.
-%\begin{table}[htbp]
-%\centering
-%\caption{\label{tab:lowerbound} Lower Bound Comparison}
-%\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
-%\hline
-%      &   BF1  &  BF2   &  BF3  &  BF4  &  BF5  &  BF6  &  BF7  &  BF8 &  BF9 &BF10&BF11&BF12\\
-%\hline
-%MKM   & 93.89  & 93.89  &	 0.0& sBR1  & **&&&&&&&\\
-%%T_M   & 94.48  & 94.57  &	 0.0& sBR4  &\\
-%%BF& 92.55  & 92.93  &	 0.3& sBR7\ &(2) \\
-%%T_B   &        &        &       &
-%%DFS
-%%T_D
-%\hline
-%\end{tabular}
-%\end{table}
+\subsection {Lower bound comparison}
+We use the data of {\em BF2012} to compare the performance of $LB_{DFS}$, $LB_{MKM}$ with that of \cite{BF2012}. In Table \ref{tab:lowerbound}, BF$n$ denotes the $n$th group data. $DFS$, $MKM$ and $BF$ are the average lower bound numbers of the 20 instances in a group calculated by $LB_{DFS}$, $LB_{MKM}$ and \cite{BF2012}, receptively. As such, $T_D$, $T_M$ and $T_B$ are the average computation time of three lower bounds on instances of a group. It can be seen that $DFS$ and $MKM$ dominate $BF$ and the computation time does not increase.
+\begin{table}[htbp]
+\centering
+\caption{\label{tab:lowerbound} Lower Bound Comparison}
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+\hline
+      &   BF1  &  BF2   &  BF3  &  BF4  &  BF5  &  BF6  &  BF7  &  BF8 &  BF9 &BF10&BF11&BF12\\
+\hline
+MKM   & 93.89  & 93.89  &	 0.0& sBR1  & **&&&&&&&\\
+%T_M   & 94.48  & 94.57  &	 0.0& sBR4  &\\
+%BF& 92.55  & 92.93  &	 0.3& sBR7\ &(2) \\
+%T_B   &        &        &       &
+%DFS
+%T_D
+\hline
+\end{tabular}
+\end{table}
 
 \subsection {Parameter configuration}
 \label{sub:config}
