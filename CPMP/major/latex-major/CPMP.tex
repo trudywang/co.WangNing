@@ -44,7 +44,7 @@ Department of Management Sciences, City University of Hong Kong, 83 Tat Chee Ave
 \begin{abstract}
 We investigate the container pre-marshalling problem (CPMP), which aims to rearrange containers in a bay with the least movement effort, so as to find a final layout where containers are piled according to a predetermined order. Previous researchers, without exception, assume that all the stacks in a bay are functionally identical. We reexamine such a classic problem setting and propose a new problem -- the CPMP with a dummy stack (CPMPDS).
 At terminals that use gantry cranes, a bay includes a row of ordinary stacks and a dummy stack. The dummy stack actually is the bay space reserved for trucks, via which containers can be shipped out of the bay. During the pre-marshalling process, the dummy stack temporarily stores containers, just like an ordinary stack.
-But it is required to restore emptiness at the end of the pre-marshalling process. In this paper, we propose target guided algorithms to tackle both the classic CPMP and the new CPMPDS; the key idea is to fix containers at appropriately chosen positions one by one. We also devise an improved lower bound for the number of required movements. Experimental results in terms of the CPMP showcase that our algorithms surpass the state-of-the-art algorithm.
+But it is required to restore emptiness at the end of the pre-marshalling process. In this paper, we propose target guided algorithms which guarantee termination to tackle both the classic CPMP and the new CPMPDS; the key idea is to fix containers at appropriately chosen positions one by one. We also devise an improved lower bound for the number of required movements. Experimental results in terms of the CPMP showcase that our algorithms surpass the state-of-the-art algorithm.
 \end{abstract}
 
 \begin{keyword}
@@ -88,7 +88,7 @@ By far, though the research community has studied the CPMP, it does not fully de
 
 Existing algorithms for the CPMP have not taken the dummy stack into consideration, hence they cannot be implemented directly at terminals using gantry cranes. However, terminals using gantry cranes as yard operation equipments are rather popular across the world. Herein, it is imperative to fill this disparity between research and industry.
 
-Our paper contributes to the literature on three aspects. We reexamine the CPMP and propose a new variant -- the CPMP with a dummy stack (CPMPDS). We devise a new lower bound on the calculation of movements, suitable for both CPMP and CPMPDS. The new lower bound dominates other existing lower bounds with respect to the CPMP. In addition, we design three algorithms innovated by the idea of target-guided to solve both the classic CPMP and the new CPMPDS which cannot be solved by existing algorithms directly. The ideology of the algorithms is to fix containers at appropriately chosen positions and avoid moving them afterwards. This mechanism reduces the problem size continuously until the problem is solved. Experimental results demonstrate that our algorithms are better than the state-of-the-art algorithm to the best of our knowledge. It is noteworthy that although this paper discusses the CPMP in the context of maritime terminals, it is also applicable to other scenarios such as warehouses and railway yards.
+Our paper contributes to the literature on three aspects. First, we reexamine the CPMP and propose a new variant -- the CPMP with a dummy stack (CPMPDS). Second, we devise a new lower bound on the calculation of movements, suitable for both CPMP and CPMPDS. The new lower bound dominates other existing lower bounds with respect to the CPMP. Third, we design three algorithms innovated by the idea of target-guided to solve both the classic CPMP and the new CPMPDS. The ideology of the algorithms is to fix containers at appropriately chosen positions and avoid moving them afterwards. This mechanism reduces the problem size continuously until the problem is solved. Thus, our algorithms guarantee termination. Experimental results demonstrate that our algorithms are better than the state-of-the-art algorithm to the best of our knowledge. It is noteworthy that although this paper discusses the CPMP in the context of maritime terminals, it is also applicable to other scenarios such as warehouses and railway yards.
 
 The remainder of this paper is structured as follows. Section \ref{sec:litreview} presents an overview of existing works related to the CPMP. After that, we formally define the CPMP/CPMPDS in Section \ref{sec:pd} and present how to check instances feasibility in Section \ref{sec:cf}. A heuristic algorithm and two advanced beam search algorithms are elaborated in Section \ref{sec:heu} and Section \ref{sec:g2la} respectively. We conduct experiments which evaluate the effectiveness of our algorithms and report the results in Section \ref{sec:ce}. At last, we conclude our research in Section \ref{sec:con} with some closing remarks.
 
@@ -694,27 +694,25 @@ In this paper, we propose three interrelated algorithms: TGH, BS-G and BS-B. All
 \section{Experiments and analysis}
 \label{sec:ce}
 To evaluate the effectiveness of our algorithms, we test our algorithms against the benchmark test data sets provided by \cite{BF2012}.
-We first conduct a series of experiments to evaluate the performance of the algorithm components -- the evaluation scheme and search parameters.
+We first compare the performance of proposed lower bounds with that of \cite{BF2012}. Then we conduct a series of experiments to evaluate the performance of the algorithm components -- the evaluation scheme and search parameters.
 It is followed by the performance on the bench mark data.
 At the last of this section, a data set for the new CPMPDS is generated and the result is presented for further reference. All of our experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz. The operating system is Windows 7.
 
 \subsection {Lower bound comparison}
-We use the data of {\em BF2012} to compare the performance of $LB_{DFS}$, $LB_{MKM}$ with that of \cite{BF2012}. In Table \ref{tab:lowerbound}, BF$n$ denotes the $n$th group data. $DFS$, $MKM$ and $BF$ are the average lower bound numbers of the 20 instances in a group calculated by $LB_{DFS}$, $LB_{MKM}$ and \cite{BF2012}, receptively. As such, $T_D$, $T_M$ and $T_B$ are the average computation time of three lower bounds on instances of a group. It can be seen that $DFS$ and $MKM$ dominate $BF$ and the computation time does not increase.
+Benchmark data are used to compare the performance of $\id{LB}_\id{DFS}$, $\id{LB}_\id{MKM}$, and $\id{LB}_\id{BF}$. In Table \ref{tab:lowerbound}, columns DFS, MKM, and BF indicate average lower bounds of instances in corresponding data sets calculated by $\id{LB}_\id{DFS}$, $\id{LB}_\id{MKM}$ and $\id{LB}_\id{BF}$, receptively. As such, columns tDFS, tMKM and tBF are the average computational time of three methods in seconds, which can be regarded as no difference. Table \ref{tab:lowerbound} shows that DFS and MKM have better performance than BF, but the improvement is tiny.
 \begin{table}[htbp]
 \centering
-\caption{\label{tab:lowerbound} Lower Bound Comparison}
-\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
-\hline
-      &   BF1  &  BF2   &  BF3  &  BF4  &  BF5  &  BF6  &  BF7  &  BF8 &  BF9 &BF10&BF11&BF12\\
-\hline
-MKM   & 93.89  & 93.89  &	 0.0& sBR1  & **&&&&&&&\\
-%T_M   & 94.48  & 94.57  &	 0.0& sBR4  &\\
-%BF& 92.55  & 92.93  &	 0.3& sBR7\ &(2) \\
-%T_B   &        &        &       &
-%DFS
-%T_D
-\hline
-\end{tabular}
+\caption{\label{tab:lowerbound} Lower bound comparison}
+\begin{tabular}{c|c|c|c|c|c|c}
+    \hline
+    data set &    DFS     &     MKM   &   BF     & tDFS    & tMKM   & tBF \\
+    \hline
+    LC       &   29.780   &   29.659  &  29.659  & $<1$    & $<1$   & $<1$ \\
+    CV       &   17.725   &   17.725  &  17.725  & $<1$    & $<1$   & $<1$ \\
+    BF       &   57.239   &   57.233  &  57.231  & $<1$    & $<1$   & $<1$ \\
+    \hline
+    \end{tabular}%
+
 \end{table}
 
 \subsection {Parameter configuration}
@@ -946,7 +944,7 @@ We generate a new data set for the CPMPDS. All the data is available at our webs
 \section{Conclusions}
 \label{sec:con}
 The container pre-marshalling problem is an important topic at container terminals, and its efficient solution has a significant impact on efficient use of container yards, as well as competition power of container terminals. In particular, the CPMP with a dummy stack has been overlooked by the research community for a long time; whereas in reality terminals using gantry cranes are a lot.
-In this paper, we considered the classic container pre-marshalling problem. At the same time, we proposed a new variant CPMP with a dummy stack (CPMPDS). Three algorithms were devised based on the idea of fixing containers one by one to solve both the classic CPMP and CPMPDS. We also came up with a new improved lower bound to compute the number of movements. Experiments showcase that our algorithms outperform existing methods in terms of the benchmark data of the CPMP, and BS-B can be regarded as the current best algorithm for the CPMP/CPMPDS.
+In this paper, we considered the classic container pre-marshalling problem. At the same time, we proposed a new variant CPMP with a dummy stack (CPMPDS). A new improved lower bound was devised to compute the number of movements. Three algorithms which guarantee termination were developed based on the idea of fixing containers one by one to solve both the classic CPMP and CPMPDS. Experiments showcase that our algorithms outperform existing methods in terms of the benchmark data of the CPMP, and BS-B can be regarded as the current best algorithm for the CPMP/CPMPDS.
 In addition, we constructed a new data set of the CPMPDS for future reference .
 
 Through experimental analysis, we find that the idea of fixing containers from larger group labels is right as it narrows the solution space, and provides guidance for the algorithms. The heuristic rules in TGH are also critical as the efficiency of giant moves affects the efficiency of the whole beam search algorithms. The thought of combining giant moves with beam search is also applicable to other complex problems whose solution space are too large to be fully explored.
