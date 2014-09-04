@@ -76,17 +76,21 @@ Prior to ship arrival, containers in a bay can be rearranged to comply with thei
 %One conventional objective is to minimize the number of movements. Gantry movement is a reasonable indicator, as gantry cranes can only process $20 \scriptsize{\sim} 25$ container movements per hour \cite{Rotter2004}, which suggests that gantry cranes are definitely a kind of valuable resource.
 
 
-By far, though the research community has studied the CPMP, it does not fully depict practical scenarios. For terminals using gantry cranes, the bay must reserve extra space for trucks beside stacks in the bay, so that trucks can stand by and receive containers from the handling equipments, just as shown in Figure \ref{fig:2}.\footnote{Photo by \url{http://www.saifpowertecltd.com/port_operation.php}} When no container is being retrieved, the extra space acts as a temporary stack for the pre-marshalling work just like an ordinary stack. The only issue demanding attention is that the extra space should become empty again after the pre-marshalling work, which distinguishes itself from ordinary stacks. We coin the extra space as a \textbf{dummy stack}.
+By far, though the research community has studied the CPMP, it does not fully depict practical scenarios. For terminals using gantry cranes, there exist two configurations of I/O points where trucks and gantry cranes exchange containers \cite{Carlo2014}. Figure \ref{fig15} show the difference of two configurations. In the first configuration, I/O points form lanes (transfer lane) which are parallel to a block while in the second configuration, I/O points form bays which are at both ends of a block. In the first configuration, when no container is being retrieved, transfer lanes act as temporary stacks for the pre-marshalling work just like ordinary stacks. The only issue demanding attention is that transfer lanes should become empty again after the pre-marshalling work, which distinguishes themselves from ordinary stacks. We coin the transfer lanes as \textbf{dummy stacks}.
 %If regarding the extra space as a dummy stack, the initial layout is composed of several (nearly) fully occupied stacks, together with an empty dummy stack.
-
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.3\textwidth]{fig2.jpg}
-\caption{A container bay and a truck}
-\label{fig:2}
-\end{figure*}
+\subfigure[Configuration with transfer lane]{
+    \label{fig15:1}
+    \resizebox{0.3 \textwidth}{!}{\includegraphics{fig15_1.pdf}}}
+\subfigure[Configuration with transfer bay]{
+    \label{fig15:2}
+    \resizebox{0.3 \textwidth}{!}{\includegraphics{fig15_2.pdf}}}
+\caption{Two configurations of I/O points}
+\label{fig15}
+\end{figure}
 
-Existing algorithms for the CPMP have not taken the dummy stack into consideration, hence they cannot be implemented directly at terminals using gantry cranes. However, terminals using gantry cranes as yard operation equipments are rather popular across the world. Herein, it is imperative to fill this disparity between research and industry.
+Existing algorithms for the CPMP have not taken dummy stacks into consideration, hence they cannot be implemented directly at terminals using gantry cranes. However, terminals using gantry cranes as yard operation equipments are rather popular across the world. Herein, it is imperative to fill this disparity between research and industry.
 
 Our paper contributes to the literature on three aspects. First, we reexamine the CPMP and propose a new variant -- the CPMP with a dummy stack (CPMPDS). Second, we devise a new lower bound on the calculation of movements, suitable for both CPMP and CPMPDS. The new lower bound dominates other existing lower bounds with respect to the CPMP. Third, we design three algorithms innovated by the idea of target-guided to solve both the classic CPMP and the new CPMPDS. The ideology of the algorithms is to fix containers at appropriately chosen positions and avoid moving them afterwards. This mechanism reduces the problem size continuously until the problem is solved. Thus, our algorithms guarantee termination. Experimental results demonstrate that our algorithms are better than the state-of-the-art algorithm to the best of our knowledge. It is noteworthy that although this paper discusses the CPMP in the context of maritime terminals, it is also applicable to other scenarios such as warehouses and railway yards.
 

@@ -1,4 +1,4 @@
-\begin{thebibliography}{24}
+\begin{thebibliography}{25}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\bibinfo}[2]{#2}
 \ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
@@ -10,6 +10,15 @@
   pre-marshalling problem}}.
 \newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
   {\it \bibinfo{volume}{217}\/}, \bibinfo{pages}{531--540}.
+%Type = Article
+\bibitem[{Carlo et~al.(2014)Carlo, Vis \& Roodbergen}]{Carlo2014}
+\bibinfo{author}{Carlo, H.~J.}, \bibinfo{author}{Vis, I.~F.}, \&
+  \bibinfo{author}{Roodbergen, K.~J.}, \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{Storage yard operations in container terminals:
+  Literature overview, trends, and research directions}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{235}\/}, \bibinfo{pages}{412 -- 430}.
+\newblock \bibinfo{note}{Maritime Logistics}.
 %Type = Incollection
 \bibitem[{Caserta et~al.(2009)Caserta, Schwarze \& Vo{\ss}}]{Caserta2009A}
 \bibinfo{author}{Caserta, M.}, \bibinfo{author}{Schwarze, S.}, \&
