@@ -39,9 +39,9 @@ public class TreeSearch
 				s_star = s.copy();
 			return;
 		}
-
+		Move forbid=s.lastMove();
 		ArrayList<CompoundMove> Cm;
-		if (L.exist_BG())
+		if (L.exist_BG(forbid))
 		{
 			Cm = determine_normal_compound_moves(s, L);
 		}
@@ -69,17 +69,18 @@ public class TreeSearch
 		{
 			CompoundMove cm = new CompoundMove();
 
-
-			while (L.exist_BG(s))
+			Move forbid=s_c.lastMove();
+			while (L.exist_BG(s,forbid))
 			{
-				Move m_best = L.get_best_BG(s);
+				Move m_best = L.get_best_BG(s,forbid);
 				cm.append(m_best);
 				L.perform(m_best);
+				forbid=m_best;
 			}
 			int lb = s_c.size() + cm.size() + L.lower_bound();
 			if (cm.size() != 0 && (s_star == null && lb < threshold || s_star != null && lb < s_star.size()))
 			{
-				cm.clean_supply = L.clean_supply();
+				cm.clean_supply = L.weighted_clean_supply();
 				Cm.add(cm);
 			}
 			L.undo(cm);
@@ -98,23 +99,25 @@ public class TreeSearch
 		for (int s = 1; s <= L.S; s++)
 		{
 			CompoundMove cm = new CompoundMove();
-
+			Move forbid=s_c.lastMove();
 			while (true)
 			{
-				if (L.exist_non_BG(s))
+				if (L.exist_non_BG(s,forbid))
 				{
-					Move m_best = L.get_best_non_BG(s);
+					Move m_best = L.get_best_non_BG(s,forbid);
 
 					cm.append(m_best);
 					L.perform(m_best);
+					forbid=m_best;
 
 					int lb = s_c.size() + cm.size() + L.lower_bound();
 					if (s_star == null && lb < threshold || s_star != null && lb < s_star.size())
 					{
-						if (L.clean_supply() >= 1)
+						if (L.weighted_clean_supply() >= 1)
 						{
 							CompoundMove mm = cm.copy();
-							mm.clean_supply = L.clean_supply();
+							mm.clean_supply = L.weighted_clean_supply();
+						//	if(mm.clean_supply>0)
 							Cm.add(mm);
 						}
 						continue;

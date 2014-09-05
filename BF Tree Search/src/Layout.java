@@ -13,7 +13,14 @@ public class Layout
 	public int[] good_count;
 
 	public int number_of_badly_placed_containers;
-	public int clean_supply;
+	private int clean_supply_number;
+	private int pow(int g)
+	{
+		int r=1;
+		for(int i=0;i<g-1;i++)
+				r*=10;
+		return r;
+	}
 
 	public Layout(int S, int H, int N, int G, int[][] init)
 	{
@@ -25,7 +32,7 @@ public class Layout
 		good_count = new int[S + 1];
 		bay_data = new int[S + 1][H + 1];
 		number_of_badly_placed_containers = 0;
-		clean_supply = 0;
+		clean_supply_number = 0;
 		for (int i = 1; i <= S; i++)
 		{
 			for (int j = 1; j <= H && init[i][j] != 0; j++)
@@ -49,7 +56,10 @@ public class Layout
 			}
 			number_of_badly_placed_containers += height[i] - good_count[i];
 			if (height[i] == good_count[i])
-				clean_supply += H - height[i];
+			{
+				int g=(height[i]==0?G:bay(i,height[i]));
+				clean_supply_number += (H - height[i])*pow(g);
+			}
 		}
 	}
 
@@ -65,9 +75,10 @@ public class Layout
 		bay_data[i][j] = c;
 	}
 
-	public int clean_supply()
+	public int weighted_clean_supply()
 	{
-		return clean_supply;
+
+		return clean_supply_number;
 	}
 
 	public int number_of_badly_placed_containers()
@@ -76,15 +87,15 @@ public class Layout
 	}
 
 
-	public boolean exist_BG()
+	public boolean exist_BG(Move forbid)
 	{
 		for (int s = 1; s <= S; s++)
-			if (exist_BG(s))
+			if (exist_BG(s,forbid))
 				return true;
 		return false;
 	}
 
-	public boolean exist_BG(int s1)
+	public boolean exist_BG(int s1,Move forbid)
 	{
 		if (height[s1] == 0)
 			return false;
@@ -95,6 +106,10 @@ public class Layout
 		{
 			if (s2 == s1 || height[s2] == H || height[s2] != good_count[s2])
 				continue;
+
+			if(forbid != null &&  forbid.s1==s2 && forbid.s2==s1)
+				continue;
+
 			int capa = height[s2] == 0 ? G : bay(s2, height[s2]);
 			if (capa >= c)
 				return true;
@@ -102,7 +117,7 @@ public class Layout
 		return false;
 	}
 
-	public Move get_best_BG(int s1)
+	public Move get_best_BG(int s1,Move forbid)
 	{
 		assert height[s1] != good_count[s1];
 		assert height[s1] > 0;
@@ -114,6 +129,8 @@ public class Layout
 		for (int s2 = 1; s2 <= S; s2++)
 		{
 			if (s2 == s1 || height[s2] == H || height[s2] != good_count[s2])
+				continue;
+			if(forbid != null && forbid.s1==s2 && forbid.s2==s1)
 				continue;
 			int capa = height[s2] == 0 ? G : bay(s2, height[s2]);
 			if (capa >= c)
@@ -130,7 +147,7 @@ public class Layout
 		return new Move(s1, ret);
 	}
 
-	public boolean exist_non_BG(int s1)
+	public boolean exist_non_BG(int s1,Move forbid)
 	{
 		if (height[s1] == 0)
 			return false;
@@ -142,6 +159,8 @@ public class Layout
 		for (int s2 = 1; s2 <= S; s2++)
 		{
 			if (s2 == s1 || height[s2] == H)
+				continue;
+			if(forbid != null && forbid.s1==s2 && forbid.s2==s1)
 				continue;
 
 			if (height[s2] != good_count[s2])
@@ -161,7 +180,7 @@ public class Layout
 		}
 		return false;
 	}
-	public boolean exist_GG(int s1)
+	public boolean exist_GG(int s1,Move forbid)
 	{
 		if (height[s1] == 0)
 			return false;
@@ -173,13 +192,15 @@ public class Layout
 		{
 			if(s2==s1||height[s2]==H || height[s2]!=good_count[s2])
 				continue;
+			if(forbid != null && forbid.s1==s2 && forbid.s2==s1)
+				continue;
 			int capa = (height[s2] == 0 ? G : bay(s2, height[s2]));
 			if(capa>=c)
 				return true;
 		}
 		return false;
 	}
-	public Move get_best_GG(int s1)
+	public Move get_best_GG(int s1,Move forbid)
 	{
 		int c=bay(s1,height[s1]);
 		int ret=-1;
@@ -188,6 +209,8 @@ public class Layout
 		for(int s2=1;s2<=S;s2++)
 		{
 			if(s2==s1||height[s2]==H || height[s2]!=good_count[s2])
+				continue;
+			if(forbid != null && forbid.s1==s2 && forbid.s2==s1)
 				continue;
 			int capa = (height[s2] == 0 ? G : bay(s2, height[s2]));
 			if(capa>=c)
@@ -202,7 +225,7 @@ public class Layout
 		}
 		return new Move(s1,ret);
 	}
-	public Move get_best_XB(int s1)
+	public Move get_best_XB(int s1,Move forbid)
 	{
 		int c=bay(s1,height[s1]);
 		int ret=-1;
@@ -212,7 +235,8 @@ public class Layout
 		{
 			if(s2==s1||height[s2]==H )
 				continue;
-
+			if(forbid != null && forbid.s1==s2 && forbid.s2==s1)
+				continue;
 			if(height[s2]!=good_count[s2] || bay(s2, height[s2])<c)
 			{
 				// to be bad
@@ -239,12 +263,12 @@ public class Layout
 		}
 		return new Move(s1,ret);
 	}
-	public Move get_best_non_BG(int s1)
+	public Move get_best_non_BG(int s1,Move forbid)
 	{
-		if(exist_GG(s1))
-			return get_best_GG(s1);
+		if(exist_GG(s1,forbid))
+			return get_best_GG(s1,forbid);
 		else
-			return get_best_XB(s1);
+			return get_best_XB(s1,forbid);
 	}
 
 	public void perform(CompoundMove cm)
@@ -298,27 +322,43 @@ public class Layout
 			height[s1]--;
 
 			if (height[s1] == good_count[s1])
-				clean_supply += H - height[s1];
+			{
+				int g=(height[s1]==0?G:bay(s1,height[s1]));
+				clean_supply_number += (H - height[s1])*pow(g);
+
+			}
 		}
 		else
 		{
+			int g=(height[s1]==0?G:bay(s1,height[s1]));
+			clean_supply_number -=(H - height[s1])*pow(g);
 			height[s1]--;
 			good_count[s1]--;
-			clean_supply++;
+
+			g=(height[s1]==0?G:bay(s1,height[s1]));
+			clean_supply_number +=(H - height[s1])*pow(g);
+
 		}
 
 		set_bay(s2, height[s2] + 1, c);
 		if (height[s2] == 0 ||
 				height[s2] == good_count[s2] && c <= bay(s2, height[s2]))
 		{
+			int g=(height[s2]==0?G:bay(s2,height[s2]));
+			clean_supply_number -=(H - height[s2])*pow(g);
+
 			height[s2]++;
 			good_count[s2]++;
-			clean_supply--;
+			g=(height[s2]==0?G:bay(s2,height[s2]));
+			clean_supply_number +=(H - height[s2])*pow(g);
 		}
 		else
 		{
 			if (height[s2] == good_count[s2])
-				clean_supply -= H - height[s2];
+			{
+				int g=(height[s2]==0?G:bay(s2,height[s2]));
+				clean_supply_number -=(H - height[s2])*pow(g);
+			}
 			height[s2]++;
 			number_of_badly_placed_containers++;
 		}

@@ -45,4 +45,10 @@ public class Solution
 			cms.remove(cms.size() - 1);
 		}
 	}
+
+	public Move lastMove()
+	{
+		if(size()==0) return null;
+		else return cms.get(size()-1);
+	}
 }
