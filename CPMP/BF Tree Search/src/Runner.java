@@ -49,14 +49,14 @@ public class Runner
 					TreeSearch ts = new TreeSearch();
 					long tt = System.currentTimeMillis();
 					Solution s = ts.solve(inst);
-
-					sumps.println(testgroup + "," + testcase + "," + (s == null ? 0 : s.size()));
+					tt=(System.currentTimeMillis() - tt) / 1000;
+					sumps.println(testgroup + "," + testcase + "," + (s == null ? 0 : s.size())+","+tt);
 					//		System.out.println(testgroup + "," + testcase + "," +( s == null ? 0 : s.size()));
 					if (s != null)
 					{
 						cnt++;
 						sum += s.size();
-						time += (System.currentTimeMillis() - tt) / 1000;
+						time +=tt ;
 					}
 				}
 				System.out.println("Group " + testgroup + ": (" + cnt + "/" + files.length + ") " + 1.0 * sum / cnt + " , " + time * 1.0 / cnt + "s");
