@@ -42,24 +42,24 @@ Department of Management Sciences, City University of Hong Kong, 83 Tat Chee Ave
 \cortext[corl]{Corresponding author. Tel: +852 34425296}
 
 \begin{abstract}
-We investigate the container pre-marshalling problem (CPMP), which aims to rearrange containers in a bay with the least movement effort, so as to find a final layout where containers are piled according to a predetermined order. Previous researchers, without exception, assume that all the stacks in a bay are functionally identical. We reexamine such a classic problem setting and propose a new problem -- the CPMP with a dummy stack (CPMPDS).
-At terminals that use gantry cranes, a bay includes a row of ordinary stacks and a dummy stack. The dummy stack actually is the bay space reserved for trucks, via which containers can be shipped out of the bay. During the pre-marshalling process, the dummy stack temporarily stores containers, just like an ordinary stack.
-But it is required to restore emptiness at the end of the pre-marshalling process. In this paper, we propose target guided algorithms which guarantee termination to tackle both the classic CPMP and the new CPMPDS; the key idea is to fix containers at appropriately chosen positions one by one. We also devise an improved lower bound for the number of required movements. Experimental results in terms of the CPMP showcase that our algorithms surpass the state-of-the-art algorithm.
+Container pre-marshalling problem (CPMP) aims to rearrange containers in a bay with the least movement effort; thus, in the final layout, containers are piled according to a predetermined order. Previous researchers, without exception, assumed that all the stacks in a bay are functionally identical. Such a classical problem setting is reexamined in this paper. Moreover, a new problem, that is, CPMP with a Dummy Stack~(CPMPDS), is proposed.
+At terminals with transfer lanes, a bay includes a row of ordinary stacks and a dummy stack. The dummy stack is actually the bay space that is reserved for trucks. Therefore, containers can be shipped out of the bay. During the pre-marshalling process, the dummy stack temporarily stores containers as an ordinary stack.
+However, the dummy stack must be emptied at the end of pre-marshalling. In this paper, target-guided algorithms are proposed to handle both classical CPMP and new CPMPDS. All proposed algorithms guarantee termination. Improved lower bounds of CPMP and CPMPDS are also devised. Experimental results in terms of CPMP show that the proposed algorithms surpass the state-of-the-art algorithm.
 \end{abstract}
 
 \begin{keyword}
-container pre-marshalling \sep target guided algorithms\sep lower bound \sep dummy stack
+container pre-marshalling \sep target-guided algorithms\sep lower bound \sep dummy stack
 \end{keyword}
 \end{frontmatter}
 
 \section{Introduction}
 
-Seaborne transportation is the cornerstone of international trade and undoubtedly an engine of global economic development. According to \textit{Review of Maritime Transport} (2012) released by UNCTAD, around 80\% of global trade by volume is carried by sea. Amongst different ship types, container ships account for about 62\% of dry cargoes. Since the commencement of containerization, containers facilitate smooth flow of goods across multiple transportation modes without direct handling the freight during the course of shipping. Accompany with the rapid growth of container shipping, container terminals face unprecedented development opportunities.
-The role of container terminals lies in providing physical spaces for container exchanges between sea and land. At terminals, a large proportion of land spaces is reserved for storing containers temporarily, which is known as container yards. A yard acts as a cache that makes the loading and unloading process of ships in a fast pace. Basically, a conventional practice of exporting containers is to store them on the yard first. When the ship arrives, all the containers are transported by trucks to the quayside and then loaded onto the ship. The process is reverse for import containers.
+Seaborne transportation is the cornerstone of international trade and undoubtedly an engine of global economic development. According to the \textit{Review of Maritime Transport}~(2012) released by united nations conference on trade and development, approximately 80\% of global trade by volume is carried by sea. Among different ship types, container ships account for approximately 62\% of dry cargoes. Since the commencement of containerization, containers facilitate smooth flow of goods across multiple transportation modes without direct freight handling during the course of shipping. Accompany with the rapid growth of container shipping, container terminals face unprecedented development opportunities.
+The role of container terminals lies in providing physical spaces for container exchanges between sea and land. At terminals, a large proportion of land spaces (known as container yards or warehouses) are reserved for storing containers temporarily. A yard acts as a cache that ensures rapid loading and unloading of vessels. Basically, a conventional practice of exporting containers is to store them on the yard first. When vessels arrive, containers are transported by trucks to the quayside and then loaded onto vessels. The process is reverse for importing containers.
 
-High efficiency is a key factor for any successful terminals since shipping line managers prefer efficient terminals. Carriers or shippers bear the pressure of quick delivery from down stream customers. Moreover, high efficiency increases the turnover rate of terminals, therefore generates more profit for the shareholders. Container terminals have every reason to increase their operational efficiency as much as possible. Both terminal practitioners and OR researchers have paid considerable attention on improving the efficiency of quayside operations. Nonetheless, the overall terminal productivity will not increase dramatically if only quayside operations are optimized, leaving yard operations inefficient \citep{Jiang2012}.
+High efficiency is a key factor for any successful terminal because shipping line managers prefer efficient terminals. Carriers or shippers bear the pressure of quick delivery from downstream customers. Moreover, high efficiency increases the turnover rate of terminals and therefore generates more profit for shareholders. Container terminals have every reason to increase their operational efficiency. Terminal practitioners and OR researchers have paid considerable attention to improving the efficiency of quayside operations. Nonetheless, overall terminal productivity will not increase dramatically if only quayside operations are optimized, thereby leaving yard operations inefficient~\citep{Jiang2012}.
 
-In general, a yard is divided into several blocks and a block is composed of several parallel bays. Each bay is formed by several stacks aligned side by side. In each stack, containers are piled vertically. Figure \ref{fig:1} shows a diagram of a yard. The height of stacks is constrained by the height of operation equipments, i.e. gantry cranes. Generally speaking, one stack can store 3$\sim$10 containers.
+A yard is generally divided into several blocks. A block is composed of several parallel bays. Each bay is formed by several stacks aligned side by side. In each stack, containers are piled vertically. Figure \ref{fig:1} shows a diagram of a yard. The height of stacks is constrained by the height of operating equipment. One stack can typically store 3 to 10 containers.
 
 \begin{figure}[htbp]
 \centering
@@ -68,57 +68,58 @@ In general, a yard is divided into several blocks and a block is composed of sev
 \label{fig:1}
 \end{figure}
 
-Containers in the same stack can only be retrieved in a ``first in last out'' manner. If the container to be fetched is not at the top of a stack, all the containers placed above it have to be relocated to other stacks before retrieving it. Such forced movements are known as rehandlings. Rehandling containers is a costly activity as this additional work decreases the efficiency of container retrieval, whereas consignors do not pay for this. In the ideal situation, containers are piled in an order consistent with the retrieval order, i.e., containers retrieved earlier are located at higher tiers. The realistic situation, however, goes by contraries. The placement order of containers is decided by inland transportation or consignors; while the retrieval order of containers is decided by the stowage planning or ship schedule. In most situations, the two orders are not exactly reverse. In reality, containers which arrive early do not necessarily depart late.
+Containers in the same stack can only be retrieved in a ``first in-last out'' manner. If the container to be fetched is not at the top of a stack, all the containers placed above it have to be relocated to other stacks before retrieving it. Such forced movements are known as rehandles. Container Rehandle is costly because this additional task decreases the efficiency of container retrieval, but consignors do not pay for this task. In the ideal situation, containers are piled in an order that is consistent with the retrieval order, i.e., containers retrieved earlier are located at higher tiers. However, the actual situation is the opposite. The placement order of containers is decided by inland transportation or consignors, whereas the retrieval order of containers is decided by stowage planning or ship schedules. In most situations, the two orders are not exactly reverse. In reality, containers that arrive early do not necessarily depart late.
 
-Prior to ship arrival, containers in a bay can be rearranged to comply with their retrieval order, hence the name pre-marshalling. The pre-marshalling work, though not billable to consignors, can reduce the berthing time of ships and increase the turnover rate of terminals. How to carry out the container pre-marshalling with the least effort is the so called container pre-marshalling problem (CPMP).
+Prior to ship arrival, containers in a bay can be rearranged to comply with their retrieval order. This process is called pre-marshalling. Although it is not billable to consignors, pre-marshalling can reduce berthing time of ships and increase terminal turnover rate. Performing container pre-marshalling with the least effort is denoted as CPMP.
 %In the CPMP, a set of containers piled in a bay are given, and each container is assigned with a group label which represents its retrieval batch ordinal. A movement can only move a container from the top of a stack to the top of another stack, resulting in a new layout. The objective of the CPMP is to find the shortest movement sequence which rearranges containers and pile them according to the descending order of group labels from the bottom up.
 
 %One conventional objective is to minimize the number of movements. Gantry movement is a reasonable indicator, as gantry cranes can only process $20 \scriptsize{\sim} 25$ container movements per hour \cite{Rotter2004}, which suggests that gantry cranes are definitely a kind of valuable resource.
 
 
-By far, though the research community has studied the CPMP, it does not fully depict practical scenarios. For terminals using gantry cranes, there exist two configurations of I/O points where trucks and gantry cranes exchange containers \cite{Carlo2014}. Figure \ref{fig15} show the difference of two configurations. In the first configuration, I/O points form lanes (transfer lane) which are parallel to a block while in the second configuration, I/O points form bays which are at both ends of a block. In the first configuration, when no container is being retrieved, transfer lanes act as temporary stacks for the pre-marshalling work just like ordinary stacks. The only issue demanding attention is that transfer lanes should become empty again after the pre-marshalling work, which distinguishes themselves from ordinary stacks. We coin the transfer lanes as \textbf{dummy stacks}.
+Although CPMP has been studied, practical scenarios have not been fully depicted. For terminals that use gantry cranes, there exist two kinds of layouts of I/O points where trucks and gantry cranes exchange containers~\cite{Carlo2014}. Figure \ref{fig15} show the difference of two layouts. In the first layout, I/O points form lanes~(transfer lane) which are parallel to a block while in the second layout, I/O points form bays which are at both ends of a block. In the first layout, when no container is being retrieved, transfer lanes act as temporary stacks for the pre-marshalling work as ordinary stacks. The only issue that demands attention is that transfer lanes should be empty again after the pre-marshalling work, which distinguishes themselves from ordinary stacks. Transfer lanes are called \textbf{dummy stacks}.
 %If regarding the extra space as a dummy stack, the initial layout is composed of several (nearly) fully occupied stacks, together with an empty dummy stack.
 \begin{figure}[htbp]
 \centering
-\subfigure[Configuration with transfer lane]{
+\subfigure[Layout with transfer lane]{
     \label{fig15:1}
     \resizebox{0.3 \textwidth}{!}{\includegraphics{fig15_1.pdf}}}
-\subfigure[Configuration with transfer bay]{
+\subfigure[Layout with transfer bay]{
     \label{fig15:2}
     \resizebox{0.3 \textwidth}{!}{\includegraphics{fig15_2.pdf}}}
-\caption{Two configurations of I/O points}
+\caption{Two layouts of I/O points}
 \label{fig15}
 \end{figure}
 
-Existing algorithms for the CPMP have not taken dummy stacks into consideration, hence they cannot be implemented directly at terminals using gantry cranes. However, terminals using gantry cranes as yard operation equipments are rather popular across the world. Herein, it is imperative to fill this disparity between research and industry.
+Existing algorithms for CPMP have not taken dummy stacks into consideration; hence, they cannot be implemented directly at terminal layouts like Figure \ref{fig15:1}. However, aforesaid terminal layouts are popular across the world. This disparity between research and industrial practice must be resolved.
 
-Our paper contributes to the literature on three aspects. First, we reexamine the CPMP and propose a new variant -- the CPMP with a dummy stack (CPMPDS). Second, we devise a new lower bound on the calculation of movements, suitable for both CPMP and CPMPDS. The new lower bound dominates other existing lower bounds with respect to the CPMP. Third, we design three algorithms innovated by the idea of target-guided to solve both the classic CPMP and the new CPMPDS. The ideology of the algorithms is to fix containers at appropriately chosen positions and avoid moving them afterwards. This mechanism reduces the problem size continuously until the problem is solved. Thus, our algorithms guarantee termination. Experimental results demonstrate that our algorithms are better than the state-of-the-art algorithm to the best of our knowledge. It is noteworthy that although this paper discusses the CPMP in the context of maritime terminals, it is also applicable to other scenarios such as warehouses and railway yards.
+Our paper contributes to the literature in three aspects. First, CPMP is reexamined, and a new variant, that is, CPMPDS, is proposed. Second, a new lower bound suitable for both CPMP and CPMPDS is proposed. The new lower bound dominates other existing lower bounds with respect to CPMP. Third, three algorithms based on the idea of target-guided strategy are designed to solve classical CPMP and new CPMPDS. The algorithms fix containers at appropriately chosen positions and avoid moving them afterwards. This mechanism reduces the problem size continuously until the problem is solved. Thus, our algorithms guarantee termination. Experimental results demonstrate that the proposed algorithms are better than the state-of-the-art algorithm to the best of our knowledge. Although CPMP is discussed in the context of maritime terminals, it is also applicable to other scenarios, such as warehouses and railway yards.
 
-The remainder of this paper is structured as follows. Section \ref{sec:litreview} presents an overview of existing works related to the CPMP. After that, we formally define the CPMP/CPMPDS in Section \ref{sec:pd} and present how to calculate lower bounds in Section \ref{sec:cf}. A heuristic algorithm and two advanced beam search algorithms are elaborated in Section \ref{sec:heu} and Section \ref{sec:g2la}, respectively. We conduct experiments which evaluate the effectiveness of our algorithms and report the results in Section \ref{sec:ce}. At last, we conclude our research in Section \ref{sec:con} with some closing remarks.
+The remainder of this paper is structured as follows. Section \ref{sec:litreview} presents an overview of existing works related to CPMP. Section \ref{sec:pd} formally defines CPMP/CPMPDS. Section \ref{sec:cf} discusses how to calculate lower bounds. A greedy algorithm and two advanced beam search algorithms are elaborated in Section \ref{sec:heu} and Section \ref{sec:g2la}, respectively. Section \ref{sec:ce} describes the experiments that were conducted to evaluate the effectiveness of the proposed algorithms and reports the results. Finally, Section \ref{sec:con} concludes the research.
 
 \section{Literature review}
 \label{sec:litreview}
 
-In recent years, publications in press concerning maritime transportation, especially container transportation, have exploded. \cite{Vis2003} are the first who give an overview of the complex operations at container terminals and associated research problems.
-Then \cite{Steenken2004} provide a more extensive description on main logistics processes and operations at container terminals, together with a corresponding survey of optimization models and methods. It is followed by \cite{Stahlbock2008} who trace new updates on container terminals.
-Collectively, these studies point out that the CPMP is an important topic and worthy of more research effort.
+In recent years, publications in press concerning terminal operations, especially container handling, have exploded. \cite{Vis2003} first provided an overview of the complex operations at container terminals and associated research problems.
+\cite{Steenken2004} then provided an extensive description on main logistic processes and operations at container terminals, with a corresponding survey of optimization models and methods. \cite{Stahlbock2008} presented new updates on container terminals.
+In 2014, \cite{Carlo2014} provided a new in-depth overview of storage yard operations and highlighted current industry development trends as well as associated future research directions.
+Collectively, these studies point out that CPMP is an important topic and worthy of more research effort.
 
-Most existing methods for the CPMP are heuristic approaches. \cite{Caserta2009} provide a greedy heuristic based on the paradigm of corridor and roulette wheel. The corridor reduces the number of movement choices for a certain layout and the roulette wheel brings randomness when making choices. The probability of selecting an alternative is proportional to the corresponding attractiveness.
-Their algorithm first builds a corridor with respect to the current layout to determine the destination stacks of a specific misplaced container. Then it yields new layouts by conducting the movements in the corridor, and evaluates the attractiveness of each new layout by an estimated number of needed relocations. It also conducts a local improvement scheme to accelerate the search process.
-\cite{Exposito2012} propose a multi-start heuristic to minimize the number of rehandlings. They select movements by a rule called ``low priority first'', so their method is more target-oriented than the one of \cite{Caserta2009}. In their work, the concept of corridor and roulette wheel are also used when building solutions. What is more, they give a method to generate instances and measure the difficulty of an instance.
+Most existing methods for CPMP are heuristic approaches. \cite{Caserta2009} provided a greedy heuristic based on the paradigm of corridor and roulette wheel. The corridor reduces movement choices for a certain layout and the roulette wheel provides randomness when making choices. The probability of selecting an alternative is proportional to its attractiveness.
+The algorithm first builds a corridor with respect to the current layout to determine the destination stacks of a specific misplaced container. New layouts are then yielded by conducting the movements in the corridor. The attractiveness of each new layout is evaluated by an estimated number of needed relocations. A local improvement scheme is also conducted to accelerate the search process.
+\cite{Exposito2012} proposed a multi-start heuristic to minimize the number of rehandles. Movements were selected by a rule called ``low priority first''. Thus, their method is more target-oriented than that of \cite{Caserta2009}. In \cite{Exposito2012}, the concepts of corridor and roulette wheel were also used in building solutions. A method was also given to generate instances and measure difficulty of instances.
 
-Different from the above approaches that construct solutions by finding promising movements step by step, \cite{Lee2009} deploy a neighborhood search where complete solutions are regarded as the units of search. The neighborhood search obtains a new feasible solution by randomly modifying the current solution.
-Solutions are further shortened without disturbing the feasibility by a four-step procedure. In addition, three minor routines are devised to diversify the resultant solutions and further reduce the number of movements. As it is very likely to generate infeasible solutions by pure modification, their method needs a large number of iterations. Hence, it is not as efficient as the heuristic of \cite{Exposito2012}.
-After that, \cite{Huang2012heu} solve two variants of the CPMP by a heuristic algorithm. One variant is commonly seen which allows containers of different groups to mix within a bay; while the other variant is newly proposed which requires containers of different groups separately located in the final layout.
+Unlike the abovementioned approaches that construct solutions by finding promising movements step by step, a neighborhood search deployed by \cite{Lee2009} regards complete solutions as units of search. The neighborhood search obtains a new feasible solution by randomly modifying the current solution.
+Solutions are shortened without disturbing solution feasibility by using a four-step procedure. Three minor routines were also devised to diversify the resultant solutions and reduce the number of movements. As it is very likely to generate infeasible solutions by pure modification, their method needs a large number of iterations. Hence, the method is not as efficient as the heuristic of \cite{Exposito2012}.
+\cite{Huang2012heu} solved two variants of CPMP by a heuristic algorithm. One variant is commonly seen which allows containers of different groups to mix within a bay. The other variant is newly proposed, which requires containers of different groups be separately located in the final layout.
 
-Apart from heuristics, \cite{Lee2007} develop an integer programming model to tackle the CPMP. They convert the CPMP into a multi-commodity network flow problem. A network is composed of several subnetworks, with each representing an interim layout.
-The nodes in a subnetwork correspond to the slots of the bay while the containers are expressed as the commodities. A solution is expressed by a flow in the network. The disadvantage of their algorithm is that the scale of networks is giant even for small instances.
-Whereas, it provides us an innovative view to investigate the CPMP.
-\cite{BF2012} thoroughly describe a tree search procedure and a new lower bound for the CPMP. In the search tree, solutions are constructed by compound moves (several movements) instead of single movements, and the branches are classified by four movement types. Their performance, by far, is the best among all the extant methods.
+Apart from heuristics, \cite{Lee2007} developed an IP model to tackle CPMP. They converted CPMP into a multi-commodity network flow problem. A network is composed of several subnetworks. Each subnetwork represents an interim layout.
+The nodes in a subnetwork correspond to slots of the bay, and containers are expressed as commodities. A solution is expressed by a flow in the network. The disadvantage of the algorithm is that the scale of networks is large even for small instances.
+However, the algorithm provides an innovative view to investigate CPMP.
+\cite{BF2012} thoroughly described a tree search procedure and a new lower bound for CPMP. In the search tree, solutions are constructed by compound moves (several movements) instead of single movements, and branches are classified by four movement types. The performance of the tree search is currently the best among all extant methods.
 %\cite{Vob2012} gives a short note discussing an improved lower bound on the number of required container movements.
 
-As discussed in \cite{Caserta2011}, the counterparts of the pre-marshalling problem include the container re-marshalling problem and the container relocation problem. The container re-marshalling problem refers to reassigning containers scattered within a block into their designated bays. It is not a simple extension of the CPMP, as there are multiple cranes involved. The interference between multiple cranes, as well as the stacking positions of containers within a bay, is the difficulty of the problem.
-\cite{Caserta2011}, in their paper, prove that the container re-marshalling problem is NP-hard. \cite{Kim1998, Kang2006Plan, Park2009Plan, Choe2011} have exploited the container re-marshalling problem and came up with some heuristic methods to cope with it. On the other hand, the container relocation problem aims to retrieve containers in a predetermined order with the fewest movements. It has been studied by researchers using various methods, ranging from meta-heuristics to simple heuristic algorithms \citep{Kim2006A, Yang2006A, Caserta2009A,Caserta2009Applying,Lee2010A,Caserta2012AM, Forster2012A, Zhu2012Iter}.
+As discussed in \cite{Caserta2011}, the counterparts of CPMP include Container Re-Marshalling Problem~(CRMP) and Container Relocation Problem~(CRP). CRMP refers to reassigning containers scattered within a block into their designated bays. CRMP is not a simple extension of CPMP, because it involves multiple cranes. The interference between multiple cranes and stacking positions of containers within a bay are the difficulties of CRMP.
+\cite{Caserta2011} proved that CRMP is NP-hard. \cite{Kim1998, Kang2006Plan, Park2009Plan, Choe2011} have exploited CRMP and proposed some heuristic methods to cope with it. CRP aims to retrieve containers in a predetermined order with the fewest movements. It has been studied by researchers by using various methods, ranging from meta-heuristics to simple heuristic algorithms \citep{Kim2006A, Yang2006A, Caserta2009A,Caserta2009Applying,Lee2010A,Caserta2012AM, Forster2012A, Zhu2012Iter}.
 
 
 %Pre-marshalling is the preliminary work for the
@@ -132,12 +133,12 @@ As discussed in \cite{Caserta2011}, the counterparts of the pre-marshalling prob
 \section{Problem description}
 \label{sec:pd}
 
-The container pre-marshalling problem (CPMP) can be summarized as follows: given a bay with $S$ stacks, each stack is able to store up to $H$ containers vertically. Tiers of the bay are indexed from 1 to $H$ from the bottom up. To make it consistent, the ground is considered as tier 0 in particular.
-There are $N$ ($N\le S\times H$) containers stored in the bay, forming the initial layout with a usage rate $N/(S\times H)$. Each container $c$ is assigned with a group label $g(c)\in \{1,\dots,G\}$, and the group label of different containers could be unique or duplicate. Figure \ref{fig3} shows an example of a layout.
+CPMP can be summarized as follows: Given a bay with $S$ stacks, each stack is able to store up to $H$ containers vertically. Tiers of the bay are indexed from 1 to $H$ from bottom to up. For consistency, the ground is considered as tier 0 in particular.
+$N$ ($N\le S\times H$) containers are stored in the bay, which forms an initial layout with a usage rate of $N/(S\times H)$. Each container $c$ is assigned a group label $g(c)\in \{1,\dots,G\}$. The group label of different containers could be unique or duplicate. Figure \ref{fig3} shows a layout with $S=5$, $H=6$, $G=9$ and duplicate group labels.
 
 One container can be moved from the top of a stack (\textbf{origin}) to the top of another stack (\textbf{destination}) if the destination stack is not fully occupied.
-The CPMP is to find the shortest movement sequence which transforms the initial layout to a final layout with all the stacks \textbf{clean}. A stack is \textbf{clean} if its containers are piled in a non-increasing order of group labels from the bottom up, otherwise we say it is \textbf{dirty}. We say a stack $s$ can \textbf{accommodate} a container $c$ if and only if stack $s$ is clean and is still clean if moving container $c$ to its top.
-A container $c$ in a certain layout is a clean container if and only if all the containers underneath are clean and their group labels are no smaller than $g(c)$. Otherwise, it is a dirty container.
+CPMP is to find the shortest movement sequence that transforms the initial layout to a final layout with all stacks \textbf{clean}. A stack is \textbf{clean} if its containers are piled in a non-increasing order of group labels from bottom to up; otherwise, the stack is \textbf{dirty}. A stack $s$ can \textbf{accommodate} a container $c$ if and only if stack $s$ is clean and is still clean when $c$ is moved to its top.
+A container $c$ is a clean container if and only if all the containers underneath are clean and their group labels are no smaller than $g(c)$. Otherwise, $c$ is dirty.
 
 
 \begin{figure*}[htbp]
@@ -155,9 +156,9 @@ A container $c$ in a certain layout is a clean container if and only if all the 
 %\item No container comes in or goes out of the bay when the pre-marshalling process is performed in the bay.
 %\end{enumerate}
 
-In the new variant -- the container pre-marshalling problem with a dummy stack (CPMPDS), containers are only piled in the first $S-1$ stacks, while the $S$-th stack (so called dummy stack) is empty in the initial layout. During the course of pre-marshalling, containers can be placed in the dummy stack. The objective of the CPMPDS is to transform the initial layout to a clean layout where the dummy stack is empty, with the least movement effort.
+In the new variant CPMPDS, containers are only piled in the first $S-1$ stacks,and $S$-th stack (called dummy stack) is empty in the initial layout. During pre-marshalling, containers can be placed in the dummy stack. The objective of CPMPDS is to transform the initial layout to a clean layout in which the dummy stack is empty with the least movement effort. A stack is clean if it is not the dummy stack and its containers are piled in a non-increasing order of group labels from bottom to up; otherwise, it is dirty. A container $c$ is a clean container if and only if it is not placed in the dummy stack, all the containers underneath are clean, and their group labels are no smaller than $g(c)$. Otherwise, $c$ is dirty. The dummy stack cannot accommodate any containers.
 
-For ease of illustration, we define some notations in Table \ref{tab:1}. All of the notations are used in the context of the current layout, therefore we do not explicitly point out the layout in notations.
+For ease of illustration, some notations are defined in Table \ref{tab:1}. All the notations are used in the context of the current layout. Therefore, notations do not explicitly indicate layouts.
 
 \begin{table}[htbp]
   \centering
@@ -167,20 +168,20 @@ For ease of illustration, we define some notations in Table \ref{tab:1}. All of 
     \hline
     Notations         & Description \\
     \hline
-    $H$               & The height limitation of the bay\\
+    $H$               & The height limitation of a bay\\
 %    $s_i$             & The $i$-th stack\\
 %    $c_j$             & The $j$-th container\\
 %    $l_k$             & The $k$-th layout; the initial layout is $l_0$\\
     $e(s)$            & The number of empty slots of stack $s$\\
-    $h(s)$            & The number of containers piled at stack $s$\\
+    $h(s)$            & The number of containers of stack $s$\\
     $d(s)$            & The number of dirty containers of stack $s$\\
     $\id{uf}(s)$      & The number of unfixed containers of stack $s$\\
-    $\id{sn}(c)$      & The stack in which container $c$ is placed\\
-    $\id{tn}(c)$      & The tier at which container $c$ is placed\\
+    $\id{sn}(c)$      & The stack where container $c$ is placed\\
+    $\id{tn}(c)$      & The tier where container $c$ is placed\\
     $g(c)$            & The group label of container $c$\\
 %    $\langle c,s\rangle$           & A movement which moves container $c$ to the top of $s$\\
   % $(c_1,s_1)\circ\dots\circ(c_k,s_k)$ & A movement sequence with $k$ movements\\
-    $o(c)$          & The number of containers above $c$\\
+    $o(c)$          & The number of containers above container $c$\\
     \hline
     \end{tabular}
 \end{table}
@@ -195,7 +196,7 @@ For ease of illustration, we define some notations in Table \ref{tab:1}. All of 
 \section{Lower bound}
 \label{sec:cf}
 
-In this section, we propose a method to calculate the lower bound for the number of movements necessary to reach a clean layout. We first illustrate how to calculate the lower bound for the CPMP; the lower bound for the CPMPDS only needs a small modification on the lower bound for the CPMP.
+In this section, a new method is proposed to calculate the lower bound of the number of movements necessary to reach a clean layout. The calculation of the lower bound of CPMP is demonstrated first. The lower bound of CPMPDS requires only a small modification on the lower bound of CPMP.
 
 %\begin{proof}
 %The proof of Lemma \ref{lem:1} can be found in \cite{Wang2013Check}.
@@ -258,7 +259,7 @@ In this section, we propose a method to calculate the lower bound for the number
 %Thus, any CPMPDS instance with $S\ge3$ is feasible.
 
 
-\subsection{Lower bound for the CPMP}
+\subsection{Lower bound of CPMP}
 
 The lower bound is obtained by estimating the number of movements that belong to different movement types.
 \begin{enumerate}
@@ -266,31 +267,31 @@ The lower bound is obtained by estimating the number of movements that belong to
 \item Dirty--Clean movements
 \end{enumerate}
 
-The number of dirty containers in a given layout is $\sum_{s=1}^S d(s)$. Each dirty container requires at least one movement to become clean; thus, the lower bound of the number of Dirty--Clean movements is $\id{num}_\id{DC}=\sum_{s=1}^S d(s)$.
+The number of dirty containers in a given layout is $\sum\limits_{s=1}^S d(s)$. Each dirty container requires at least one movement to become clean; thus, the lower bound of the number of Dirty--Clean movements is $\id{num}_\id{DC}=\sum\limits_{s=1}^S d(s)$.
 
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item Dirty--Dirty movements
 \end{enumerate}
 
-If all stacks are dirty in a layout, at least one stack should become clean to accommodate containers. This step is done by moving dirty containers of a stack to other dirty stacks. The least number of such Dirty--Dirty movements is $\id{num}_\id{DD} = \min\limits_{s=1, \dots, S} d(s)$.
+If all stacks are dirty in a layout, at least one stack should become clean to accommodate containers. This step is done by moving dirty containers of a stack to other dirty stacks. The least number of such Dirty--Dirty movements is $\id{num}_\id{DD} = \min\limits_s d(s)$.
 
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item Clean--X movements
 \end{enumerate}
 
-Before proceeding to explain the calculation, the concept of skyline is first introduced. A skyline is any vertical partition that separates a layout into higher and lower parts, where the lower part must be clean. The bold line in Figure \ref{fig5} is an example of a skyline. A skyline can be represented by a vector $\id{SL}$ such that each element $\id{SL}_s$ represents the skyline segment across stack $s$. Segment $\id{SL}_s$ is described by the container underneath; the tier and group numbers of $\id{SL}_s$ are equal to those of the associated container. For example, in Figure \ref{fig5}, $\id{tn}(\id{SL}_{2})=3$ and $g(\id{SL}_{2})=1$.
+Before proceeding to explain the calculation, the concept of skyline is first introduced. A skyline is any vertical partition that separates a layout into higher and lower parts, where the lower part must be clean. A skyline can be represented by a vector $\id{SL}$ such that each element $\id{SL}_s$ represents the skyline segment across stack $s$. Segment $\id{SL}_s$ is described by the container underneath; the tier and group numbers of $\id{SL}_s$ are equal to those of the associated container. For example, in Figure \ref{fig5}, the bold line presents a skyline of the layout with $\id{tn}(\id{SL}_{2})=3$ and $g(\id{SL}_{2})=1$.
 
 
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=0.3\textwidth]{fig5.pdf}
-\caption{A skyline}
+\caption{A skyline of a layout}
 \label{fig5}
 \end{figure*}
 
-Supply and demand vectors, denoted as $\mathbf S^\id{SL}$ and $\mathbf D^\id{SL}$, record the numbers of slots and containers above \id{SL}. The $g$-th element of $\mathbf S^\id{SL}$ is $\mathbf S^\id{SL}_g=\sum\limits_{s:g(\id{SL}_s)=g}H-\id{tn}(\id{SL}_s)$, while the $g$-th element of $\mathbf D^\id{SL}$ is the number of containers above $\id{SL}$ with group label $g$.
+Supply and demand vectors, denoted as $\mathbf S^\id{SL}$ and $\mathbf D^\id{SL}$, record the numbers of slots and containers above \id{SL}. The $g$-th element of $\mathbf S^\id{SL}$ is $\mathbf S^\id{SL}_g=\sum\limits_{s:g(\id{SL}_s)=g}H-\id{tn}(\id{SL}_s)$, whereas the $g$-th element of $\mathbf D^\id{SL}$ is the number of containers above $\id{SL}$ with group labels $g$.
 
 For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as Clean--X movements. The number of moved clean containers is a lower bound of the number of Clean--X movements. Ideally, pre-marshalling work involves dirty containers only and leaves clean containers unmoved. In some cases, however, achieving a clean layout is impossible without moving clean containers. The number of clean containers that need to be moved can be counted by the following process: given a bay, all dirty containers and a set of clean containers $C$ are removed from the layout, then slots are reassigned to removed containers. The resultant layout is required to be clean. Removed containers within a stack should be consecutive, i.e., if two containers from the same stack are removed, containers between them are also removed. The size of smallest $C$ is the number of Clean--X movements $\id{num}_{CX}$. Finding the smallest $C$ is equivalent to finding the skyline with the fewest clean containers in its higher part (smallest skyline) as well as non-negative surpluses (Equation \ref{equ:3}).
 
@@ -299,15 +300,15 @@ For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as C
 \sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i\ge0, \quad g=1,\dots,G
 \end{equation}
 
-To find the smallest skyline, a basic skyline $\id{SL}$ that separates clean and dirty containers is drawn. Next a depth-first-search (DFS) is deployed to push a certain segment of $\id{SL}$ one tier down in each branching. The leaves of the search tree are all the skylines with non-negative surpluses; the one with the fewest pushes is selected and the number of pushes is $\id{num}_\id{CX}$.
+To find the smallest skyline, a basic skyline $\id{SL}$ that separates clean and dirty containers is drawn. Next, a depth-first-search (DFS) is deployed to push a certain segment of $\id{SL}$ one tier down in each branching. The leaves of the search tree are all the skylines with non-negative surpluses; the one with the fewest pushes is selected and the number of pushes is $\id{num}_\id{CX}$.
 
 To conclude, the lower bound can be defined as $\id{LB}_\id{DFS}=\id{num}_\id{DC}+\id{num}_\id{DD}+\id{num}_\id{CX}$.
 
 \subsection{Clean--X movements by maximum knapsack}
 
-The lower bound $\id{LB}_\id{DFS}$ is time-consuming because a DFS is used to calculate $\id{num}_{\id{CX}}$. A maximum knapsack method (MKM) is proposed to approximate $\id{num}_{CX}$. A basic skyline SL that separates clean and dirty containers is drawn, then the smallest skyline with non-negative surplus for a single group is obtained instead of for all groups. This search is repeated for each group, and the maximum skyline is selected amongst all obtained skylines.
+The lower bound $\id{LB}_\id{DFS}$ is time consuming because a DFS is used to calculate $\id{num}_{\id{CX}}$. A maximum knapsack method (MKM) is proposed to approximate $\id{num}_{CX}$. A basic skyline SL that separates clean and dirty containers is drawn, then the smallest skyline with non-negative surplus for a single group is obtained instead of for all groups. This search is repeated for each group, and the largest number of pushes is selected amongst all obtained skylines.
 
-For a given group label $g$, a knapsack-like problem is solved to find the smallest skyline with non-negative surplus in terms of $g$. Stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g$, while $v_s$ is the resultant number of slots available for group $g$, i.e., $v_s=c_s+e(s)$. $V$ is the number of dirty containers with group label $g(c)\ge g$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model of this knapsack-like problem is show in Equation \ref{equ:4} and can be easily solved by dynamic programming.
+For a given group label $g$, a knapsack-like problem is solved to find the smallest skyline with non-negative surplus in terms of $g$. Stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g$, while $v_s$ is the resultant number of slots available for group $g$, i.e., $v_s=c_s+e(s)$. $V$ is the number of dirty containers with group labels $g(c)\ge g$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model of this knapsack-like problem is show in Equation \ref{equ:4} and can be solved easily by dynamic programming.
 
 
 \begin{equation}
@@ -323,9 +324,9 @@ MKM is not as precise as DFS, but the solution gap is quite small and the comput
 
 \subsection{Comparison with existing lower bound}
 The current state-of-the-art lower bound $\id{LB}_\id{BF}$ was proposed by \cite{BF2012}, which also consists of three parts: Dirty--Clean, Dirty--Dirty and Clean--X movements.
-The first two types are calculated in the same manner as $\id{LB}_\id{DFS}$ and $\id{LB}_\id{MKM}$ in this paper. For Clean--X movements, a basic skyline SL that separates clean and dirty containers is drawn, then they only take the group label $g^*$ with the smallest surplus $\id{min}=\min\limits_g\sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i$. If $\id{min}$ is negative, $\sum\limits_{i\ge g^*}\mathbf D^\id{SL}_i$ surpasses $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$ by $|\id{min}|$, which means that clean containers need to be moved to accommodate these $|\id{min}|$ dirty containers. The number of moved clean containers $\id{num}_\id{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (although in fact it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\id{min}|$ dirty containers need at least $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks. As slots supply of stacks with $g(\id{SL}_s)\ge g^*$ have been calculated into $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$, only stacks with $g(\id{SL}_s)< g^*$ (denote as set \id{AS}) can provide slots for $|\id{min}|$ dirty containers. Suppose $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, sort $c_s$ of stacks in set $\id{AS}$ ascendingly. The first $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks are selected and $\id{num}_\id{CX}=\sum\limits_{s=1}^{s=\left\lceil\frac{|\id{min}|}{H}\right\rceil}c_s$.
+The first two types are calculated in the same manner as $\id{LB}_\id{DFS}$ and $\id{LB}_\id{MKM}$ in this paper. For Clean--X movements, a basic skyline SL that separates clean and dirty containers is drawn, then they only take the group label $g^*$ with the smallest surplus $\id{min}=\min\limits_g\sum\limits_{i\ge g}\mathbf S^\id{SL}_i-\sum\limits_{i\ge g}\mathbf D^\id{SL}_i$. If $\id{min}$ is negative, $\sum\limits_{i\ge g^*}\mathbf D^\id{SL}_i$ surpasses $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$ by $|\id{min}|$, which means that clean containers need to be moved to accommodate these $|\id{min}|$ dirty containers. The number of moved clean containers $\id{num}_\id{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (although in fact it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\id{min}|$ dirty containers need at least $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks. As slots supply of stacks with $g(\id{SL}_s)\ge g^*$ have been calculated into $\sum\limits_{i\ge g^*}\mathbf S^\id{SL}_i$, only stacks with $g(\id{SL}_s)< g^*$ (denote as set \id{AS}) can provide slots for $|\id{min}|$ dirty containers. Suppose $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, sort stacks in set $\id{AS}$ by ascending values of $c_s$. The first $\left\lceil\frac{|\id{min}|}{H}\right\rceil$ stacks are selected and $\id{num}_\id{CX}=\sum\limits_{s=1}^{s=\left\lceil\frac{|\id{min}|}{H}\right\rceil}c_s$.
 
-From the mathematical perspective, the method of \cite{BF2012} is equivalent to solve the following model, stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s'$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, while $v_s'$ is the resultant number of slots available for group $g^*$. According to \cite{BF2012} $v_s'=H$ if $g(\id{SL}_s)<g^*$, otherwise $v_s'=c_s+e(s)$. $V$ is the number of dirty containers with group label $g(c)\ge g^*$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model is show in Equation \ref{equ:5}.
+From the mathematical perspective, the method of \cite{BF2012} is equivalent to solving the following model: stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s'$ and cost $c_s$. The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$. Every item can only be selected at most once. $c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, while $v_s'$ is the resultant number of slots available for group $g^*$. According to \cite{BF2012}, $v_s'=H$ if $g(\id{SL}_s)<g^*$; otherwise, $v_s'=c_s+e(s)$. $V$ is the number of dirty containers with group labels $g(c)\ge g^*$. The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$. The integer programming model is show in Equation \ref{equ:5}.
 
 
 \begin{equation}
@@ -337,50 +338,52 @@ From the mathematical perspective, the method of \cite{BF2012} is equivalent to 
 \end{array}
 \end{equation}
 
-Compare Model \ref{equ:4} with Model \ref{equ:5}, all parameters are the same except for $v_s$ ($v_s'$). The solution to Model \ref{equ:5} is the solution to Model \ref{equ:4}, while the reverse does not stand. The solution space of Model \ref{equ:5} is larger than Model \ref{equ:4}, thus the optimal solution to Model \ref{equ:4} is no smaller than that to Model \ref{equ:5}. Furthermore, \cite{BF2012} only solve Model \ref{equ:5} once for $g^*$, whereas this paper solves Model \ref{equ:4} for every group and then take the maximal result as $\id{num}_\id{CX}$. As a result, the lower bound $\id{LB}_\id{MKM}$ dominates $\id{LB}_\id{BF}$: $\id{LB}_\id{BF}\le \id{LB}_\id{MKM}\le \id{LB}_\id{DFS}$.
-\subsection{Lower bound of the CPMPDS}
+Compare Model \ref{equ:4} with Model \ref{equ:5}, all parameters are the same except $v_s$ ($v_s'$). As $v_s\le v_s'$ for and $s$, the solution to Model \ref{equ:5} is the solution to Model \ref{equ:4}, while the reverse does not stand. The solution space of Model \ref{equ:5} is larger than Model \ref{equ:4}, thus the optimal solution to Model \ref{equ:4} is no smaller than that to Model \ref{equ:5}. Furthermore, \cite{BF2012} only solve Model \ref{equ:5} once for $g^*$, whereas this paper solves Model \ref{equ:4} for every group and then takes the maximal result as $\id{num}_\id{CX}$. As a result, the lower bound $\id{LB}_\id{MKM}$ dominates $\id{LB}_\id{BF}$: $\id{LB}_\id{BF}\le \id{LB}_\id{MKM}\le \id{LB}_\id{DFS}$.
+\subsection{Lower bound of CPMPDS}
 
-The lower bound of the CPMPDS consists of three parts: Dirty--Clean, Dirty--Dirty, and Clean--X movements.
+The lower bound of CPMPDS consists of three parts: Dirty--Clean, Dirty--Dirty, and Clean--X movements.
 
-The lower bound of Dirty--Clean movements is equal to the number of dirty containers. For Dirty--Dirty movements $\id{num}_\id{DD}=\min\limits_{s\neq s_d} d(s)$, where $s_d$ is the dummy stack. If all stacks except for the dummy stack are dirty, then dirty containers from at lest one stack need to be relocated to other dirty stacks or the dummy stack. In both situations, these containers are still dirty after relocation.
+The lower bound of Dirty--Clean movements is equal to the number of dirty containers. For Dirty--Dirty movements, $\id{num}_\id{DD}=\min\limits_{s\neq s_d} d(s)$, where $s_d$ is the dummy stack. If all stacks except the dummy stack are dirty, then dirty containers from at least one stack need to be relocated to other dirty stacks or the dummy stack. In both situations, these containers are still dirty after relocation.
 
 The lower bound of Clean--X movements is the number of clean containers moved to make all containers clean and dummy stack empty, which is equivalent to assigning containers only to the first $S-1$ stacks and ignoring the dummy stack.
 
 Based on the analysis above, $\id{LB}_\id{DFS}$ ($\id{LB}_\id{MKM}$) of a CPMPDS instance is equal to $\id{LB}_\id{DFS}$ ($\id{LB}_\id{MKM}$) of the corresponding CPMP instance with the dummy stack removed.
 
-\section{Target guided heuristic}
+\section{Target-guided heuristic}
 \label{sec:heu}
 
-In this section, we present a target guided heuristic (TGH) for the CPMP/CPMPDS. This heuristic can be used as an independent algorithm, as well as a component of more complex algorithms in the next section. Before proceeding to the heuristic, we introduce the concept of movable (immovable) containers.
+This section presents a target-guided heuristic (TGH) for CPMP/CPMPDS. This heuristic can be used as an independent algorithm as well as a component of more complex algorithms in the next section. Before proceeding to the heuristic, the concept of movable (immovable) containers is introduced.
 
 \begin{definition}
 \label{def:1}
 A container is movable if it can be fetched and replaced to another stack.
 \end{definition}
 
-In a given layout, for any stack $s$, only the top $\sum\limits_{i\neq s}e(i)$ containers are movable. Other containers in stack $s$, if any, are immovable; the numbers of immovable containers in every stack are the same, equal to $\id{im}=\max\left\{0, H-\sum_{s=1}^S e(s)\right\}$.
+In a given layout, for any stack $s$, only the top $\sum\limits_{i\neq s}e(i)$ containers are movable. Other containers in $s$, if any, are immovable; the numbers of immovable containers in every stack are the same, which are equal to $\id{im}=\max\left\{0, H-\sum\limits_{s=1}^S e(s)\right\}$.
 
-The main idea of the heuristic is: starting from the largest priority label, fix one container in a certain slot each time. After a container is fixed, it will not be relocated any more, except a special case. We resolve the special case by relocating fixed containers back. This will be explained later.
-As containers are fixed continuously, all the stacks become clean in the end. Hence, this heuristic guarantees to find a solution for any feasible instance. A complete description of the framework is displayed in Algorithm \ref{alg:heu}.
+The main idea of the heuristic is to fix one container in a certain slot at a time starting from the largest group label. After a container is fixed, only a special case will be able to relocate it. The special case is solved by relocating fixed containers back; this action will be explained later.
+As containers are fixed continuously, all stacks become clean in the end. Hence, this heuristic guarantees a solution for any feasible instance. A complete description of the framework is shown in Algorithm \ref{alg:heu}.
 %It suits both the CPMP and the CPMPDS.
 
 \begin{algorithm}[htbp]
-	\caption{The target guided heuristic for the CPMP/CPMPDS}
+	\caption{The target-guided heuristic for CPMP/CPMPDS}
 	\label{alg:heu}
 	\begin{codebox}
 	\Procname{\proc{TGH (\id{inilay})}}
 	\li $\id{curlay} = \id{inilay}$
+    \li $\id{conList}$ = NULL
+    \li $\id{stkList}$ = NULL
     \li mark all the immovable containers in \id{curlay} as fixed
     \li mark all the movable containers in \id{curlay} as unfixed
     \li $\id{g} = G$
-    \li \While ($g\neq0$)
+    \li \While $g\neq0$
     \li \Do
-            mark the clean containers with group label \id{g} as fixed\label{heu:c}
+            mark clean containers with group labels \id{g} as fixed\label{heu:c}
     \li     \id{conList} = the set of candidate containers
-    \li     \While($\id{conList} \neq \emptyset$)\label{heu:l}
+    \li     \While $\id{conList} \neq \emptyset$\label{heu:l}
     \li     \Do
                 \id{stkList} = the set of candidate stacks
-    \li         select the target container and the target stack from \id{conList} and \id{stkList}, respectively
+    \li         select the target container and stack from \id{conList} and \id{stkList}, respectively
     \li         apply a giant move to fix the target container to the target stack
             \End
     \li $g=g-1$
@@ -393,70 +396,68 @@ As containers are fixed continuously, all the stacks become clean in the end. He
 %The current layout $\id{curlay}$ is initialized with $\id{inilay}$ and current group $g$ is initialized with $G$. In the following, the algorithm fixes containers one by one according to a descending order of group numbers.
 %When fixing containers with a certain group label, clean containers are fixed in their original positions directly and marked as fixed (Line \ref{heu:c}).
 %For the dirty containers, we fix them successively. In the current layout, we select one target container and one target stack, and apply several movements so as to fix the target container to the target stack, resulting a new layout. Such a process is called one transition.
-In Algorithm \ref{alg:heu}, a movement sequence which fixes a target container to a target stack is named as a \textbf{giant move}. In contract, one movement operation is coined as a \textbf{baby move}.
+In Algorithm \ref{alg:heu}, a movement sequence that fixes a target container to a target stack is named as a \textbf{giant move}. By contract, a one-movement operation is coined as a \textbf{baby move}.
 
-The advantage of our heuristic is that containers are fixed one by one, therefore it is very easy to customize the heuristic for other CPMP variants, for example, variants which require the containers in a final layout adhere to special distribution characteristics. It only needs to modify the rules of candidate stacks selection, making the containers fixed according to the required distribution.
+The advantage of the proposed heuristic is that containers are fixed one by one. Therefore, customizing the heuristic for other CPMP variants, i.e., variants that require containers in a final layout adhere to special distribution characteristics, is easy. The heuristic only needs to modify the rules of candidate stack selection to fix containers according to the required distribution.
 
 
 
-\subsection{Candidate containers and stacks selection}
+\subsection{Candidate container and stack selection}
 \label{sec:can}
-When processing group $g$, the set of candidate containers is comprised of all the unfixed containers with group label $g$. Candidate stacks are selected based on the candidate containers.
-To be a candidate stack, a stack must be able to accommodate group $g$ after relocating some of its containers.
+The set of candidate containers when processing group $g$ comprises all unfixed containers with group labels $g$. A set of candidate stacks are selected based on the set of candidate containers and each candidate stack must be able to accommodate group $g$ after relocating some of its containers.
 %For example, in Figure \ref{fig4:1}, the available stack for container 6 is only the stack in the middle.
-In the CPMPDS, the dummy stack cannot be a candidate stack. Among all the available stacks, we prefer stacks which can accommodate $g$ without any relocation. If there does not exist such a stack, we select an available stack randomly.
+Among all available stacks, stacks that can accommodate $g$ without any relocation is preferred; otherwise, other stacks are selected.
 
 \subsection{Target pair selection}
 \label{sec:tar}
 An evaluation scheme is designed to evaluate the attractiveness of fixing a candidate container to a candidate stack.
 %The candidate containers are from \id{conList}, and the candidate stacks are the result from procedure \proc{CandidateStack}.
 %The attractiveness of each candidate pair $(c,s)$ is evaluated by an evaluation scheme and the most attractive pair is selected as the target container \id{con} and target stack \id{stk}, respectively.
-Intuitively, we want the movements as few as possible. A function $f(c,s)$ is introduced to roughly estimate the movement cost for fixing container $c$ to stack $s$. If container $c$ is currently in stack $s$, $f(c,s)=\id{uf}(s)$; otherwise, $f(c,s)=\id{uf}(s)+o(c)$. Then we prefer to fix containers at lower tiers, i.e., stacks with smaller number of fixed containers $h(s)-\id{uf}(s)$ is preferred. This preference makes the fixed containers distributed evenly among stacks. In summary, 2-tuple $(f(c,s), h(s)-\id{uf}(s))$ evaluates the attractiveness.
+Intuitively, fewer movements for fixing is preferred. A function $f(c,s)$ is introduced to roughly estimate the movement cost for fixing container $c$ to stack $s$. If $c$ is currently in $s$, $f(c,s)=\id{uf}(s)$; otherwise, $f(c,s)=\id{uf}(s)+o(c)$. Stacks with smaller numbers of fixed containers $h(s)-\id{uf}(s)$ are preferred. This preference distributes fixed containers evenly among stacks. Thus, 2-tuple $(f(c,s), h(s)-\id{uf}(s))$ evaluates the attractiveness.
 
-When selecting the target pair, each container from candidate containers and each stack from candidate stacks make up of a candidate pair. Sort all the candidate pairs in the ascending lexicographical order of the evaluation values and the best one is selected as the target pair.
+Each candidate container and each candidate stack make up a candidate pair. All the candidate pairs are sorted in an ascending lexicographical order of evaluation values, and the best one is selected as the target pair.
 
 \subsection{A giant move}
 
-Given the target container $c^*$ and the target stack $s^*$, a giant move is executed to fix container $c^*$ in stack $s^*$. The target slot of $s^*$ for $c^*$ is the slot just above the fixed containers of $s^*$. Hereafter, we do not explicitly point out the target slot.
-A giant move does not disturb the positions of already fixed containers. According to whether the origin of container $c^*$ is stack $s^*$ or not, the giant move includes two cases. We describe the concrete movements for the two cases separately.
+Given target container $c^*$ and target stack $s^*$, a giant move is executed to fix $c^*$ in $s^*$. The target slot in $s^*$ for $c^*$ is the slot just above fixed containers of $s^*$. Hereafter, the target slot will not be explicitly pointed out, because a giant move does not disturb positions of fixed containers. According to whether the origin of $c^*$ is $s^*$ or not, the giant move includes two cases. 
 
-\subsubsection{Case 1: fixing to the same stack}
+\subsubsection{Case 1: Fixing to the same stack}
 
-In Case 1, the origin of container $c^*$ is stack $s^*$. In the first step, all the containers above $c^*$ are relocated; container relocation strategy will be explained in Section \ref{sec:rel}. After that, container $c^*$ is at the top of stack $s^*$ and it needs a stack for temporary storage. We consider the highest non-full stacks for temporary storage. Among such stacks, a dirty stack is preferred. Denote the temporary stack as stack $\id{ts}$.
+In Case 1, the origin of $c^*$ is $s^*$. In the first step, all containers above $c^*$ are relocated; the relocation strategy will be explained in Section \ref{sec:rel}. After that, $c^*$ is at the top of $s^*$ and needs a stack for temporary storage. The highest non-full stacks are considered for temporary storage. Among such stacks, a dirty stack is preferred, denoted as $\id{ts}$.
 
-Before moving container $c^*$ to stack $\id{ts}$, we observe in advance where to relocate the unfixed containers under $c^*$ so that stack $s^*$ can accommodate $c^*$. Avoiding occupying stack $\id{ts}$ and $s^*$ is a straightforward idea. On top of this, denote the set of stacks except stack $\id{ts}$ and $s^*$ as $\id{AS}$, compute its available empty slots $\id{nslot} = \sum\limits_{s\neq s^*, \id{ts}}e(s)$, and compare $\id{nslot}$ with $\id{uf}(s^*)$. According to the comparison results, three scenarios are raised.
+Before moving $c^*$ to $\id{ts}$, observe in advance the relocation positions of unfixed containers under $c^*$ so that $s^*$ can accommodate $c^*$. Avoiding occupying both $\id{ts}$ and $s^*$ is a straightforward idea. On top of this, denote the set of stacks except $\id{ts}$ and $s^*$ as $\id{AS}$, compute its available empty slots $\id{nslot} = \sum\limits_{s\in \id{AS}}e(s)$, and compare $\id{nslot}$ with $\id{uf}(s^*)$. According to comparison results, three scenarios are raised.
 
 \begin{enumerate}
 \setcounter{enumi}{0}
 \item $\id{nslot}\ge \id{uf}(s^*)-1$
 \end{enumerate}
-In this scenario, the empty slots of $\id{AS}$ are enough to store the unfixed containers under $c^*$. We move $c^*$ directly to stack $\id{ts}$ and then relocate all the unfixed containers under $c^*$ to the empty slots of $\id{AS}$. At last, $c^*$ is moved back to stack $s^*$.
+In this scenario, the empty slots of $\id{AS}$ are enough to store unfixed containers under $c^*$. $c^*$ is moved directly to $\id{ts}$, then all unfixed containers of $s^*$ are relocated to empty slots of $\id{AS}$. Finally, $c^*$ is moved back to $s^*$.
 
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item $0<\id{nslot}< \id{uf}(s^*)-1$
 \end{enumerate}
-In this scenario, the empty slots of $\id{AS}$ are not enough for the unfixed containers under $c^*$. Following moving $c^*$ to stack $\id{ts}$, only the first $\id{nslot}-1$ unfixed containers under $c^*$ are relocated to the empty slots of $\id{AS}$, with an empty slot left. We occupy the last empty slot by moving $c^*$ to it. Then the remained unfixed containers in stack $s^*$ are relocated to stack $\id{ts}$. At last, $c^*$ is moved back to stack $s^*$.
+In this scenario, the empty slots of $\id{AS}$ are not enough for unfixed containers under $c^*$. After moving $c^*$ to $\id{ts}$, only the first $\id{nslot}-1$ unfixed containers are relocated to the empty slots of $\id{AS}$, leaving one empty slot. The last empty slot is occupied by moving $c^*$ to it. The remaining unfixed containers in $s^*$ are then relocated to $\id{ts}$. At last, $c^*$ is moved back to $s^*$.
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item $\id{nslot}=0$
 \end{enumerate}
-In this scenario, all the stacks belonging to $\id{AS}$ are full. We cannot move $c^*$ directly to stack $\id{ts}$ otherwise it will be buried soon by the unfixed containers in stack $s^*$. A top slot is needed to temporarily store $c^*$. To create such an empty slot, we seek a top container from all the top containers of stacks belonging to $AS$. The top container $c$ is selected as follows.
+In this scenario, all stacks in \id{AS} are full. $c^*$ cannot be moved directly to \id{ts}; otherwise, it will be buried by unfixed containers in $s^*$. A top slot is needed to temporarily store $c^*$. To create such an empty slot, a top container $c$ is found from all top containers of stacks in \id{AS}.
 
-If stack \id{ts} is a clean stack, the preference is:
+If \id{ts} is a clean stack, the preference is as follows:
 \begin{enumerate}[1.]
-\item Among dirty containers which stack \id{ts} can accommodate, select the one with the largest group label;
-\item Among clean containers which stack \id{ts} can accommodate, select the one with the largest group label;
-\item The dirty container with the smallest group label;
-\item The clean container with the smallest group label.
+\item Among dirty containers that \id{ts} can accommodate, the one with the largest group label is selected;
+\item Among clean containers that \id{ts} can accommodate, the one with the largest group label is selected;
+\item The dirty container with the smallest group label is selected;
+\item The clean container with the smallest group label is selected.
 \end{enumerate}
 
-If stack \id{ts} is a dirty stack, the preference is:
+If \id{ts} is a dirty stack, the preference is:
 \begin{enumerate}[1.]
-\item The dirty container with the smallest group label;
-\item The clean container with the smallest group label.
+\item The dirty container with the smallest group label is selected;
+\item The clean container with the smallest group label is selected.
 \end{enumerate}
-After container $c$ is moved to stack $\id{ts}$, its origin is occupied by $c^*$. In the following, all the unfixed containers of stack $s^*$ are relocated to stack $\id{ts}$. At last, $c^*$ is moved to stack $s^*$. If $c$ is a fixed container, we should restore it to its origin. Suppose the origin of $c$ is stack $\id{cs}$, relocate all the containers above $c$ and move $c$ back to stack $\id{cs}$.
+After $c$ is moved to $\id{ts}$, its origin is occupied by $c^*$. All unfixed containers of $s^*$ are relocated to $\id{ts}$. Finally, $c^*$ is moved to $s^*$. If $c$ is a fixed container, it is restored to its origin. Suppose the origin of $c$ is stack \id{cs}, all containers above $c$ are relocated and $c$ is moved back to \id{cs}.
 %\begin{algorithm}[htbp]
 %	\caption{Fix the target container to the same stack}
 %	\label{alg:fixs}
@@ -494,31 +495,31 @@ After container $c$ is moved to stack $\id{ts}$, its origin is occupied by $c^*$
 %    \li \Return \id{curlay};
 %	\end{codebox}	
 %\end{algorithm}
-\subsubsection{Case 2: fixing to a different stack}
-In Case 2, the origin of container $c^*$ is not stack $s^*$. If $c^*$ is the topmost container and all the containers in stack $s^*$ are fixed containers, move $c^*$ to stack $s^*$ directly. If not, in spirit of Case 1, we define $\id{AS}$ as the set of all the stacks except stack $s^*$ and $\id{sn}(c^*)$ (the origin of $c^*$) and compare least movements required $f(c^*,s^*)$ with available slots $\id{nslot}=\sum\limits_{s\neq s^*,\id{sn}(c^*)}e(s)$. According to the comparison results, four scenarios are raised.
+\subsubsection{Case 2: Fixing to a different stack}
+In Case 2, the origin of $c^*$ is not $s^*$. If $c^*$ is the topmost container and all containers in $s^*$ are fixed, $c^*$ is moved to $s^*$ directly. Otherwise, in spirit of Case 1, \id{AS} is defined as the set of all stacks except $s^*$ and $\id{sn}(c^*)$ (the origin of $c^*$) and the fewest required movements $f(c^*,s^*)$ are compared with the number of available slots $\id{nslot}=\sum\limits_{s\in \id{AS}}e(s)$. According to comparison results, four scenarios are raised.
 \begin{enumerate}
 \setcounter{enumi}{0}
 \item $\id{nslot}\ge f(c^*,s^*)$
 \end{enumerate}
-In this scenario, relocate all the containers above $c^*$ and unfixed containers in stack $s^*$ to the empty slots of $\id{AS}$. When relocation, each time we relocate the top container from stack $s^*$ or $\id{sn}(c^*)$ which has a larger group label. After that, container $c^*$ is moved to stack $s^*$.
+In this scenario, all containers above $c^*$ and unfixed containers in $s^*$ are relocated to empty slots of \id{AS}. The top container from $s^*$ or $\id{sn}(c^*)$ is relocated at a time, whichever has a larger group label. After that, $c^*$ is moved to $s^*$.
 
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item $o(c^*)+1\le\id{nslot}< f(c^*,s^*)$
 \end{enumerate}
-In this scenario, containers above $c^*$ and the unfixed containers in stack $s^*$ cannot be relocated to the empty slots of $\id{AS}$ one-off. We choose to relocate all the containers above $c^*$ together with a subset of unfixed containers in stack $s^*$, with a total of $\id{nslot}-1$ containers, leaving one empty slot for $c^*$. Again, when relocation, select the topmost one with a larger group label each time. After relocating aforesaid containers, move $c^*$ to the unique empty slot left in $\id{AS}$. In the following, relocate the remaining unfixed containers in stack $s^*$ to stack $\id{sn}(c^*)$. At last, container $c^*$ is moved to stack $s^*$.
+In this scenario, containers above $c^*$ and unfixed containers in $s^*$ cannot be relocated to empty slots of \id{AS} one-off. A total of $\id{nslot}-1$ containers, including all containers above $c^*$ together with a subset of unfixed containers in $s^*$ are relocated, which leaves one empty slot for $c^*$. The topmost container with a larger group label is relocated at a time. After relocating aforesaid containers, $c^*$ is moved to the unique empty slot left in \id{AS}, after which all the remaining unfixed containers in $s^*$ are relocated to $\id{sn}(c^*)$. At last, $c^*$ is moved to $s^*$.
 
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item $1\le\id{nslot}< o(c^*)+1$
 \end{enumerate}
-In this scenario, we only relocate $\id{snlot}-1$ containers of stack $\id{sn}(c^*)$ to the empty slots of $\id{AS}$, and then relocate remaining containers above $c^*$ to stack $s^*$. At present, $c^*$ is on the top and moved to the unique empty slot in $AS$. Then all the unfixed containers in stack $s^*$ including those originated from stack $\id{sn}(c^*)$ are relocated to stack $\id{sn}(c^*)$. At last, container $c^*$ is moved to stack $s^*$.
+In this scenario, $\id{nslot}-1$ containers of $\id{sn}(c^*)$ are relocated to empty slots of \id{AS}; the remaining containers above $c^*$ are then relocated to $s^*$. $c^*$ is currently on top and moved to the unique empty slot in \id{AS}. All unfixed containers in $s^*$, including those originated from $\id{sn}(c^*)$, are relocated to $\id{sn}(c^*)$. At last, $c^*$ is moved to $s^*$.
 
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item $\id{nslot}=0$
 \end{enumerate}
-In this scenario, it is somehow like the third scenario in Case 1. We need to create an empty slot for $c^*$ for temporary storage. The selection of a top container from a full stack is the same with that mentioned in Scenario 3 of Case 1. Denote the selected top container as $c$ and its origin as stack $\id{cs}$. We first move $c$ to stack $s^*$, and relocate all the containers above $c^*$ to stack $s^*$. Then move $c^*$ to stack $\id{cs}$ for temporary storage. Next, all the unfixed containers of stack $s^*$ including $c$ are relocated to stack $\id{sn}(c^*)$. At last, $c^*$ is moved to stack $s^*$. Similar to the issue raised in Scenario 3 of Case 1, container $c$ may be a fixed container. If that is the case, we also have to restore $c$ to stack $\id{cs}$.
+This scenario is similar to Scenario 3 of Case 1, where $c^*$ needs an empty slot for temporary storage. The selection of a top container from a full stack is the same as the process in Scenario 3 of Case 1. The selected top container is denoted as container $c$ and its origin as stack \id{cs}. $c$ is first moved to $s^*$, then all containers above $c^*$ are relocated to $s^*$. $c^*$ is moved to \id{cs} for temporary storage. Next, all unfixed containers of $s^*$ ($c$ included) are relocated to $\id{sn}(c^*)$. At last, $c^*$ is moved to $s^*$. Similar to the issue raised in Scenario 3 of Case 1, $c$ may be a fixed container. If that is the case, $c$ also has to be restored to \id{cs}.
 
 
 %\begin{algorithm}[htbp]
@@ -601,50 +602,47 @@ In this scenario, it is somehow like the third scenario in Case 1. We need to cr
 %        \End
 %	\end{codebox}	
 %\end{algorithm}
-Container relocation occurs when a container blocks the target container or it is an unfixed container in the target stack. Generally speaking, we can relocate a container $c$ to any stack, excluding prohibited stacks such as the target stack, the origin of the target container, and sometimes the temporary stack for the target container. Whereas we would like $c$ to be relocated at an appropriate stack, so that it will not block others or be blocked by others in the future. Suppose the target container in process is $c^*$. Apart from prohibited stacks and full stacks, we find the destination stack for relocating $c$ according to the following preference.
+Container relocation occurs when a container blocks the target container or if it is an unfixed container in the target stack. Generally speaking, a container $c$ can be relocated to any stack, excluding prohibited stacks such as the target stacks, origins of target containers, and sometimes temporary stacks for target containers.Preferably, $c$ should be relocated to an appropriate stack so that it will not block or be blocked by other containers in the future. Suppose the target container in the process is $c^*$. Apart from prohibited and full stacks, the destination stack for relocating $c$ is found based on the following preference.
 \begin{enumerate}[1.]
-\item A clean stack which can accommodate \id{c}. If there are several such stacks, prefer the one whose top container has the smallest group label;
+\item A clean stack that can accommodate $c$ is selected. If several such stacks exist, the one with the top container that has the smallest group label is selected;
 
-\item A dirty stack whose dirty container with the largest group label $\id{ldg}\le g(c)$. If there are several such stacks, prefer the one with the largest $\id{ldg}$;
+\item A dirty stack in which the largest group label of dirty containers $\id{ldg}$ is no larger than $g(c)$ is selected. If several such stacks exist, the one with the largest $\id{ldg}$ is selected;
 
-\item A dirty stack whose dirty container with the largest group label $g(c)<\id{ldg}<g(c^*)$. If there are several such stacks, prefer the one with the smallest $\id{ldg}$;
+\item A dirty stack in which the largest group label of dirty containers \id{ldg} satisfies $g(c)<\id{ldg}<g(c^*)$ is selected. If several such stacks exist, the one with the smallest $\id{ldg}$ is selected;
 
-\item A clean stack whose top container has the largest group label;
+\item A clean stack with the top container that has the largest group label is selected;
 
-\item A dirty stacks whose dirty container with the largest group label $\id{ldg}=g(c^*)$.
+\item A dirty stack in which the largest group label of dirty containers $\id{ldg}$ is equal to $g(c^*)$ is selected.
 \end{enumerate}
 
 %With the assistance of stack preference, it can find suitable destination stacks for relocated containers. But one point can be improved.
-When the selected destination can accommodate container $c$, we try \textbf{fulfillment} process. Denote the topmost container from the destination stack as $\id{dc}$. We are in hope of finding a top container $\id{fc}$ from a dirty stack whose group label falls in the range $g(c)<g(\id{fc})\le g(\id{dc})$.
-If there is more than one top container satisfying such criterion, select the one with the largest group label and move it to the destination stack. As the layout changes after one time of fulfillment, we give up continuing relocating $c$ to the destination stack. Rather, we invoke the relocation procedure for $c$ again.
- %since $c$ may be relocated to another stack different from the destination stack.
+If the selected destination can accommodate container $c$, an extra action called \textbf{fulfillment} is carried out. Denote the topmost container of the destination stack as $\id{dc}$. If there exists a set of topmost dirty containers with group labels between $g(c)$ (exclusive) and $g(\id{dc})$ (inclusive), the one with the largest group label is selected and moved to the destination stack.
 
-The advantage of fulfillment is that slot space of clean stacks is fully utilized. This avoids the situation where a container with a small group label occupies the top of a stack, blocking the stack from accommodating dirty containers with larger group labels. Fulfillment is extremely efficient at the start of the heuristic when dirty containers with large group labels are quite many.
+If fulfillment is carried out successfully, relocating $c$ to the destination stack is stopped, and the relocation procedure for $c$ is invoked again. The advantage of fulfillment is that slots of clean stacks are utilized, which prevents containers with small group labels from occupying the top of a stack and blocking it from accommodating dirty containers with larger group labels. Fulfillment is efficient at the start of the heuristic when a large number of dirty containers with large group labels are present.
 
-In our heuristic, every time the fulfillment is invoked, only one movement is carried out. After that the heuristic turns to relocate containers. This is different from that of \cite{Exposito2012} which carries out movements as many as possible in one fulfillment. We prefer to perform one movement each time because our intention is to relocate $c$ while fulfillment is only an auxiliary operation. Compared to a greedy fulfillment process, we are more eager to find whether a more suitable stack resulting from the fulfillment appears for relocating $c$. Performing fulfillment as much as possible, in the short run, deviates from our intention of relocating $c$. Moreover, over-fulfillment may cause the stacks fulfilled being emptied in later stages which brings more movements.
+In the proposed heuristic, only one movement is carried out each time the fulfillment is invoked, after which the heuristic turns to relocating containers. This situation is different from that of \cite{Exposito2012} which carries out as many movements as possible in one fulfillment. Performing one movement in one fulfillment is preferred because the aim is to relocate $c$, whereas fulfillment is only an auxiliary operation. Compared with greedily conducting movement in one fulfillment, determining whether a more suitable stack for $c$ results from the fulfillment is more important. Executing more movements in one fulfillment deviates from the aim of relocating $c$. Moreover, over-fulfillment may cause stacks fulfilled to be emptied in later stages, which produces more movements.
 
 \subsection{Termination analysis}
 
-Remind in Algorithm \ref{alg:heu}, we claim that our heuristic fixes containers one by one and therefore it guarantees to find a solution for any feasible instance. We do not mention the fact that a fixed container may be moved when fixing another container.
-If that situation happens, we can not guarantee that the heuristic will terminate because it may fall into cycling. Fortunately we successfully deal with moved fixed containers. The only chance that a fixed container is moved when fixing other containers is in the situation $\id{nslot}=0$.
-In other situations, all of the moved containers are unfixed ones. Once a fixed container is moved, we recover it back to its fixed position (the last scenarios of Case 1 and Case 2).
-Undoubtedly, this recovery action brings more movements. But this avoids the heuristic cycling in vain and makes sure that the heuristic terminates.
-Besides our work, all the other published work concerning the CPMP fail to guarantee algorithm termination theoretically.
+In Algorithm \ref{alg:heu}, the proposed heuristic fixes containers one by one and therefore guarantees a solution for any feasible instance. The fact that a fixed container may be moved when fixing another container was not mentioned.
+If this situation occurs, the heuristic cannot be guaranteed to terminate because it may fall into cycling. Fortunately, this issue is successfully resolved: a fixed container can only be moved when $\id{nslot}=0$.
+In other situations, all moved containers are unfixed ones. Once a fixed container is moved, it recovers to its fixed position (i.e., the last scenarios of Case 1 and 2).
+Undoubtedly, this recovery action produces more movements; however, it avoids the heuristic cycling in vain and assures that the heuristic terminates with a feasible solution.
+All other published works that concern CPMP, except for this work, fail to guarantee algorithm termination and a feasible solution theoretically.
 
 \section{Beam search algorithms}
 \label{sec:g2la}
 
-Algorithm \ref{alg:heu} is just a greedy heuristic, in which the core idea is to fix containers one by one. In that heuristic, how to select target containers and stacks is completely based on the evaluation scheme.
-Obviously, the precision of the scheme is very important; once it fails, the heuristic will be led to a wrong direction. To avoid this risk, we propose beam search algorithms in this section.
+Algorithm \ref{alg:heu} is just a greedy heuristic, the core idea of which is to fix containers one by one, and selecting target containers and stacks is completely based on the evaluation scheme.
+Obviously, the precision of the scheme is very important; once the scheme fails, the heuristic is led to a wrong direction. To avoid this risk, beam search algorithms are proposed in this section, which can be applied to both CPMP and CPMPDS.
 
 \subsection{Beam search with giant moves}
 
-The first beam search algorithm maintains a beam of promising layouts and the number of such promising layouts in the beam is a user-defined parameter $\id{bw}$ (short for beam width). Initially, the beam only contains the initial layout. Then the beam search process extends the layouts in the beam iteratively by giant moves. Hence, we call the algorithm beam search with giant moves (BS-G).
+The first beam search algorithm maintains a beam of promising layouts and the number of such promising layouts in the beam is a user-defined parameter \id{bw}~(beam width). Initially, the beam contains only the initial layout. The layouts in the beam are extended iteratively by giant moves, hence the name -- beam search with giant moves~(BS-G).
 
-For each layout $l$ in the beam, we perform a probing tree search with two parameters tree width $\id{tw}$ and tree depth $\id{td}$ to generate its children. Each child of $l$ is generated by selecting a container-stack pair and conducting a giant move. As the number of container-stack pairs is numerous, we select only a few of them. First only pairs with container part in the candidate container list and stack part in the candidate stack list are considered. The way in which candidate containers and stacks are produced is as mentioned in Section \ref{sec:can}. All of the candidate pairs are sorted based on the evaluation scheme values in Section \ref{sec:tar} and the first $\id{tw}$ pairs are selected; the corresponding giant moves are executed. To this end, we obtain $\id{tw}$ children of $l$. Now the tree is at depth 1; $l$ is regarded as at depth $0$.
-The tree expansion continues until it arrives depth $\id{td}$ with at most $\id{tw}^\id{td}$ layouts. We call the layouts at depth $\id{td}$ \textbf{leaves} of the tree although they are not necessarily clean layouts. Each leaf is further extended by invoking TGH in Section \ref{sec:heu} until a clean layout is yielded. We mark the scores of clean layouts by the number of movements executed from the initial layout. In the end, the score of a child of $l$ (layout at depth $1$) is the best score of its corresponding clean layouts.
+For each layout $l$ in the beam, we perform a probing tree search is performed on $l$ with tree width $\id{tw}$ and tree depth \id{td} to generate its children by selecting container-stack pairs and conducting corresponding giant moves. Only a few of container-stack pairs are selected. Only pairs with container and stack parts in the candidate container and stack lists, respectively, are considered. Candidate containers and stacks are produced in the same process as mentioned in Section \ref{sec:can}. All candidate pairs are sorted based on evaluation scheme values in Section \ref{sec:tar}. The first \id{tw} pairs are selected, and the corresponding giant moves are executed. \id{tw} children of $l$ are obtained. $l$ is regarded as at depth 0; the tree expansion continues until depth \id{td} is arrived with at most $\id{tw}^\id{td}$ layouts, which are called leaves of the tree, although they are not necessarily clean layouts. Each leaf is further extended by invoking TGH in Section \ref{sec:heu} repeatedly to obtain a clean layout. The scores of clean layouts are marked by the number of movements executed from the initial layout. In the end, the score of a child of $l$ (layout at depth 1) is the best score among scores of clean offspring layouts.
 
-Every layout in the beam generates at most $\id{tw}$ children by a probing tree mentioned above and there are at most $\id{bw}$ layouts in the beam. Therefore at most $\id{tw}\times \id{bw}$ children are generated. Sort them in a descending order of their scores, and select the first $\id{bw}$ children into the beam for the next iteration.
+Every layout in the beam generates at most \id{tw} children based on a probing tree mentioned above, and there are at most \id{bw} layouts in the beam. Therefore, at most $\id{tw}\times \id{bw}$ children are generated. They are sorted in a descending order of scores, and the first $\id{bw}$ children are selected into the beam for the next iteration.
 %Figure \ref{fig6} illustrates the BS-G process, while
 The pseudo-code is shown in Algorithm \ref{alg:bsg}.
 
@@ -656,12 +654,12 @@ The pseudo-code is shown in Algorithm \ref{alg:bsg}.
 %\end{figure*}
 
 \begin{algorithm}[htbp]
-	\caption{Beam search with giant moves for the CPMP/CPMPDS}
+	\caption{Beam search with giant moves for CPMP/CPMPDS}
 	\label{alg:bsg}
 	\begin{codebox}
 	\Procname{\proc{BS-G (\id{inilay})}}
     \li $\id{beam} = \{\id{inilay}\}$
-    \li \While ($\id{beam} \neq \emptyset$)
+    \li \While $\id{beam} \neq \emptyset$
     \li \Do
         $\id{canlaylist}=\emptyset$
     \li \For each \id{lay} in \id{beam}
@@ -676,18 +674,18 @@ The pseudo-code is shown in Algorithm \ref{alg:bsg}.
 
 \subsection{Beam search with baby moves}
 
-Inspired by the idea of BS-G, we modify its successor generation method and obtain another algorithm for the CPMP. In this algorithm, beam search is again deployed to maintain the diversity of layouts. The difference from BS-G is that the successors in the beam are generated by applying only a baby move, hence the name beam search with baby moves (BS-B). BS-B overcomes the shortcoming of BS-G that moving too far away (a giant move) each time. Apart from the successor generation method, other components in BS-B is the same with that of BS-G. Now we proceed to introduce how to generate successors in BS-B.
+The successor generation method of BS-G is modified to obtain another algorithm for CPMP and CPMPDS. In this algorithm, beam search is deployed to maintain the diversity of layouts; the difference from BS-G is that successors in the beam are generated by applying baby moves, hence the name beam search with baby moves~(BS-B). BS-B does not have the disadvantage of BS-G, where each giant move goes too far. Apart from the successor generation method, other components in BS-B and BS-G are the same. The process of generating successors in BS-B is as follows:
 
-For each layout $l$ in the beam, apply the probing tree search to $l$ just as described in BS-G, generating $\id{tw}$ children. The score of a child is the minimum score of the clean layouts expanded from that child. For each child $\id{child}$ of $l$, BS-B records the first interim layout on the path from $l$ to $\id{child}$ and mark the score of this interim layout the same as the score of $\id{child}$. If an interim has multiple scores because multiple children have it as the first interim layout, then select the smallest score as its score. The successors of $l$ in BS-B are such interim layouts, instead of the children of $l$.
+Probing tree search is applied to each layout $l$ in the beam as described in BS-G to generate \id{tw} children. The score of a child \id{chi} is the minimum score of clean offspring layouts expanded from \id{chi}. For each child $\id{chi}$ of $l$, the first interim layout on the path from $l$ to \id{chi} is recorded, and the score of this interim layout, which is the same as the score of \id{chi}, is marked. If an interim layout is the first interim layout of multiple children, the smallest score is marked. The successors of $l$ in BS-B are such interim layouts, instead of the children of $l$.
 
-\subsection{Discussion on the CPMPDS}
-In this paper, we propose three interrelated algorithms: TGH, BS-G and BS-B. All these algorithms can be applied to solve the CPMP and the CPMPDS instances. Existing algorithms for the CPMP can not be applied directly to solve the CPMPDS instances because they cannot guarantee that the dummy stack is empty when the bay is clean. If we ignore the dummy stack and solve a CPMPDS instance by existing CPMP algorithms, there may not exist a feasible solution.
+\subsection{Discussion on CPMPDS}
+In this paper, three interrelated algorithms are proposed: TGH, BS-G and BS-B. These algorithms can be applied to solve CPMP and CPMPDS instances. Existing algorithms for CPMP cannot be applied directly to solve CPMPDS instances because they cannot guarantee that the dummy stack is empty when the bay is clean. If the dummy stack is ignored and a CPMPDS instance is attempted to be solved by using existing CPMP algorithms, feasible solutions may not exist because of the shortage of empty slots.
 \section{Experiments and analysis}
 \label{sec:ce}
-To evaluate the effectiveness of our algorithms, we test our algorithms against the benchmark test data sets provided by \cite{BF2012}.
-We first compare the performance of proposed lower bounds with that of \cite{BF2012}. Then we conduct a series of experiments to evaluate the performance of the algorithm components -- the evaluation scheme and search parameters.
-It is followed by the performance on the bench mark data.
-At the last of this section, a data set for the new CPMPDS is generated and the result is presented for further reference. All of our experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz. The operating system is Windows 7.
+The proposed algorithms are tested against the benchmark test data sets provided by \cite{BF2012} to evaluate their effectiveness.
+The performance of proposed lower bounds with that of \cite{BF2012} is first compared. Then a series of experiments are conducted to evaluate the performance of the evaluation scheme and search parameters,
+which is followed by the results on benchmark data.
+A data set for the new CPMPDS is generated, and the result is presented for further reference. Experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz with Windows 7 operating system.
 
 \subsection {Lower bound comparison}
 Benchmark data are used to compare the performance of $\id{LB}_\id{DFS}$, $\id{LB}_\id{MKM}$, and $\id{LB}_\id{BF}$. In Table \ref{tab:lowerbound}, columns DFS, MKM, and BF indicate average lower bounds of instances in corresponding data sets calculated by $\id{LB}_\id{DFS}$, $\id{LB}_\id{MKM}$ and $\id{LB}_\id{BF}$, receptively. As such, columns tDFS, tMKM and tBF are the average computational time of three methods in seconds, which can be regarded as no difference. Table \ref{tab:lowerbound} shows that DFS and MKM have better performance than BF, but the improvement is tiny.
@@ -709,13 +707,13 @@ Benchmark data are used to compare the performance of $\id{LB}_\id{DFS}$, $\id{L
 \subsection {Parameter configuration}
 \label{sub:config}
 
-In this section, we describe the experiment that reveals the effectiveness of the evaluation scheme as well as the experiments which show how the parameters affect the algorithm performance. These experiments were preliminary testing we performed in order to determine the final configuration of our BS-G and BS-B. We select the data set {\em BF} as our test objective. The data set {\em BF} is generated by \cite{BF2012} and includes 32 groups of instances, denoted by BF1, \dots, BF32; each group of {\em BF} data contains 20 instances for a total of 640 {\em BF} instances. In their instances, the number of stacks is either 16 or 20, and the stack height is either 5 or 8. And they do not have dummy stacks. To avoid over-fitting our algorithms to the benchmark data, we only tested on the first 5 instances of each data group.
+This section describes the experiment to evaluate the effectiveness of the evaluation scheme as well as experiments that show effect of parameters on algorithm performance. These experiments were preliminary tests performed in order to determine the final configuration of BS-G and BS-B algorithms. Data set BF is selected as test object, which is generated by \cite{BF2012} and includes 32 groups of instances, denoted by BF1, \dots, BF32; each group contains 20 instances for a total of 640 BF instances. The number of stacks in each instance is either 16 or 20, and the stack height is either 5 or 8 tiers. In addition, no dummy stack exist. The first 5 instances of each data group were tested to avoid overfitting algorithms to the benchmark data.
 
-We first investigate the effectiveness of different evaluation schemes. As there are other parameters such as the probing tree width and depth, as well as the beam width, we select several combinations of such parameters to make the experiment more robust.
+The effectiveness of different evaluation schemes was first investigated. Several combinations of parameters, such as probing tree width and depth and beam width, were selected to make the experiment more robust.
 
-Three kinds of evaluation schemes were tested in our experiment. The first alternative is to evaluate candidate pair by $f(c,s)$ function plus randomness, denoted as \texttt{smallF-ran}. When the pairs have the same $f$ function, randomly select one pair. The second alternative (named \texttt{smallF-lowT}) prefers small $(f(c,s),h(s)-\id{uf}(s))$ which is the one just used in TGH, BS-G and BS-B. The last alternative \texttt{smallF-largeS}, as implied by its name, prefers small $f(c,s)$ and then large $\id{sum}$. Here $\id{sum}$ is the sum of group labels of containers above the target container if the target container and stack are within the same stack; or $\id{sum}$ is the sum of group labels of containers above the target container, in conjunction with those unfixed containers in the target stack.
+Three evaluation schemes were tested in the experiment. The first evaluation scheme, denoted as \texttt{smallF-ran}, is performed by evaluating candidate pairs by $f(c,s)$ plus randomness, where a random pair is selected when some pairs have the same $f$ function value. The second evaluation scheme (denoted by \texttt{smallF-lowT}) prefers small 2-tuple $(f(c,s),h(s)-\id{uf}(s))$, which are the same as the one used in TGH, BS-G and BS-B. The last evaluation scheme, denoted by \texttt{smallF-largeS}, prefers small $f(c,s)$ and large $\id{sum}$, where $\id{sum}$ is the sum of group labels of containers above the target container if the target container and stack are within the same stack; otherwise, $\id{sum}$ is the sum of group labels of containers above the target container, in conjunction with those unfixed containers in the target stack.
 
-We tested the three evaluation schemes only against BS-G and set the probing tree width equal to the beam width. The result is shown in Figure \ref{fig7}. The column $w=5$ \& $d=2$ means the probing tree and beam widths are set 5 while the probing tree depth is set 2. The meanings of other columns are similar. Each bar in the chart is the average movements of the test instances. From the experiment, we can see that \texttt{smallF-lowT} has the best performance, \texttt{smallF-ran} ranks the second, then \texttt{smallF-largeS}. The intention of \texttt{smallF-lowT} is to fix target containers lower. And the intention of \texttt{smallF-largeS} is to relocate containers with large group labels earlier. As the results with all the parameter combinations show \texttt{smallF-lowT} outperforms \texttt{smallF-largeS}, the former is indeed better. This can be explained as fixing containers in lower tiers makes the fixed heights among stacks even, namely, containers are fixed, to some extent, tier by tier. This can avoid containers with small group labels occupying short stacks, forcing the slots above them to store only dirty containers. On the contrary, relocating containers with large group labels when there exist larger groups unfixed is not that necessary, or even redundant as the performance is even worse than \texttt{smallF-ran}. The finding indirectly reflects that our ``fix large group first" strategy is reasonable and effective.
+The above evaluation schemes were only tested on BS-G, where the probing tree width is set equal to the beam width. The result is shown in Figure \ref{fig7}. The column $w=5$ \& $d=2$ means the probing tree and beam widths are set 5 and depth is set to 2. The meanings of other columns are similar. Each bar in the chart is the average number of movements among all test instances. \texttt{smallF-lowT} has the best performance, \texttt{smallF-ran} is the second, then \texttt{smallF-largeS}. The aim of \texttt{smallF-lowT} is to fix target containers at lower tiers, whereas \texttt{smallF-largeS} aims to relocate containers with large group labels earlier. All parameter combinations show that \texttt{smallF-lowT} outperforms \texttt{smallF-largeS}, because fixing containers in lower tiers makes fixed heights among stacks even, that is, containers are fixed tier by tier to prevent containers with small group labels from occupying short stacks, and forcing the slots above them to store only dirty containers. However, relocating containers when unfixed larger groups exist is not necessary and is even considered redundant because the resulting performance is worse than that of \texttt{smallF-ran}. Thus, fixing large groups first is reasonable and effective.
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=0.4\textwidth]{fig7.pdf}
@@ -738,10 +736,10 @@ We tested the three evaluation schemes only against BS-G and set the probing tre
 
 
 
-We next consider the impact of the probing width and depth and the beam width on the algorithm performance. In this experiment, the evaluation scheme is set to be \texttt{smallF-lowT}. To reduce the number of parameter combinations, we once again set the probing tree width equal to the beam width, varying from 2 to 20. We neglect $w=1$ because algorithms deteriorate to TGH when the width equals 1. In addition, the computational time increases exponentially when the probing depth tree increases, thus we only set the depth to be 1, 2, 3, and 4. The data set {\em BF} is classified into four categories based on characteristics: the number of stacks and stack heights (refer to Table \ref{tab:bf}). The first category is the first eight data groups BF1$\sim$BF8 which have 16 stacks and 5 tiers in each instance. Then the second category is BF9$\sim$BF16 with 16 stacks and 8 tiers in each instance. In the following, the third category BF17$\sim$BF24 has 20 stacks and 5 tiers in each instance. At last, the fourth category BF25$\sim$BF32 has 20 stacks and 8 tiers in each instance.
+Next, the effect of probing width and depth and beam width on algorithm performance is observed. In this experiment, the evaluation scheme is set to be \texttt{smallF-lowT}. The probing tree width is set equal to the beam width, which varies from 2 to 20; $w=1$ is neglected because algorithms deteriorate to TGH when $w=1$. In addition, the computational time increases exponentially when the probing tree depth increases. Thus, the depth is only set to 1, 2, 3, or 4. BF is classified into four categories based on the number of stacks and stack height (refer to Table \ref{tab:bf}). The first category is the first eight data groups BF1$\sim$BF8 which have 16 stacks and 5 tiers in each instance. The second category is BF9$\sim$BF16 with 16 stacks and 8 tiers in each instance. The third category BF17$\sim$BF24 has 20 stacks and 5 tiers in each instance. At last, the fourth category BF25$\sim$BF32 has 20 stacks and 8 tiers in each instance.
 %Again, only the first five instances of each group are tested.
 
-The performance of BS-G on the four categories is separately shown in Figure \ref{fig8:1}$\sim$\ref{fig8:4}. In each figure, it shows the average movements of the corresponding data category obtained by BS-G for different widths and depths. The results of four categories in general have the same trend. When the widths and depths increase, the performance increases, but the improvement becomes smaller and smaller, until in the end diminishes. Furthermore, the performance of $d=2$, $d=3$ and $d=4$ are similar, even the same, indicating that our successor generation method is considerably precise. Compare Figure \ref{fig8:1}$\sim$\ref{fig8:2} with \ref{fig8:3}$\sim$\ref{fig8:4}, it reveals that the performance difference by different parameter combinations for BF1$\sim$BF8 and BF17$\sim$BF24 is tiny while the performance difference by different parameter combinations for BF9$\sim$BF16 and BF25$\sim$BF32 is large. In essence, BF1$\sim$BF8 and BF17$\sim$BF24 are almost solved to the optimality even with a small depth and width. Remind that BF1$\sim$BF8 and BF17$\sim$BF24 are with $H=5$ while BF9$\sim$BF16 and BF25$\sim$BF32 are with $H=8$; all the categories have the same usage ratio. It suggests that the height limit affects the instance difficulty more than the number of stacks. This observation is understandable as containers piled vertically are much harder to be retrieved than those piled horizontally. %When the usage ratio equals, the instance with larger stack height is undoubtedly harder than the instance with larger stack numbers.
+The performance of BS-G on the four categories is shown separately in Figures \ref{fig8:1} to \ref{fig8:4}. Each figure shows the average number of movements of the corresponding data category obtained by BS-G for different widths and depths. The four categories have the same trend: when search width and depth increase, performance increases, but the improvement is decreasing. Furthermore, the performance of $d=2$, $d=3$ and $d=4$ are similar, which indicates that the successor generation method is considerably precise. Comparing Figures \ref{fig8:1} and \ref{fig8:2} with Figures \ref{fig8:3} and \ref{fig8:4}, the performance difference of different parameter combinations on BF1$\sim$BF8 and BF17$\sim$BF24 is tiny, whereas for BF9$\sim$BF16 and BF25$\sim$BF32, the performance difference is large. BF1$\sim$BF8 and BF17$\sim$BF24 are almost solved to the optimality even with a small depth and width (see Table \ref{tab:bf}). BF1$\sim$BF8 and BF17$\sim$BF24 are with $H=5$, whereas BF9$\sim$BF16 and BF25$\sim$BF32 are with $H=8$; all the categories have the same usage ratio. It suggests that the height limit affects instance difficulty more than the number of stacks, because containers piled vertically are harder to retrieve than those piled horizontally. %When the usage ratio equals, the instance with larger stack height is undoubtedly harder than the instance with larger stack numbers.
 
 \begin{figure}[htbp]
 \centering
@@ -757,11 +755,11 @@ The performance of BS-G on the four categories is separately shown in Figure \re
 \subfigure[BF25$\sim$32 average]{
     \label{fig8:4}
     \resizebox{0.4 \textwidth}{!}{\includegraphics{fig8_4.pdf}}}
-\caption{The effect of search depth and width on BS-G}
+\caption{Effect of BS-G's search depth and width}
 \label{fig8}
 \end{figure}
 
-The performance of BS-B on the four categories are displayed in Figure \ref{fig9}; its trend is similar with that of BS-G in Figure \ref{fig8}, namely the algorithm becomes stable and the improvement is little as parameters enlarge. However, from Figure \ref{fig9}, it can be seen that sometimes the performance goes back when parameters enlarge, especially when the depth is small. For example, in Figure \ref{fig9:4}, the performance when $w=8$ \& $d=1$ is better than the performance when $w=10$ \& $d=1$. The explanation is when $d=1$, the algorithm degenerates to evaluate successors by TGH. The smaller the depth, the weaker ability we have to evaluate successors, therefore more performance deterioration. When the depth increases, performance deterioration disappears. The conclusion is that the heuristic TGH alone is not enough to precisely evaluate successors, and incorporating probing tree search is effective.
+The performance of BS-B on the four categories is displayed in Figure \ref{fig9}. Its trend is similar to that of BS-G in Figure \ref{fig8}; the algorithm becomes stable and the improvement decreases as parameters increase. However, the performance sometimes returns to a larger value as width increase, especially when the depth is small. For example, in Figure \ref{fig9:4}, the performance when $w=8$ \& $d=1$ is better than the performance when $w=10$ \& $d=1$. The explanation is the algorithm degenerates to evaluate successors by TGH when $d=1$. A smaller depth leads to a weaker ability of BS-B to evaluate successors; therefore, performance deterioration is observed. When the search depth increases, performance deterioration disappears. This phenomenon indicates that heuristic TGH alone is not enough to evaluate successors precisely and incorporating probing tree search is necessary.
 \begin{figure}[htbp]
 \centering
 \subfigure[BF1$\sim$8 average]{
@@ -776,20 +774,20 @@ The performance of BS-B on the four categories are displayed in Figure \ref{fig9
 \subfigure[BF25$\sim$32 average]{
     \label{fig9:4}
     \resizebox{0.4 \textwidth}{!}{\includegraphics{fig9_4.pdf}}}
-\caption{The effect of search depth and width on BS-B}
+\caption{Effect of BS-B's search depth and width}
 \label{fig9}
 \end{figure}
 
-\subsection {Comparative analysis with CPMP benchmark data}
+\subsection {Comparison with existing approach}
 
-We compare our algorithms with the tree search algorithm of \cite{BF2012} (BF2012 for short) on the CPMP benchmark data. As far as we know, BF2012 has the best performance on the CPMP. The environment of BF2012 is Intel Core 2 Duo processor (P7350, 16 GFLOPS) with 2 GHz and 2 GB RAM under Mac OS X and their code is written in C and compiled with XCode under Mac OS X. Both the parameters of BS-G and BS-B are set $\id{bw}=\id{tw}=20$ and $\id{td}=3$, since as shown in Figure \ref{fig8} and Figure \ref{fig9}, BS-G and BS-B become stable and the improvement is little if further enlarging the parameters. All the results show two decimal places.
+The proposed algorithms were compared with the tree search algorithm by \cite{BF2012} (hereafter BF2012 for short) on CPMP benchmark data. BF2012 has the best performance on CPMP. The environment of BF2012 is Intel Core 2 Duo processor (P7350, 16 GFLOPS) with 2 GHz and 2 GB RAM under Mac OS X and code was written in C and compiled with XCode under Mac OS X. In the algorithms proposed in this paper, parameters of BS-G and BS-B are set to $\id{bw}=\id{tw}=20$ and $\id{td}=3$, since BS-G and BS-B become stable and the improvement is negligible if parameters increase, as shown in Figure \ref{fig8} and Figure \ref{fig9}. 
 
-To begin with, we show the result on the data set {\em LC} which is mentioned in Section 7.2 of \cite{BF2012}. The data set {\em LC} is first generated by \cite{Lee2009}, but their concrete data set is not available. For this reason, \cite{BF2012} generate a new set of instances according to the description of \cite{Lee2009}. The result on data set {\em LC} is displayed in Table \ref{tab:lc}. The first five columns of Table \ref{tab:lc} summarise the data information copied from \cite{BF2012}, out of which the dirty ratio is the number of dirty containers in the initial layout divided by the number of containers.
-The column BF2012, TGH, BS-G and BS-B are the average movements on each data group by algorithms BF2012, our TGH, our BS-G and BS-B receptively. The average run time by BF2012, BS-G and BS-B are reported in column tBF2012, tBS-G and tBS-B, in unit of second. As the run time of TGH is less than 0.2s, we do not report its run time in the table. The column $\id{LB}_\id{DFS}$ indicate the average lower bounds $\id{LB}_\id{DFS}$ on each data group and the column gap is the gap between BS-B and $\id{LB}_\id{DFS}$. In the last row of the table, we also give the mean movements on the whole {\em LC} data. The average time takes cells with ``$<1$''  as 1s and cells with ``$<0.1$" as 0.1s. We highlight results on which our algorithms outperform BF2012 in bold. Our algorithm TGH and BS-G are worse than BF2012, while BS-B is better than BF2012, but the improvement is little. We explain this phenomenon as the size of the test instances is small and BF2012 has almost solved the instances to the optimality, which can be inferred from the absolute spread between lower bounds and resultant solutions.
+To begin with, the result of data set LC mentioned in Section 7.2 of \cite{BF2012} is shown. LC is first generated by \cite{Lee2009}, but the concrete data set is not available. Hence, \cite{BF2012} generated a new set of instances according to the description of \cite{Lee2009}. The result of LC is shown in Table \ref{tab:lc}, where the first five columns summarize data information copied from \cite{BF2012}. The dirty ratio is the number of dirty containers in the initial layout divided by the number of total containers.
+Columns BF2012, TGH, BS-G and BS-B are the average movements on each data group by the respective algorithms. The average run time in seconds by BF2012, BS-G and BS-B is reported in columns tBF2012, tBS-G and tBS-B, respectively. The run time of TGH is omitted from the table because it is less than 0.2s. Column $\id{LB}_\id{DFS}$ indicates the average lower bounds $\id{LB}_\id{DFS}$ on each data group and column gap is the gap between BS-B and $\id{LB}_\id{DFS}$. The last row of the table shows the mean number of movements on LC. When calculating average time, times with ``$<1$''  and ``$<0.1$" are regarded as 1 and 0.1 s, respectively. Those results that our algorithms outperform BF2012 are highlighted in bold. Algorithms TGH and BS-G are worse than BF2012, whereas BS-B is better than BF2012. However, the improvement is minimal,because the size of test instances is too small and BF2012 has almost solved the instances to the optimality, which can be inferred from the absolute spread between lower bounds and solutions.
 \begin{table}[htbp]
 \scriptsize
 \centering
-  \caption{\label{tab:lc} Algorithms comparison on data set {\em LC}}
+  \caption{\label{tab:lc} Comparison of LC data}
     \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
 
     \hline
@@ -807,11 +805,11 @@ The column BF2012, TGH, BS-G and BS-B are the average movements on each data gro
     \end{tabular}%
 \end{table}%
 
-Then we compare our algorithms with BF2012 on data set {\em CV}. The data set {\em CV} is provided by \cite{Caserta2009} and by far \cite{BF2012} has the best performance on this data set. Table \ref{tab:cv} reports the comparative result on the data set {\em CV}. It can be seen that both BS-G and BS-B surpass BF2012.
+Then the proposed algorithms were compared with BF2012 on data set CV. CV is provided by \cite{Caserta2009} and \cite{BF2012} has the best performance on it. Table \ref{tab:cv} illustrates the comparative result that both BS-G and BS-B surpass BF2012.
 \begin{table}[htbp]
 \scriptsize
   \centering
-  \caption{\label{tab:cv} Algorithms comparison on data set {\em CV}}
+  \caption{\label{tab:cv} Comparison of CV data}
     \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
     \hline
     group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\id{LB}_\id{DFS}$ & gap\\
@@ -826,11 +824,11 @@ Then we compare our algorithms with BF2012 on data set {\em CV}. The data set {\
     \end{tabular}%
 \end{table}%
 
-At last we display the results on the data set {\em BF} by different algorithms in Table \ref{tab:bf}. The data set {\em BF} is generated by \cite{BF2012} and they claim that the instances are difficult enough to justify the performance of algorithms. For TGH, its performance is worse than that of BF2012. This is understandable because BF2012 deploys a tree search algorithm whereas TGH is only a greedy heuristic. BS-G outperforms BF2012 by almost 5\%, and BS-B outperforms BF2012 by almost 7\%. BS-G and BS-B solve six and eight groups of instances into optimality, respectively.
+Finally, the result of data set BF is shown in Table \ref{tab:bf}. BF is generated by \cite{BF2012}; the produced instances are supposedly difficult enough to justify the performance of algorithms. The performance of TGH is worse than that of BF2012, because BF2012 deploys a tree search algorithm, whereas TGH is only a greedy heuristic. BS-G and BS-B outperform BF2012 by almost 5\% and 7\%, respectively. 
 %What's more, the computational time of BS-G is less than that of BF2012. Although the computational time of BS-B is much more than that of BF2012 in Table \ref{tab:bf}, the results are still better than that of BF2012 if we decrease parameters to make run the time of BS-B close to the run time of BF2012.
 
 \begin{table}[htbp]
-\caption{\label{tab:bf} Algorithms comparison on data set {\em BF}}
+\caption{\label{tab:bf} Comparison of BF data}
 \scriptsize
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
   \hline
@@ -874,12 +872,12 @@ At last we display the results on the data set {\em BF} by different algorithms 
 \end{tabular}
 \end{table}
 
-\subsection {New data}
-We generate a new data set for the CPMPDS. All the data is available at our website\footnote{\url{http://www.computational-logistics.org/orlib/topic/CPMPDS/index.html}}. The new data set is composed of 36 groups of instances, with 30 instances in each group. The number of stacks is 6, 8, or 10 (dummy stack included) as in reality the number of stacks in a bay is in such a range. The maximum height limit is 5 or 8 as it is restricted by the handling equipments in practice. There are two alternatives with respect to the usage rate. One alternative is 60\%$\sim$80\%, and another alternative is 80\% above. Following the spirit of \cite{BF2012}, the number of different group labels in an instance is decided by the group ratio equal to the number of different groups divided by the number of containers. In our data set, the group ratio has three ranges: 100\%, 60\%$\sim$80\%, 30\%$\sim$50\%. Particularly, group ratio 100\% means that the group labels of containers are unique. The results by TGH, BS-G and BS-B are reported in Table \ref{tab:cpmpds}.
+\subsection {Result on new data}
+A new data set for CPMPDS is generated. All the data are available online\footnote{\url{http://www.computational-logistics.org/orlib/topic/CPMPDS/index.html}}. The new data set is composed of 36 groups of instances, with 30 instances in each group. The number of stacks (dummy stack included) is 6, 8, or 10, which is close to the number of stacks in a bay in reality. The maximum height limit is 5 or 8 and is restricted by material handling equipment. Two alternatives are available with respect to usage rate. One alternative is 60\%$\sim$80\%, and another alternative is 80\% above. Based on \cite{BF2012}, the number of different group labels in an instance is determined by the group ratio (equal to the number of different groups divided by the number of containers). In the new data set, the group ratio has three ranges: 100\%, 60\%$\sim$80\%, 30\%$\sim$50\%. Particularly, a group ratio of 100\% means that the group labels of containers are unique. The results by TGH, BS-G and BS-B are shown in Table \ref{tab:cpmpds}.
 
 \begin{table}[htbp]
 
-\caption{\label{tab:cpmpds} Results for the data set {\em CPMPDS}}
+\caption{\label{tab:cpmpds} Result on new data of CPMPDS}
 \footnotesize
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c}
@@ -934,13 +932,13 @@ We generate a new data set for the CPMPDS. All the data is available at our webs
 
 \section{Conclusions}
 \label{sec:con}
-The container pre-marshalling problem is an important topic at container terminals, and its efficient solution has a significant impact on efficient use of container yards, as well as competition power of container terminals. In particular, the CPMP with a dummy stack has been overlooked by the research community for a long time; whereas in reality terminals using gantry cranes are a lot.
-In this paper, we considered the classic container pre-marshalling problem. At the same time, we proposed a new variant CPMP with a dummy stack (CPMPDS). A new improved lower bound was devised to compute the number of movements. Three algorithms which guarantee termination were developed based on the idea of fixing containers one by one to solve both the classic CPMP and CPMPDS. Experiments showcase that our algorithms outperform existing methods in terms of the benchmark data of the CPMP, and BS-B can be regarded as the current best algorithm for the CPMP/CPMPDS.
-In addition, we constructed a new data set of the CPMPDS for future reference .
+Container pre-marshalling problem is an important topic at container terminals, and its solution significantly affects the efficient use of container yards as well as competitiveness of container terminals. In particular, CPMP with a dummy stack has been overlooked by the research community for a long time, although in reality, many terminals deploy layouts with transfer lanes.
+In this paper, classical CPMP is solved, and a new variant CPMPDS is proposed. A new improved lower bound is devised to compute the number of movements. Three algorithms which guarantee termination are developed based on the idea of fixing containers one by one to solve classical CPMP and new CPMPDS. Experiments show that our algorithms outperform existing methods on benchmark data of CPMP; thus, BS-B can be regarded as the best algorithm for CPMP/CPMPDS at present.
+Finally, a new data set of CPMPDS is constructed for future reference.
 
-Through experimental analysis, we find that the idea of fixing containers from larger group labels is right as it narrows the solution space, and provides guidance for the algorithms. The heuristic rules in TGH are also critical as the efficiency of giant moves affects the efficiency of the whole beam search algorithms. The thought of combining giant moves with beam search is also applicable to other complex problems whose solution space are too large to be fully explored.
+Through experimental analysis, it can be found that fixing containers from larger group labels is correct because it narrows solution space and provides guidance for algorithms. The heuristic rules in TGH are also critical because the efficiency of giant moves affects the efficiency of beam search algorithms. Combining giant moves with beam search is also applicable to other complex problems with solution spaces that are too large to be fully explored.
 
-In the future, we can address which factors affect the difficulty of the CPMP instances and incorporate the CPMP with its upstream and downstream problems, such as stacking problems, cranes scheduling problems and stowage planning problems.
+In the future, how factors affect the difficulty of CPMP instances can be investigated and CPMP can be solved while incorporating its upstream and downstream problems, such as stacking problems, cranes scheduling problems and stowage planning problems.
 
 
 
