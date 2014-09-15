@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: major-jinbo.aux
+The style file: model5-names.bst
+Database file #1: reference.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 25 entries,
+            3092 wiz_defined-function locations,
+            821 strings with 9478 characters,
+and the built_in function-call counts, 18723 in all, are:
+= -- 1485
+> -- 791
+< -- 22
++ -- 669
+- -- 224
+* -- 2234
+:= -- 2494
+add.period$ -- 80
+call.type$ -- 25
+change.case$ -- 213
+chr.to.int$ -- 24
+cite$ -- 25
+duplicate$ -- 1180
+empty$ -- 1179
+format.name$ -- 326
+if$ -- 3475
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 247
+newline$ -- 136
+num.names$ -- 108
+pop$ -- 369
+preamble$ -- 1
+purify$ -- 170
+quote$ -- 0
+skip$ -- 511
+stack$ -- 0
+substring$ -- 866
+swap$ -- 1140
+text.length$ -- 10
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 225
+warning$ -- 0
+while$ -- 121
+width$ -- 0
+write$ -- 370
