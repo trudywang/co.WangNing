@@ -313,8 +313,8 @@ public class GaintStepHeuristic
 
 			if (isFixed)
 			{
-				if (layout.isClean(c2) && ts!=layout.dummyStack)
-					throw new Exception("c2 is already clean!!");
+		//		if (layout.isClean(c2) && ts!=layout.dummyStack)
+		//			throw new Exception("c2 is already clean!!");
 
 				while (layout.topContainer(ts).equals(c2) == false)
 				{

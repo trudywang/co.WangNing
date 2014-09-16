@@ -460,4 +460,50 @@ public class Layout implements Cloneable
 		return t <= fixedHeight[s];
 	}
 
+
+
+	public boolean solvable()
+	{
+		int e = 0;
+		for (int i = 1; i <= S; i++)
+		{
+			e += (T - stackHeight[i]);
+		}
+		int im = Math.max(0, T - e);
+
+		for (int i = 1; i <= S; i++)
+		{
+			if(stackHeight[i]>=im && cleanHeight[i]<im)
+				return false;
+		}
+
+		LowerBound.DFS dfs = new LowerBound.DFS(this);
+
+		int[] cumulativeDemand = new int[G + 1];
+		for (int g = G; g >= 1; g--)
+		{
+			cumulativeDemand[g] = (g == G ? 0 : cumulativeDemand[g + 1]);
+			cumulativeDemand[g] += dfs.demand[g];
+		}
+
+		for (int g = G; g >= 1; g--)
+		{
+
+			int totalDemand = cumulativeDemand[g];
+
+			int totalSupply = 0;
+			for (int s = 1; s <= S; s++)
+			{
+				if (dfs.get(s, im) >= g)
+					totalSupply += dfs.T - im;
+			}
+
+			if (totalDemand > totalSupply)
+			{
+
+				return false;
+			}
+		}
+		return true;
+	}
 }

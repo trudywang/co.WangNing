@@ -46,9 +46,9 @@ public class Runner
 				String author = AUTHORS[whoseData];
 				String resultpath = "experiments/"+date+"test/";
 				new File(resultpath + author).mkdirs();
-				File summary = new File(resultpath + author + "summary.csv");
-				PrintStream sumps = new PrintStream(summary);
-				sumps.println("group,poolsize,lookdepth,lookwidth,avesol,avetime");
+	//			File summary = new File(resultpath + author + "summary.csv");
+		//		PrintStream sumps = new PrintStream(summary);
+	//			sumps.println("group,poolsize,lookdepth,lookwidth,avesol,avetime");
 				for (lookaheadDepth = 3; lookaheadDepth <= 3; lookaheadDepth++)
 				{
 					for (maxpoolSize = 20; maxpoolSize <= 20; maxpoolSize++)
@@ -63,12 +63,15 @@ public class Runner
 							{
 								int sumsol = 0;
 								double sumtime=0;
-								File dir = new File("data/" + author + "wTRUCK/" + author + testgroup);
+								int solved=0;
+								File dir = new File("data/CPMP/CPMP"  + testgroup);
 								File files[] = dir.listFiles();
 
 								for (int testcase = 1; testcase <= files.length; testcase++)//files.length
 								{
-									File file = new File("data/" + author + "wTRUCK/" + author + testgroup + "/" + author + testgroup + "_" + testcase + ".bay");
+									//File file = new File("data/" + author + "wTRUCK/" + author + testgroup + "/" + author + testgroup + "_" + testcase + ".bay");
+									File file = new File("data/CPMP/CPMP" +  testgroup + "/CPMP" +  testgroup + "_" + testcase + ".bay");
+
 									Scanner scn = new Scanner(file);
 									Layout inst = new Layout(scn);
 									scn.close();
@@ -85,6 +88,17 @@ public class Runner
 									// state.sol=new Solution();
 									// WangNingProbing.probing(state);
 
+
+									if(inst.solvable() == false)
+									{
+										int lb = -1;
+										int is = -1;
+										int bs = -1;
+										double ti = -1;
+										System.out.println(testgroup + "," + testcase + "," + "na") ;
+										indps.println(testgroup + "," + testcase  );
+										continue;
+									}
 									Method lowerBound = LowerBound.class.getMethod(lowerBoundMethod, new Class[] { Layout.class });
 									// GreedyFramework mp = new
 									// GreedyFramework(inst,lowerBound,lookaheadDepth,
@@ -107,8 +121,8 @@ public class Runner
 											+ sp.bestEverFound);
 									System.out.println(testgroup + "," + testcase + "," + lb + "," + is + "," + bs + "," + ti);
 								}
-								sumps.println(testgroup + "," + maxpoolSize + "," + lookaheadDepth + "," + lookaheadWidth + "," + 1.0 * sumsol
-										/files.length + "," + sumtime/files.length);
+			//					sumps.println(testgroup + "," + maxpoolSize + "," + lookaheadDepth + "," + lookaheadWidth + "," + 1.0 * sumsol
+		//								/files.length + "," + sumtime/files.length);
 
 							}
 						}
@@ -116,8 +130,8 @@ public class Runner
 						indps.close();
 					}
 				}
-				sumps.flush();
-				sumps.close();
+			//	sumps.flush();
+			//	sumps.close();
 			}
 		} catch (Exception e)
 		{

@@ -177,7 +177,7 @@ public class LowerBound
 
 	}
 
-	private static class DFS implements Cloneable
+	public static class DFS implements Cloneable
 	{
 		public int[] demand;
 		public int[][] retain;// number of clean containers with group label>=g
