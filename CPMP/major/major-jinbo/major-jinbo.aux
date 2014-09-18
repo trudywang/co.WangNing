@@ -16,9 +16,9 @@
 \newlabel{sub@fig15:1}{{(a)}{3}}
 \newlabel{fig15:2}{{2(b)}{3}}
 \newlabel{sub@fig15:2}{{(b)}{3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Two layouts of I/O points}}{3}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Layout with transfer lane}}}{3}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Layout with transfer bay}}}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Two I/O layouts}}{3}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Layout with transfer lanes}}}{3}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Layout with transfer bays}}}{3}}
 \newlabel{fig15}{{2}{3}}
 \citation{Vis2003}
 \citation{Steenken2004}
@@ -51,7 +51,8 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces A skyline of a layout}}{8}}
 \newlabel{fig5}{{4}{8}}
 \newlabel{equ:3}{{1}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Counting Clean--X movements by maximum knapsack}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Computing Clean--X movements by maximum knapsack}{8}}
+\citation{BF2012}
 \citation{BF2012}
 \citation{BF2012}
 \citation{BF2012}
@@ -61,36 +62,35 @@
 \citation{BF2012}
 \newlabel{equ:5}{{3}{10}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Lower bound for the CPMPDS}{10}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Target guided heuristic}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Target-guided heuristic}{10}}
 \newlabel{sec:heu}{{5}{10}}
-\newlabel{def:1}{{1}{11}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces The target guided heuristic for CPMP/CPMPDS}}{11}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces The target-guided heuristic for the CPMP/CPMPDS}}{11}}
 \newlabel{alg:heu}{{1}{11}}
-\newlabel{heu:c}{{6}{11}}
-\newlabel{heu:l}{{8}{11}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Candidate container and stack selection}{12}}
-\newlabel{sec:can}{{5.1}{12}}
+\newlabel{heu:c}{{4}{11}}
+\newlabel{heu:l}{{6}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Candidate container and stack selection}{11}}
+\newlabel{sec:can}{{5.1}{11}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Target pair selection}{12}}
 \newlabel{sec:tar}{{5.2}{12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Giant move}{12}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Case 1: Fixing to the same stack}{12}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}Case 2: Fixing to a different stack}{13}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Relocating a container}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Container relocation}{14}}
 \newlabel{sec:rel}{{5.4}{14}}
 \citation{Exposito2012}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Termination analysis}{15}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Beam search algorithms}{16}}
 \newlabel{sec:g2la}{{6}{16}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Beam search with giant moves}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Beam search with baby moves}{16}}
 \citation{BF2012}
 \citation{BF2012}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Beam search with giant moves for CPMP/CPMPDS}}{17}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Beam search with giant moves for the CPMP/CPMPDS}}{17}}
 \newlabel{alg:bsg}{{2}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Beam search with baby moves}{17}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Discussion on the CPMPDS}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Experiments and analysis}{17}}
+\newlabel{sec:ce}{{7}{17}}
 \citation{BF2012}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Experiments and analysis}{18}}
-\newlabel{sec:ce}{{7}{18}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Lower bound comparison}{18}}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces  Lower bound comparison}}{18}}
 \newlabel{tab:lowerbound}{{2}{18}}
@@ -100,49 +100,49 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Effectiveness of evaluation schemes}}{19}}
 \newlabel{fig7}{{5}{19}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.2}Probing tree size and beam width}{19}}
+\newlabel{fig8:1}{{6(a)}{20}}
+\newlabel{sub@fig8:1}{{(a)}{20}}
+\newlabel{fig8:2}{{6(b)}{20}}
+\newlabel{sub@fig8:2}{{(b)}{20}}
+\newlabel{fig8:3}{{6(c)}{20}}
+\newlabel{sub@fig8:3}{{(c)}{20}}
+\newlabel{fig8:4}{{6(d)}{20}}
+\newlabel{sub@fig8:4}{{(d)}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Effect of BS-G's search depth and width}}{20}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {BF1$\sim $8 average}}}{20}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {BF17$\sim $24 average}}}{20}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {BF9$\sim $16 average}}}{20}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {BF25$\sim $32 average}}}{20}}
+\newlabel{fig8}{{6}{20}}
 \citation{BF2012}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Comparison with the existing approach}{20}}
 \citation{BF2012}
 \citation{Lee2009}
 \citation{BF2012}
 \citation{Lee2009}
 \citation{BF2012}
-\newlabel{fig8:1}{{6(a)}{21}}
-\newlabel{sub@fig8:1}{{(a)}{21}}
-\newlabel{fig8:2}{{6(b)}{21}}
-\newlabel{sub@fig8:2}{{(b)}{21}}
-\newlabel{fig8:3}{{6(c)}{21}}
-\newlabel{sub@fig8:3}{{(c)}{21}}
-\newlabel{fig8:4}{{6(d)}{21}}
-\newlabel{sub@fig8:4}{{(d)}{21}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Effect of BS-G's search depth and width}}{21}}
+\newlabel{fig9:1}{{7(a)}{21}}
+\newlabel{sub@fig9:1}{{(a)}{21}}
+\newlabel{fig9:2}{{7(b)}{21}}
+\newlabel{sub@fig9:2}{{(b)}{21}}
+\newlabel{fig9:3}{{7(c)}{21}}
+\newlabel{sub@fig9:3}{{(c)}{21}}
+\newlabel{fig9:4}{{7(d)}{21}}
+\newlabel{sub@fig9:4}{{(d)}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Effect of BS-B's search depth and width}}{21}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {BF1$\sim $8 average}}}{21}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {BF17$\sim $24 average}}}{21}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {BF9$\sim $16 average}}}{21}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {BF25$\sim $32 average}}}{21}}
-\newlabel{fig8}{{6}{21}}
+\newlabel{fig9}{{7}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Comparison with the existing approach}{21}}
 \citation{Caserta2009}
 \citation{BF2012}
 \citation{BF2012}
 \citation{BF2012}
-\newlabel{fig9:1}{{7(a)}{22}}
-\newlabel{sub@fig9:1}{{(a)}{22}}
-\newlabel{fig9:2}{{7(b)}{22}}
-\newlabel{sub@fig9:2}{{(b)}{22}}
-\newlabel{fig9:3}{{7(c)}{22}}
-\newlabel{sub@fig9:3}{{(c)}{22}}
-\newlabel{fig9:4}{{7(d)}{22}}
-\newlabel{sub@fig9:4}{{(d)}{22}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Effect of BS-B's search depth and width}}{22}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {BF1$\sim $8 average}}}{22}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {BF17$\sim $24 average}}}{22}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {BF9$\sim $16 average}}}{22}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {BF25$\sim $32 average}}}{22}}
-\newlabel{fig9}{{7}{22}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces  Comparison on data set LC}}{22}}
 \newlabel{tab:lc}{{3}{22}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces  Comparison on data set CV}}{23}}
-\newlabel{tab:cv}{{4}{23}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces  Comparison on data set CV}}{22}}
+\newlabel{tab:cv}{{4}{22}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces  Comparison on data set BF}}{23}}
 \newlabel{tab:bf}{{5}{23}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Result on new data set}{23}}
@@ -151,11 +151,11 @@
 \bibcite{BF2012}{{1}{2012}{{Bortfeldt \& Forster}}{{}}}
 \bibcite{Carlo2014}{{2}{2014}{{Carlo et~al.}}{{Carlo, Vis \& Roodbergen}}}
 \bibcite{Caserta2009A}{{3}{2009}{{Caserta et~al.}}{{Caserta, Schwarze \& Vo{\ss }}}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusions}{24}}
-\newlabel{sec:con}{{8}{24}}
 \bibcite{Caserta2011}{{4}{2011{a}}{{Caserta et~al.}}{{Caserta, Schwarze \& Vo\ss }}}
 \bibcite{Caserta2012AM}{{5}{2012}{{Caserta et~al.}}{{Caserta, Schwarze \& Vo{\ss }}}}
 \bibcite{Caserta2009}{{6}{2009}{{Caserta \& Vo\ss }}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusions}{24}}
+\newlabel{sec:con}{{8}{24}}
 \bibcite{Caserta2009Applying}{{7}{2011{b}}{{Caserta et~al.}}{{Caserta, Vo{\ss } \& Sniedovich}}}
 \bibcite{Choe2011}{{8}{2011}{{Choe et~al.}}{{Choe, Park, Oh, Kang \& Ryu}}}
 \bibcite{Exposito2012}{{9}{2012}{{Exp\'{o}sito-Izquierdo et~al.}}{{Exp\'{o}sito-Izquierdo, Meli\'{a}n-Batista \& Moreno-Vega}}}
@@ -175,5 +175,5 @@
 \bibcite{Vis2003}{{23}{2003}{{Vis \& de~Koster}}{{}}}
 \bibcite{Yang2006A}{{24}{2006}{{Yang \& Kim}}{{}}}
 \bibcite{Zhu2012Iter}{{25}{2012}{{Zhu et~al.}}{{Zhu, Qin, Lim \& Zhang}}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces  Result on new data for the CPMPDS}}{27}}
-\newlabel{tab:cpmpds}{{6}{27}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces  Result on new data for the CPMPDS}}{26}}
+\newlabel{tab:cpmpds}{{6}{26}}
