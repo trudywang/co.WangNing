@@ -126,7 +126,7 @@
 \newblock \bibinfo{title}{Solving the container relocation problem by an
   improved greedy look-ahead heuristic}.
 \newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
-  (pp.~\bibinfo{pages}{--}).
+  {\it \bibinfo{volume}{240}\/}, \bibinfo{pages}{837 -- 847}.
 %Type = Incollection
 \bibitem[{Kang et~al.(2006)Kang, Oh, Ahn, Ryu \& Kim}]{Kang2006Plan}
 \bibinfo{author}{Kang, J.}, \bibinfo{author}{Oh, M.-S.}, \bibinfo{author}{Ahn,
