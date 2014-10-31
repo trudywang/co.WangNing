@@ -1,0 +1,231 @@
+\begin{thebibliography}{25}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Bortfeldt \& Forster(2012)}]{BF2012}
+\bibinfo{author}{Bortfeldt, A.}, \& \bibinfo{author}{Forster, F.},
+  \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{{A tree search procedure for the container
+  pre-marshalling problem}}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{217}\/}, \bibinfo{pages}{531--540}.
+%Type = Article
+\bibitem[{Carlo et~al.(2014)Carlo, Vis \& Roodbergen}]{Carlo2014}
+\bibinfo{author}{Carlo, H.~J.}, \bibinfo{author}{Vis, I.~F.}, \&
+  \bibinfo{author}{Roodbergen, K.~J.}, \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{Storage yard operations in container terminals:
+  Literature overview, trends, and research directions}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{235}\/}, \bibinfo{pages}{412 -- 430}.
+%Type = Incollection
+\bibitem[{Caserta et~al.(2009)Caserta, Schwarze \& Vo{\ss}}]{Caserta2009A}
+\bibinfo{author}{Caserta, M.}, \bibinfo{author}{Schwarze, S.}, \&
+  \bibinfo{author}{Vo{\ss}, S.}, \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{A new binary description of the blocks relocation
+  problem and benefits in a look ahead heuristic}.
+\newblock In \bibinfo{editor}{C.~Cotta}, \& \bibinfo{editor}{P.~Cowling}
+  (Eds.), {\it \bibinfo{booktitle}{Evolutionary Computation in Combinatorial
+  Optimization}\/} (pp. \bibinfo{pages}{37--48}).
+\newblock \bibinfo{publisher}{Springer Berlin Heidelberg} volume
+  \bibinfo{volume}{5482} of {\it \bibinfo{series}{Lecture Notes in Computer
+  Science}\/}.
+%Type = Incollection
+\bibitem[{Caserta et~al.(2011{\natexlab{a}})Caserta, Schwarze \&
+  Vo\ss}]{Caserta2011}
+\bibinfo{author}{Caserta, M.}, \bibinfo{author}{Schwarze, S.}, \&
+  \bibinfo{author}{Vo\ss, S.}, \bibinfo{year}{2011}{\natexlab{a}}.
+\newblock \bibinfo{title}{Container rehandling at maritime container
+  terminals}.
+\newblock In \bibinfo{editor}{J.~W. B\"ose} (Ed.), {\it
+  \bibinfo{booktitle}{Handbook of Terminal Planning}\/} (pp.
+  \bibinfo{pages}{247--269}).
+\newblock \bibinfo{publisher}{Springer New York} volume~\bibinfo{volume}{49} of
+  {\it \bibinfo{series}{Operations Research/Computer Science Interfaces
+  Series}\/}.
+%Type = Article
+\bibitem[{Caserta et~al.(2012)Caserta, Schwarze \& Vo{\ss}}]{Caserta2012AM}
+\bibinfo{author}{Caserta, M.}, \bibinfo{author}{Schwarze, S.}, \&
+  \bibinfo{author}{Vo{\ss}, S.}, \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{A mathematical formulation and complexity
+  considerations for the blocks relocation problem}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{219}\/}, \bibinfo{pages}{96--104}.
+%Type = Incollection
+\bibitem[{Caserta \& Vo\ss(2009)}]{Caserta2009}
+\bibinfo{author}{Caserta, M.}, \& \bibinfo{author}{Vo\ss, S.},
+  \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{A corridor method-based algorithm for the
+  pre-marshalling problem}.
+\newblock In \bibinfo{editor}{M.~Giacobini}, \bibinfo{editor}{A.~Brabazon},
+  \bibinfo{editor}{S.~Cagnoni}, \bibinfo{editor}{G.~Caro},
+  \bibinfo{editor}{A.~Ek\'art}, \bibinfo{editor}{A.~Esparcia-Alc\'azar},
+  \bibinfo{editor}{M.~Farooq}, \bibinfo{editor}{A.~Fink}, \&
+  \bibinfo{editor}{P.~Machado} (Eds.), {\it \bibinfo{booktitle}{Applications of
+  Evolutionary Computing}\/} (pp. \bibinfo{pages}{788--797}).
+\newblock \bibinfo{publisher}{Springer Berlin Heidelberg} volume
+  \bibinfo{volume}{5484} of {\it \bibinfo{series}{Lecture Notes in Computer
+  Science}\/}.
+%Type = Article
+\bibitem[{Caserta et~al.(2011{\natexlab{b}})Caserta, Vo{\ss} \&
+  Sniedovich}]{Caserta2009Applying}
+\bibinfo{author}{Caserta, M.}, \bibinfo{author}{Vo{\ss}, S.}, \&
+  \bibinfo{author}{Sniedovich, M.}, \bibinfo{year}{2011}{\natexlab{b}}.
+\newblock \bibinfo{title}{Applying the corridor method to a blocks relocation
+  problem}.
+\newblock {\it \bibinfo{journal}{OR Spectrum}\/},  {\it
+  \bibinfo{volume}{33}\/}, \bibinfo{pages}{915--929}.
+%Type = Article
+\bibitem[{Choe et~al.(2011)Choe, Park, Oh, Kang \& Ryu}]{Choe2011}
+\bibinfo{author}{Choe, R.}, \bibinfo{author}{Park, T.}, \bibinfo{author}{Oh,
+  M.-S.}, \bibinfo{author}{Kang, J.}, \& \bibinfo{author}{Ryu, K.~R.},
+  \bibinfo{year}{2011}.
+\newblock \bibinfo{title}{{Generating a rehandling-free intra-block
+  remarshaling plan for an automated container yard}}.
+\newblock {\it \bibinfo{journal}{Journal of Intelligent Manufacturing}\/},
+  {\it \bibinfo{volume}{22}\/}, \bibinfo{pages}{201--217}.
+%Type = Article
+\bibitem[{Exp\'{o}sito-Izquierdo et~al.(2012)Exp\'{o}sito-Izquierdo,
+  Meli\'{a}n-Batista \& Moreno-Vega}]{Exposito2012}
+\bibinfo{author}{Exp\'{o}sito-Izquierdo, C.},
+  \bibinfo{author}{Meli\'{a}n-Batista, B.}, \& \bibinfo{author}{Moreno-Vega,
+  M.}, \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{{Pre-marshalling problem: heuristic solution method
+  and instances generator}}.
+\newblock {\it \bibinfo{journal}{Expert Systems with Applications}\/},  {\it
+  \bibinfo{volume}{39}\/}, \bibinfo{pages}{8337--8349}.
+%Type = Article
+\bibitem[{Forster \& Bortfeldt(2012)}]{Forster2012A}
+\bibinfo{author}{Forster, F.}, \& \bibinfo{author}{Bortfeldt, A.},
+  \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{A tree search procedure for the container relocation
+  problem}.
+\newblock {\it \bibinfo{journal}{Computers \& Operations Research}\/},  {\it
+  \bibinfo{volume}{39}\/}, \bibinfo{pages}{299--309}.
+%Type = Article
+\bibitem[{Huang \& Lin(2012)}]{Huang2012heu}
+\bibinfo{author}{Huang, S.-H.}, \& \bibinfo{author}{Lin, T.-H.},
+  \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{{Heuristic algorithms for container pre-marshalling
+  problems}}.
+\newblock {\it \bibinfo{journal}{Computers \& Industrial Engineering}\/},  {\it
+  \bibinfo{volume}{62}\/}, \bibinfo{pages}{13--20}.
+%Type = Article
+\bibitem[{Jiang et~al.(2012)Jiang, Lee, Chew, Han \& Tan}]{Jiang2012}
+\bibinfo{author}{Jiang, X.}, \bibinfo{author}{Lee, L.~H.},
+  \bibinfo{author}{Chew, E.~P.}, \bibinfo{author}{Han, Y.}, \&
+  \bibinfo{author}{Tan, K.~C.}, \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{A container yard storage strategy for improving land
+  utilization and operation efficiency in a transshipment hub port}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{221}\/}, \bibinfo{pages}{64--73}.
+%Type = Article
+\bibitem[{Jin et~al.(2015)Jin, Zhu \& Lim}]{Jin2015}
+\bibinfo{author}{Jin, B.}, \bibinfo{author}{Zhu, W.}, \& \bibinfo{author}{Lim,
+  A.}, \bibinfo{year}{2015}.
+\newblock \bibinfo{title}{Solving the container relocation problem by an
+  improved greedy look-ahead heuristic}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{240}\/}, \bibinfo{pages}{837 -- 847}.
+%Type = Incollection
+\bibitem[{Kang et~al.(2006)Kang, Oh, Ahn, Ryu \& Kim}]{Kang2006Plan}
+\bibinfo{author}{Kang, J.}, \bibinfo{author}{Oh, M.-S.}, \bibinfo{author}{Ahn,
+  E.~Y.}, \bibinfo{author}{Ryu, K.~R.}, \& \bibinfo{author}{Kim, K.~H.},
+  \bibinfo{year}{2006}.
+\newblock \bibinfo{title}{Planning for intra-block remarshalling in a container
+  terminal}.
+\newblock In \bibinfo{editor}{M.~Ali}, \& \bibinfo{editor}{R.~Dapoigny} (Eds.),
+  {\it \bibinfo{booktitle}{Advances in Applied Artificial Intelligence}\/} (pp.
+  \bibinfo{pages}{1211--1220}).
+\newblock \bibinfo{publisher}{Springer Berlin Heidelberg} volume
+  \bibinfo{volume}{4031} of {\it \bibinfo{series}{Lecture Notes in Computer
+  Science}\/}.
+%Type = Article
+\bibitem[{Kim \& Bae(1998)}]{Kim1998}
+\bibinfo{author}{Kim, K.~H.}, \& \bibinfo{author}{Bae, J.~W.},
+  \bibinfo{year}{1998}.
+\newblock \bibinfo{title}{{Re-marshaling export containers in port container
+  terminals}}.
+\newblock {\it \bibinfo{journal}{Computers \& Industrial Engineering}\/},  {\it
+  \bibinfo{volume}{35}\/}, \bibinfo{pages}{655--658}.
+%Type = Article
+\bibitem[{Kim \& Hong(2006)}]{Kim2006A}
+\bibinfo{author}{Kim, K.~H.}, \& \bibinfo{author}{Hong, G.-P.},
+  \bibinfo{year}{2006}.
+\newblock \bibinfo{title}{A heuristic rule for relocating blocks}.
+\newblock {\it \bibinfo{journal}{Computers \& Operations Research}\/},  {\it
+  \bibinfo{volume}{33}\/}, \bibinfo{pages}{940--954}.
+%Type = Article
+\bibitem[{Lee \& Chao(2009)}]{Lee2009}
+\bibinfo{author}{Lee, Y.}, \& \bibinfo{author}{Chao, S.-L.},
+  \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{{A neighborhood search heuristic for pre-marshalling
+  export containers}}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{196}\/}, \bibinfo{pages}{468--475}.
+%Type = Article
+\bibitem[{Lee \& Hsu(2007)}]{Lee2007}
+\bibinfo{author}{Lee, Y.}, \& \bibinfo{author}{Hsu, N.-Y.},
+  \bibinfo{year}{2007}.
+\newblock \bibinfo{title}{{An optimization model for the container
+  pre-marshalling problem}}.
+\newblock {\it \bibinfo{journal}{Computers \& Operations Research}\/},  {\it
+  \bibinfo{volume}{34}\/}, \bibinfo{pages}{3295--3313}.
+%Type = Article
+\bibitem[{Lee \& Lee(2010)}]{Lee2010A}
+\bibinfo{author}{Lee, Y.}, \& \bibinfo{author}{Lee, Y.-J.},
+  \bibinfo{year}{2010}.
+\newblock \bibinfo{title}{{A heuristic for retrieving containers from a yard}}.
+\newblock {\it \bibinfo{journal}{Computers \& Operations Research}\/},  {\it
+  \bibinfo{volume}{37}\/}, \bibinfo{pages}{1139--1147}.
+%Type = Inproceedings
+\bibitem[{Park et~al.(2009)Park, Park \& Ryu}]{Park2009Plan}
+\bibinfo{author}{Park, K.}, \bibinfo{author}{Park, T.}, \&
+  \bibinfo{author}{Ryu, K.~R.}, \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{Planning for remarshaling in an automated container
+  terminal using cooperative coevolutionary algorithms}.
+\newblock In {\it \bibinfo{booktitle}{Proceedings of the 2009 ACM Symposium on
+  Applied Computing}\/} SAC '09 (pp. \bibinfo{pages}{1098--1105}).
+\newblock \bibinfo{publisher}{ACM New York, NY, USA}.
+%Type = Article
+\bibitem[{Stahlbock \& Vo{\ss}(2008)}]{Stahlbock2008}
+\bibinfo{author}{Stahlbock, R.}, \& \bibinfo{author}{Vo{\ss}, S.},
+  \bibinfo{year}{2008}.
+\newblock \bibinfo{title}{{Operations research at container terminals: a
+  literature update}}.
+\newblock {\it \bibinfo{journal}{OR Spectrum}\/},  {\it
+  \bibinfo{volume}{30}\/}, \bibinfo{pages}{1--52}.
+%Type = Article
+\bibitem[{Steenken et~al.(2004)Steenken, Vo\ss \& Stahlbock}]{Steenken2004}
+\bibinfo{author}{Steenken, D.}, \bibinfo{author}{Vo\ss, S.}, \&
+  \bibinfo{author}{Stahlbock, R.}, \bibinfo{year}{2004}.
+\newblock \bibinfo{title}{Container terminal operation and operations research
+  - a classification and literature review}.
+\newblock {\it \bibinfo{journal}{OR Spectrum}\/},  {\it
+  \bibinfo{volume}{26}\/}, \bibinfo{pages}{3--49}.
+%Type = Article
+\bibitem[{Vis \& de~Koster(2003)}]{Vis2003}
+\bibinfo{author}{Vis, I. F.~A.}, \& \bibinfo{author}{de~Koster, R.},
+  \bibinfo{year}{2003}.
+\newblock \bibinfo{title}{{Transshipment of containers at a container terminal:
+  an overview}}.
+\newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
+  {\it \bibinfo{volume}{147}\/}, \bibinfo{pages}{1--16}.
+%Type = Article
+\bibitem[{Yang \& Kim(2006)}]{Yang2006A}
+\bibinfo{author}{Yang, J.~H.}, \& \bibinfo{author}{Kim, K.~H.},
+  \bibinfo{year}{2006}.
+\newblock \bibinfo{title}{A grouped storage method for minimizing relocations
+  in block stacking systems}.
+\newblock {\it \bibinfo{journal}{Journal of Intelligent Manufacturing}\/},
+  {\it \bibinfo{volume}{17}\/}, \bibinfo{pages}{453--463}.
+%Type = Article
+\bibitem[{Zhu et~al.(2012)Zhu, Qin, Lim \& Zhang}]{Zhu2012Iter}
+\bibinfo{author}{Zhu, W.}, \bibinfo{author}{Qin, H.}, \bibinfo{author}{Lim,
+  A.}, \& \bibinfo{author}{Zhang, H.}, \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{Iterative deepening {A}* algorithms for the container
+  relocation problem}.
+\newblock {\it \bibinfo{journal}{IEEE Transactions on Automation Science and
+  Engineering}\/},  {\it \bibinfo{volume}{9}\/}, \bibinfo{pages}{710--722}.
+
+\end{thebibliography}
