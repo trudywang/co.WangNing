@@ -64,12 +64,12 @@ During the pre-marshalling process, the dummy stack temporarily stores container
 However, the dummy stack must be emptied at the end of pre-marshalling.
 In this paper, target-guided algorithms are proposed to handle both the classical CPMP and new CPMPDS.
 All the proposed algorithms guarantee termination.
-Improved lower bounds for the CPMP and CPMPDS are also devised.
+%Improved lower bounds for the CPMP and CPMPDS are also devised.
 Experimental results in terms of the CPMP show that the proposed algorithms surpass the state-of-the-art algorithm.
 \end{abstract}
 
 \begin{keyword}
-container pre-marshalling \sep target-guided algorithms\sep lower bound \sep dummy stack
+container pre-marshalling \sep target-guided algorithms \sep dummy stack%\sep lower bound
 \end{keyword}
 \end{frontmatter}
 
@@ -88,7 +88,7 @@ When vessels arrive, containers are transported by trucks to the quayside and th
 The process is reverse for importing containers.
 
 High efficiency is a key factor for successful terminals because shipping line managers prefer efficient terminals.
-Carriers or shippers bear the pressure of quick delivery from downstream customers.
+Carriers or shippers bear the pressure of quick delivery from downstream customers \citep{Aguezzoul2014}.
 Moreover, high efficiency increases the turnover rate of terminals and therefore generates more profit for shareholders.
 Container terminals have every reason to increase their operational efficiency.
 Terminal practitioners and operations researchers have paid considerable attention to improving the efficiency of quayside operations.
@@ -115,7 +115,8 @@ Such forced movements are known as rehandles.
 Container rehandle is costly because this additional task decreases the efficiency of container retrieval, but consignors do not pay for this task.
 In the ideal situation, containers are piled in an order that is consistent with the retrieval order, i.e., containers retrieved earlier are located at higher tiers.
 However, the practical situation does not always match the ideal wish.
-The placement order of containers is decided by inland transportation or consignors, whereas the retrieval order of containers is decided by stowage planning or ship schedules. In most situations, the two orders are not exactly reverse. In reality, containers that arrive early do not necessarily depart late.
+The placement order of containers is decided by inland transportation or consignors, whereas the retrieval order of containers is decided by stowage planning or ship schedules \citep{Kanet1986}. 
+In most situations, the two orders are not exactly reverse. In reality, containers that arrive early do not necessarily depart late.
 
 Prior to ship arrival, containers in a bay can be rearranged to comply with their retrieval order.
 This process is called pre-marshalling.
@@ -125,42 +126,42 @@ Performing container pre-marshalling with the least effort is referred to as the
 Although the CPMP has been studied, practical scenarios have not been fully depicted.
 For terminals that use gantry cranes, there exist two kinds of I/O layouts where trucks and gantry cranes exchange containers \citep{Carlo2014}.
 Figure \ref{fig15} shows the difference of two layouts.
-In the first layout, I/O points form lanes (transfer lane) which are parallel to a block, while in the second layout, I/O points form bays which are at both ends of a block.
+In the first layout, I/O points form lanes (transfer lane) which are parallel to a block; while in the second layout, I/O points form bays which are at both ends of a block.
 In the first layout, when no container is being retrieved, transfer lanes act as temporary stacks for the pre-marshalling work as ordinary stacks.
-The only issue that demands attention is that transfer lanes should be empty after the pre-marshalling work, which distinguish themselves from ordinary stacks.
-Transfer lanes are called \textbf{dummy stacks}.
+The only issue that demands attention is that temporary stacks should be empty after the pre-marshalling work, which distinguish themselves from ordinary stacks.
+Such temporary stacks that are located at the transfer lanes are called \textbf{dummy stacks}.
 
 \begin{figure}[!htb]
 \centering
-\subfigure[Layout with transfer lanes]{
+\subfigure[I/O by transfer lanes]{
     \label{fig15:1}
     \resizebox{0.25 \textwidth}{!}{\includegraphics{fig15_1.pdf}}}
-\subfigure[Layout with transfer bays]{
+\subfigure[I/O by transfer bays]{
     \label{fig15:2}
     \resizebox{0.25 \textwidth}{!}{\includegraphics{fig15_2.pdf}}}
 \caption{Two I/O layouts}
 \label{fig15}
 \end{figure}
 
-Existing algorithms for the CPMP have not taken dummy stacks into consideration; hence, they cannot be implemented directly at terminal layouts as shown in Figure \ref{fig15:1}.
+Existing algorithms for the CPMP can be implemented at terminal layouts as shown in Figure \ref{fig15:1} without using any dummy stack, but feasible solutions may not exist due to shortage of empty slots.
 However, aforesaid terminal layouts are popular across the world.
 This disparity between research and industrial practice must be resolved.
 
-Our paper contributes to the literature in three aspects.
+Our paper contributes to the literature in two aspects.
 First, the CPMP is reexamined, and a new variant the CPMPDS, is proposed.
-Second, a new lower bound suitable for both problems is proposed.
-The new lower bound dominates the existing lower bounds with respect to the CPMP.
-Last, three algorithms based on the idea of target-guided strategy are designed to solve both problems.
+%Second, a new lower bound suitable for both problems is proposed.
+%The new lower bound dominates the existing lower bounds with respect to the CPMP.
+Second, three algorithms based on the idea of target-guided strategy are designed to solve both problems.
 The algorithms fix containers at appropriately chosen positions and avoid further movements afterwards.
 This mechanism reduces the problem size continuously until the problem is solved.
 Thus, our algorithms guarantee termination.
 Experimental results demonstrate that the proposed algorithms are better than the state-of-the-art algorithm to the best of our knowledge.
-Although the CPMP is discussed in the context of maritime terminals, it is also applicable to other scenarios, such as warehouses and railway yards.
+Although the CPMP is discussed in the context of maritime terminals, it is also applicable to other scenarios, such as warehouses \citep{Muppani2008} and railway yards.
 
 The remainder of this paper is structured as follows.
 Section \ref{sec:litreview} presents an overview of existing works related to the CPMP.
 Section \ref{sec:pd} formally defines the CPMP and CPMPDS.
-Section \ref{sec:cf} discusses how to calculate lower bounds.
+%Section \ref{sec:cf} discusses how to calculate lower bounds.
 A greedy algorithm and two advanced beam search algorithms are elaborated in Section \ref{sec:heu} and Section \ref{sec:g2la}, respectively.
 Section \ref{sec:ce} describes the experiments that were conducted to evaluate the effectiveness of the proposed algorithms and reports the results.
 Finally, Section \ref{sec:con} concludes the research.
@@ -176,6 +177,8 @@ In 2014, \cite{Carlo2014} provided a new in-depth overview of storage yard opera
 Collectively, these studies point out that the CPMP is an important topic and worthy of more research effort.
 
 Most existing methods for the CPMP are heuristic approaches.
+\cite{Sculli1988} is the first work that studied container stacking and handling through a simulation work.
+In the work, the decision variables include the maximum dimensions of the storage space, stacking policies, and the number of container groups and their relative retrieval frequencies. The results indicated that the number of container groups has the largest impact on storage and handling efficiency. The effects of the stacking policy and maximum storage dimensions are also significant.
 \cite{Caserta2009} provided a greedy heuristic based on the paradigm of corridor and roulette wheel.
 The corridor reduces movement choices for a certain layout and the roulette wheel provides randomness when making choices.
 The probability of selecting an alternative is proportional to its attractiveness.
@@ -227,7 +230,7 @@ It had been studied by researchers by using various methods, ranging from meta-h
 The CPMP can be described as follows: Given a bay with $S$ stacks, each stack is able to store up to $H$ containers vertically.
 Tiers of the bay are indexed from 1 to $H$ from the bottom up.
 For consistency, the ground is considered as tier 0 in particular.
-$N$ ($N\le S\times H$) containers are stored in the bay, which forms an initial layout with a usage rate of $N/(S\times H)$.
+$N$ ($N\le S\cdot H$) containers are stored in the bay, which forms an initial layout with a usage rate of $N/(S\cdot H$).
 Each container $c$ is assigned a group label $g(c)\in \{1,\dots,G\}$.
 The group labels of containers could be unique or duplicate.
 Figure \ref{fig3} shows a layout with $S=5$, $H=6$, $G=9$, and duplicate group labels .
@@ -276,158 +279,158 @@ For ease of illustration, the notation used in this paper is defined in Table \r
     \end{tabular}
 \end{table}
 
-\section{Lower bound}
-\label{sec:cf}
-
-In this section, a new method is proposed to calculate the lower bound of the number of necessary movements to reach a clean layout.
-The calculation of the lower bound for the CPMP is demonstrated first.
-The lower bound for the CPMPDS only requires a slight modification on that for the CPMP.
-
-\subsection{Lower bound for the CPMP}
-
-The lower bound is obtained by estimating the number of movements that belong to different movement types.
-
-\begin{enumerate}
-\setcounter{enumi}{0}
-\item Dirty--Clean movements
-\end{enumerate}
-
-The number of dirty containers in a given layout is $\sum_{s=1}^S d(s)$.
-Each dirty container requires at least one movement to become clean; thus, the lower bound of the number of Dirty--Clean movements is $\mathit{num}_\mathit{DC}=\sum_{s=1}^S d(s)$.
-
-\begin{enumerate}
-\setcounter{enumi}{1}
-\item Dirty--Dirty movements
-\end{enumerate}
-
-If all the stacks are dirty in a layout, at least one stack should become clean first, in order to create possibility to accommodate containers.
-This purpose is realized by moving dirty containers of a stack to other dirty stacks.
-The least number of Dirty--Dirty movements for making a stack clean is $\mathit{num}_\mathit{DD} = \min_s d(s)$.
-
-\begin{enumerate}
-\setcounter{enumi}{2}
-\item Clean--X movements
-\end{enumerate}
-
-Before proceeding to explain the calculation of Clean--X movements, the concept of skyline should be introduced first.
-A skyline is any vertical partition that separates a layout into higher and lower parts, where the lower part must be clean.
-A skyline can be represented by a vector $\mathit{SL}$ such that each element $\mathit{SL}_s$ represents the skyline segment across stack $s$.
-The tier and group numbers of $\mathit{SL}_s$ are equal to those of the container underneath.
-For example, in Figure \ref{fig5}, the bold line presents a skyline of the layout with $\mathit{tn}(\mathit{SL}_{2})=3$ and $g(\mathit{SL}_{2})=1$.
-
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=0.25\textwidth]{fig5.pdf}
-\caption{A skyline of a layout}
-\label{fig5}
-\end{figure}
-
-Supply and demand vectors, denoted by $\mathbf S^\mathit{SL}$ and $\mathbf D^\mathit{SL}$, record the numbers of slots and containers above $\mathit{SL}$.
-The $g$-th element of $\mathbf S^\mathit{SL}$ is
-\[
-\mathbf S^\mathit{SL}_g=\sum_{s:g(\mathit{SL}_s)=g}H-\mathit{tn}(\mathit{SL}_s)\textrm{,}
-\]
-whereas the $g$-th element of $\mathbf D^\mathit{SL}$ is the number of containers with group labels $g$ above $\mathit{SL}$.
-
-For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as Clean--X movements.
-The number of moved clean containers is a lower bound of the number of Clean--X movements.
-Ideally, pre-marshalling work involves dirty containers only and leaves clean containers unmoved.
-In some cases, however, achieving a clean layout is impossible if keeping all the clean containers unmoved.
-The number of clean containers that need to be moved can be counted by the following process: given a bay, all the dirty containers and a set of clean containers $C$ are removed from the layout, then slots are reassigned to removed containers.
-The resultant layout is required to be clean.
-Removed containers within a stack should be consecutive, i.e., if two containers from the same stack are removed, containers between them are also removed.
-The size of the smallest $C$ is the lower bound of the number of required Clean--X movements ($\mathit{num}_{CX}$).
-Finding the smallest $C$ is equivalent to finding the skyline with the fewest clean containers in its higher part (smallest skyline), such that the differences of the supply and demand vectors (surpluses) for all groups are non-negative (see Equation \ref{equ:3}).
-
-\begin{equation}
-\label{equ:3}
-\sum_{i\ge g}\mathbf S^\mathit{SL}_i-\sum_{i\ge g}\mathbf D^\mathit{SL}_i\ge0, \quad g=1,\dots,G\textrm{.}
-\end{equation}
-
-To find the smallest skyline, a basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn.
-Next, a depth-first-search (DFS) is deployed to push a certain segment of $\mathit{SL}$ one tier down in each branch.
-The leaves of the search tree are all the skylines with non-negative surpluses; the one with the fewest pushes is selected and the number of pushes is $\mathit{num}_\mathit{CX}$.
-
-To conclude, the lower bound is finally yielded as $\mathit{LB}_\mathit{DFS}=\mathit{num}_\mathit{DC}+\mathit{num}_\mathit{DD}+\mathit{num}_\mathit{CX}$.
-
-\subsection{Computing Clean--X movements by maximum knapsack}
-
-The lower bound $\mathit{LB}_\mathit{DFS}$ is time consuming because a DFS is used to calculate $\mathit{num}_{\mathit{CX}}$.
-A maximum knapsack method (MKM) is proposed to approximate $\mathit{num}_{CX}$.
-A basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn, then the smallest skyline with non-negative surplus for a single group instead of all groups is obtained.
-This search is repeated for each group, and the largest number of pushes is selected amongst all groups.
-
-For a given group label $g$, a knapsack problem is solved to find the smallest skyline with non-negative surplus in terms of $g$.
-Stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s$ and cost $c_s$.
-The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$.
-Every item can only be selected at most once.
-$c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g$, while $v_s$ is the resultant number of slots available for group $g$, i.e., $v_s=c_s+e(s)$.
-$V$ is the number of dirty containers with group labels $g(c)\ge g$.
-The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$.
-The integer programming model of this knapsack problem is given in Equation \ref{equ:4} and can be solved easily by dynamic programming.
-
-\begin{equation}
-\label{equ:4}
-\begin{array}{rl}
-\min & \sum_{s=1}^S c_s x_s\\
-\mathrm{s.t.} &\sum_{s=1}^S v_s x_s\ge V\\
-&x_s\in\{0,1\}, \quad s=1,\dots,S\textrm{.}
-\end{array}
-\end{equation}
-
-MKM is not as precise as DFS, but the solution gap is quite small and the computation speed is improved.
-The lower bound provided by MKM is denoted by $\mathit{LB}_{\mathit{MKM}}$.
-
-\subsection{Comparison with existing lower bound}
-
-The current state-of-the-art lower bound $\mathit{LB}_\mathit{BF}$ is proposed by \cite{BF2012} which also consists of three parts: Dirty--Clean, Dirty--Dirty and Clean--X movements.
-The first two types are calculated in the same way as $\mathit{LB}_\mathit{DFS}$ and $\mathit{LB}_\mathit{MKM}$ in this paper. The calculation of Clean--X movements is different.
-A basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn, then \cite{BF2012} only take the group label $g^*$ with the smallest surplus $g^*=\arg\min_g\sum_{i\ge g}\mathbf S^\mathit{SL}_i-\sum_{i\ge g}\mathbf D^\mathit{SL}_i$.
-
-If $\mathit{min}=\sum_{i\ge g^*}\mathbf D^\mathit{SL}_i-\sum_{i\ge g^*}\mathbf S^\mathit{SL}_i$ is negative, it means that clean containers need to be moved to accommodate $|\mathit{min}|$ dirty containers.
-The number of moved clean containers $\mathit{num}_\mathit{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (as a matter of fact, it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\mathit{min}|$ dirty containers need at least $\big\lceil{|\mathit{min}|}/{H}\big\rceil$ stacks.
-As slots supply of stacks with $g(\mathit{SL}_s)\ge g^*$ have been calculated into $\sum_{i\ge g^*}\mathbf S^\mathit{SL}_i$, only stacks with $g(\mathit{SL}_s)< g^*$ can supply slots for $|\mathit{min}|$ dirty containers.
-From such stacks, the first $\big\lceil{|\mathit{min}|}/{H}\big\rceil$ stacks (denoted by set $\mathit{AS}$) with the smallest values of $c_s$ are selected, where $c_s$ is the number of clean containers in a stack $s$ to be moved to accommodate group $g^*$.
-Finally, $\mathit{num}_\mathit{CX}=\sum_{s\in \mathit{AS}}c_s$.
-
-From the mathematical perspective, the method of \cite{BF2012} is equivalent to solving the following model: stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s'$ and cost $c_s$.
-The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$.
-Every item can only be selected at most once.
-$c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, while $v_s'$ is the resultant number of slots available for group $g^*$.
-According to \cite{BF2012}, $v_s'=H$ if $g(\mathit{SL}_s)<g^*$; otherwise, $v_s'=c_s+e(s)$.
-$V$ is the number of dirty containers with group labels $g(c)\ge g^*$.
-The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$.
-The integer programming model is shown in Equation \ref{equ:5}.
-
-\begin{equation}
-\label{equ:5}
-\begin{array}{rl}
-\min & \sum_{s=1}^S c_s x_s\\
-\mathrm{s.t.} &\sum_{s=1}^S v_s' x_s\ge V\\
-&x_s\in\{0,1\}, \quad s=1,\dots,S\textrm{.}
-\end{array}
-\end{equation}
-
-Comparing Model \ref{equ:4} with Model \ref{equ:5}, all the parameters are the same except $v_s$ and $v_s'$.
-Since $v_s\le v_s'$ for any $s$, any feasible solution to Model \ref{equ:5} is a feasible solution to Model \ref{equ:4}, while the reverse does not stand.
-The solution space of Model \ref{equ:5} is a superset of that of Model \ref{equ:4}, thus the optimal solution to Model \ref{equ:4} is no smaller than that to Model \ref{equ:5}.
-Furthermore, \cite{BF2012} only solve Model \ref{equ:5} once for $g^*$, whereas this paper solves Model \ref{equ:4} for every group and then takes the maximum objective value as $\mathit{num}_\mathit{CX}$.
-As a result, the lower bound $\mathit{LB}_\mathit{MKM}$ dominates $\mathit{LB}_\mathit{BF}$: $\mathit{LB}_\mathit{BF}\le \mathit{LB}_\mathit{MKM}\le \mathit{LB}_\mathit{DFS}$.
-
-\subsection{Lower bound for the CPMPDS}
-
-
-The lower bound for the CPMPDS also consists of three parts: Dirty--Clean, Dirty--Dirty, and Clean--X movements.
-
-The lower bound of Dirty--Clean movements is equal to the number of dirty containers.
-For Dirty--Dirty movements, $\mathit{num}_\mathit{DD}=\min_{s\neq s_d} d(s)$, where $s_d$ is the dummy stack.
-If all the ordinary stacks are dirty, then dirty containers from at least one ordinary stack need to be relocated to other dirty ordinary stacks or the dummy stack.
-In both situations, these relocated containers are still dirty after relocation.
-
-The lower bound of Clean--X movements is the number of clean containers that need to be moved, so as to make all the containers clean and the dummy stack empty, which is equivalent to assigning containers only to the ordinary stacks and ignoring the dummy stack.
-
-Based on the analysis above, $\mathit{LB}_\mathit{DFS}$ ($\mathit{LB}_\mathit{MKM}$) for a CPMPDS instance is equal to that for the corresponding CPMP instance with the dummy stack removed.
+%\section{Lower bound}
+%\label{sec:cf}
+%
+%In this section, a new method is proposed to calculate the lower bound of the number of necessary movements to reach a clean layout.
+%The calculation of the lower bound for the CPMP is demonstrated first.
+%The lower bound for the CPMPDS only requires a slight modification on that for the CPMP.
+%
+%\subsection{Lower bound for the CPMP}
+%
+%The lower bound is obtained by estimating the number of movements that belong to different movement types.
+%
+%\begin{enumerate}
+%\setcounter{enumi}{0}
+%\item Dirty--Clean movements
+%\end{enumerate}
+%
+%The number of dirty containers in a given layout is $\sum_{s=1}^S d(s)$.
+%Each dirty container requires at least one movement to become clean; thus, the lower bound of the number of Dirty--Clean movements is $\mathit{num}_\mathit{DC}=\sum_{s=1}^S d(s)$.
+%
+%\begin{enumerate}
+%\setcounter{enumi}{1}
+%\item Dirty--Dirty movements
+%\end{enumerate}
+%
+%If all the stacks are dirty in a layout, at least one stack should become clean first, in order to create possibility to accommodate containers.
+%This purpose is realized by moving dirty containers of a stack to other dirty stacks.
+%The least number of Dirty--Dirty movements for making a stack clean is $\mathit{num}_\mathit{DD} = \min_s d(s)$.
+%
+%\begin{enumerate}
+%\setcounter{enumi}{2}
+%\item Clean--X movements
+%\end{enumerate}
+%
+%Before proceeding to explain the calculation of Clean--X movements, the concept of skyline should be introduced first.
+%A skyline is any vertical partition that separates a layout into higher and lower parts, where the lower part must be clean.
+%A skyline can be represented by a vector $\mathit{SL}$ such that each element $\mathit{SL}_s$ represents the skyline segment across stack $s$.
+%The tier and group numbers of $\mathit{SL}_s$ are equal to those of the container underneath.
+%For example, in Figure \ref{fig5}, the bold line presents a skyline of the layout with $\mathit{tn}(\mathit{SL}_{2})=3$ and $g(\mathit{SL}_{2})=1$.
+%
+%
+%\begin{figure}[!htb]
+%\centering
+%\includegraphics[width=0.25\textwidth]{fig5.pdf}
+%\caption{A skyline of a layout}
+%\label{fig5}
+%\end{figure}
+%
+%Supply and demand vectors, denoted by $\mathbf S^\mathit{SL}$ and $\mathbf D^\mathit{SL}$, record the numbers of slots and containers above $\mathit{SL}$.
+%The $g$-th element of $\mathbf S^\mathit{SL}$ is
+%\[
+%\mathbf S^\mathit{SL}_g=\sum_{s:g(\mathit{SL}_s)=g}H-\mathit{tn}(\mathit{SL}_s)\textrm{,}
+%\]
+%whereas the $g$-th element of $\mathbf D^\mathit{SL}$ is the number of containers with group labels $g$ above $\mathit{SL}$.
+%
+%For ease of explanation, Clean--Dirty and Clean--Clean movements are merged as Clean--X movements.
+%The number of moved clean containers is a lower bound of the number of Clean--X movements.
+%Ideally, pre-marshalling work involves dirty containers only and leaves clean containers unmoved.
+%In some cases, however, achieving a clean layout is impossible if keeping all the clean containers unmoved.
+%The number of clean containers that need to be moved can be counted by the following process: given a bay, all the dirty containers and a set of clean containers $C$ are removed from the layout, then slots are reassigned to removed containers.
+%The resultant layout is required to be clean.
+%Removed containers within a stack should be consecutive, i.e., if two containers from the same stack are removed, containers between them are also removed.
+%The size of the smallest $C$ is the lower bound of the number of required Clean--X movements ($\mathit{num}_{CX}$).
+%Finding the smallest $C$ is equivalent to finding the skyline with the fewest clean containers in its higher part (smallest skyline), such that the differences of the supply and demand vectors (surpluses) for all groups are non-negative (see Equation \ref{equ:3}).
+%
+%\begin{equation}
+%\label{equ:3}
+%\sum_{i\ge g}\mathbf S^\mathit{SL}_i-\sum_{i\ge g}\mathbf D^\mathit{SL}_i\ge0, \quad g=1,\dots,G\textrm{.}
+%\end{equation}
+%
+%To find the smallest skyline, a basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn.
+%Next, a depth-first-search (DFS) is deployed to push a certain segment of $\mathit{SL}$ one tier down in each branch.
+%The leaves of the search tree are all the skylines with non-negative surpluses; the one with the fewest pushes is selected and the number of pushes is $\mathit{num}_\mathit{CX}$.
+%
+%To conclude, the lower bound is finally yielded as $\mathit{LB}_\mathit{DFS}=\mathit{num}_\mathit{DC}+\mathit{num}_\mathit{DD}+\mathit{num}_\mathit{CX}$.
+%
+%\subsection{Computing Clean--X movements by maximum knapsack}
+%
+%The lower bound $\mathit{LB}_\mathit{DFS}$ is time consuming because a DFS is used to calculate $\mathit{num}_{\mathit{CX}}$.
+%A maximum knapsack method (MKM) is proposed to approximate $\mathit{num}_{CX}$.
+%A basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn, then the smallest skyline with non-negative surplus for a single group instead of all groups is obtained.
+%This search is repeated for each group, and the largest number of pushes is selected amongst all groups.
+%
+%For a given group label $g$, a knapsack problem is solved to find the smallest skyline with non-negative surplus in terms of $g$.
+%Stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s$ and cost $c_s$.
+%The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$.
+%Every item can only be selected at most once.
+%$c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g$, while $v_s$ is the resultant number of slots available for group $g$, i.e., $v_s=c_s+e(s)$.
+%$V$ is the number of dirty containers with group labels $g(c)\ge g$.
+%The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$.
+%The integer programming model of this knapsack problem is given in Equation \ref{equ:4} and can be solved easily by dynamic programming.
+%
+%\begin{equation}
+%\label{equ:4}
+%\begin{array}{rl}
+%\min & \sum_{s=1}^S c_s x_s\\
+%\mathrm{s.t.} &\sum_{s=1}^S v_s x_s\ge V\\
+%&x_s\in\{0,1\}, \quad s=1,\dots,S\textrm{.}
+%\end{array}
+%\end{equation}
+%
+%MKM is not as precise as DFS, but the solution gap is quite small and the computation speed is improved.
+%The lower bound provided by MKM is denoted by $\mathit{LB}_{\mathit{MKM}}$.
+%
+%\subsection{Comparison with existing lower bound}
+%
+%The current state-of-the-art lower bound $\mathit{LB}_\mathit{BF}$ is proposed by \cite{BF2012} which also consists of three parts: Dirty--Clean, Dirty--Dirty and Clean--X movements.
+%The first two types are calculated in the same way as $\mathit{LB}_\mathit{DFS}$ and $\mathit{LB}_\mathit{MKM}$ in this paper. The calculation of Clean--X movements is different.
+%A basic skyline $\mathit{SL}$ that separates clean and dirty containers is drawn, then \cite{BF2012} only take the group label $g^*$ with the smallest surplus $g^*=\arg\min_g\sum_{i\ge g}\mathbf S^\mathit{SL}_i-\sum_{i\ge g}\mathbf D^\mathit{SL}_i$.
+%
+%If $\mathit{min}=\sum_{i\ge g^*}\mathbf D^\mathit{SL}_i-\sum_{i\ge g^*}\mathbf S^\mathit{SL}_i$ is negative, it means that clean containers need to be moved to accommodate $|\mathit{min}|$ dirty containers.
+%The number of moved clean containers $\mathit{num}_\mathit{CX}$ is estimated by \cite{BF2012} as follows: suppose one stack is able to (as a matter of fact, it may not be able to) accommodate $H$ dirty containers with $g\ge g^*$, then $|\mathit{min}|$ dirty containers need at least $\big\lceil{|\mathit{min}|}/{H}\big\rceil$ stacks.
+%As slots supply of stacks with $g(\mathit{SL}_s)\ge g^*$ have been calculated into $\sum_{i\ge g^*}\mathbf S^\mathit{SL}_i$, only stacks with $g(\mathit{SL}_s)< g^*$ can supply slots for $|\mathit{min}|$ dirty containers.
+%From such stacks, the first $\big\lceil{|\mathit{min}|}/{H}\big\rceil$ stacks (denoted by set $\mathit{AS}$) with the smallest values of $c_s$ are selected, where $c_s$ is the number of clean containers in a stack $s$ to be moved to accommodate group $g^*$.
+%Finally, $\mathit{num}_\mathit{CX}=\sum_{s\in \mathit{AS}}c_s$.
+%
+%From the mathematical perspective, the method of \cite{BF2012} is equivalent to solving the following model: stacks in the bay are regarded as items, where each item $s\in\{1,\dots,S\}$ has value $v_s'$ and cost $c_s$.
+%The objective is to select a set of items with the lowest cost such that the total value selected is at least $V$.
+%Every item can only be selected at most once.
+%$c_s$ is the number of clean containers in stack $s$ to be moved to accommodate group $g^*$, while $v_s'$ is the resultant number of slots available for group $g^*$.
+%According to \cite{BF2012}, $v_s'=H$ if $g(\mathit{SL}_s)<g^*$; otherwise, $v_s'=c_s+e(s)$.
+%$V$ is the number of dirty containers with group labels $g(c)\ge g^*$.
+%The decision variable $x_s$ is 1 if stack $s$ is selected; otherwise, $x_s=0$.
+%The integer programming model is shown in Equation \ref{equ:5}.
+%
+%\begin{equation}
+%\label{equ:5}
+%\begin{array}{rl}
+%\min & \sum_{s=1}^S c_s x_s\\
+%\mathrm{s.t.} &\sum_{s=1}^S v_s' x_s\ge V\\
+%&x_s\in\{0,1\}, \quad s=1,\dots,S\textrm{.}
+%\end{array}
+%\end{equation}
+%
+%Comparing Model \ref{equ:4} with Model \ref{equ:5}, all the parameters are the same except $v_s$ and $v_s'$.
+%Since $v_s\le v_s'$ for any $s$, any feasible solution to Model \ref{equ:5} is a feasible solution to Model \ref{equ:4}, while the reverse does not stand.
+%The solution space of Model \ref{equ:5} is a superset of that of Model \ref{equ:4}, thus the optimal solution to Model \ref{equ:4} is no smaller than that to Model \ref{equ:5}.
+%Furthermore, \cite{BF2012} only solve Model \ref{equ:5} once for $g^*$, whereas this paper solves Model \ref{equ:4} for every group and then takes the maximum objective value as $\mathit{num}_\mathit{CX}$.
+%As a result, the lower bound $\mathit{LB}_\mathit{MKM}$ dominates $\mathit{LB}_\mathit{BF}$: $\mathit{LB}_\mathit{BF}\le \mathit{LB}_\mathit{MKM}\le \mathit{LB}_\mathit{DFS}$.
+%
+%\subsection{Lower bound for the CPMPDS}
+%
+%
+%The lower bound for the CPMPDS also consists of three parts: Dirty--Clean, Dirty--Dirty, and Clean--X movements.
+%
+%The lower bound of Dirty--Clean movements is equal to the number of dirty containers.
+%For Dirty--Dirty movements, $\mathit{num}_\mathit{DD}=\min_{s\neq s_d} d(s)$, where $s_d$ is the dummy stack.
+%If all the ordinary stacks are dirty, then dirty containers from at least one ordinary stack need to be relocated to other dirty ordinary stacks or the dummy stack.
+%In both situations, these relocated containers are still dirty after relocation.
+%
+%The lower bound of Clean--X movements is the number of clean containers that need to be moved, so as to make all the containers clean and the dummy stack empty, which is equivalent to assigning containers only to the ordinary stacks and ignoring the dummy stack.
+%
+%Based on the analysis above, $\mathit{LB}_\mathit{DFS}$ ($\mathit{LB}_\mathit{MKM}$) for a CPMPDS instance is equal to that for the corresponding CPMP instance with the dummy stack removed.
 
 \section{Target-guided heuristic}
 \label{sec:heu}
@@ -493,7 +496,7 @@ This preference distributes fixed containers evenly among stacks.
 Thus, two-tuple $(f(c,s), h(s)-\mathit{uf}(s))$ evaluates the attractiveness.
 
 Each candidate container and each candidate stack make up a candidate pair.
-All the candidate pairs are sorted in an ascending lexicographical order of evaluation values, and the best one is selected as the target pair.
+All the candidate pairs are sorted in an ascending lexicographical order of evaluation values, and the smallest one is selected as the target pair.
 
 \subsection{Giant move}
 
@@ -653,7 +656,7 @@ Moreover, over-fulfillment may cause stacks fulfilled to be emptied in later sta
 
 \subsection{Termination analysis}
 
-In Algorithm \ref{alg:heu}, the proposed heuristic fixes containers one by one and therefore guarantees a solution for any feasible instance. The fact that a fixed container may be moved when fixing another container was not mentioned.
+In Algorithm \ref{alg:heu}, the proposed heuristic fixes containers one by one and therefore guarantees a feasible solution for any instance. The fact that a fixed container may be moved when fixing another container was not mentioned.
 If this situation occurs, the heuristic cannot be guaranteed to terminate because it may fall into cycling.
 Fortunately, this issue is successfully resolved: a fixed container can only be moved when $\mathit{nslot}=0$.
 In other situations, all the moved containers are unfixed ones. Once a fixed container is moved, it recovers to its fixed position (i.e., the last scenarios of Case 1 and 2).
@@ -684,7 +687,7 @@ The scores of clean layouts are marked by the number of movements executed from 
 In the end, the score of a child of $l$ (layout at depth 1) is the best score among scores of clean offspring layouts.
 
 Every layout in the beam generates at most $\mathit{tw}$ children based on a probing tree mentioned above, and there are at most $\mathit{bw}$ layouts in the beam.
-Therefore, at most $\mathit{tw}\times \mathit{bw}$ children are generated.
+Therefore, at most $\mathit{tw}\cdot \mathit{bw}$ children are generated.
 They are sorted in a descending order of scores, and the first $\mathit{bw}$ children are selected into the beam for the next iteration.
 The pseudo-code is shown in Algorithm \ref{alg:bsg}.
 
@@ -734,31 +737,32 @@ If the dummy stack is ignored and a CPMPDS instance is attempted to be solved by
 \label{sec:ce}
 
 The proposed algorithms are tested against the benchmark test data sets provided by \cite{BF2012} to evaluate their effectiveness.
-The performance of the proposed lower bounds and that of \cite{BF2012} is first compared. Then a series of experiments are conducted to evaluate the performance of the evaluation scheme and search parameters, which is followed by the results on benchmark data.
+%The performance of the proposed lower bounds and that of \cite{BF2012} is first compared. 
+A series of experiments are conducted to evaluate the performance of the evaluation scheme and search parameters, which is followed by the results on benchmark data.
 A data set for the new CPMPDS is generated, and the result is presented for further reference.
 Experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz with Windows 7 operating system.
 
-\subsection {Lower bound comparison}
-
-Benchmark data are used to compare the performance of $\mathit{LB}_\mathit{DFS}$, $\mathit{LB}_\mathit{MKM}$, and $\mathit{LB}_\mathit{BF}$.
-In Table \ref{tab:lowerbound}, columns DFS, MKM, and BF indicate average lower bounds of instances in corresponding data sets calculated by $\mathit{LB}_\mathit{DFS}$, $\mathit{LB}_\mathit{MKM}$ and $\mathit{LB}_\mathit{BF}$, receptively.
-As such, columns tDFS, tMKM and tBF are the average computational time of the three methods in seconds which can be regarded as no difference.
-Table \ref{tab:lowerbound} shows that DFS and MKM have better performance than BF, but the improvement is tiny.
-
-\begin{table}[!htb]
-\centering
-\caption{\label{tab:lowerbound} Lower bound comparison}
-\begin{tabular}{c|c|c|c|c|c|c}
-    \hline
-    data &    DFS     &     MKM   &   BF     & tDFS    & tMKM   & tBF \\
-    \hline
-    LC       &   29.780   &   29.659  &  29.659  & $<1$    & $<1$   & $<1$ \\
-    CV       &   17.725   &   17.725  &  17.725  & $<1$    & $<1$   & $<1$ \\
-    BF       &   57.239   &   57.233  &  57.231  & $<1$    & $<1$   & $<1$ \\
-    \hline
-    \end{tabular}%
-
-\end{table}
+%\subsection {Lower bound comparison}
+%
+%Benchmark data are used to compare the performance of $\mathit{LB}_\mathit{DFS}$, $\mathit{LB}_\mathit{MKM}$, and $\mathit{LB}_\mathit{BF}$.
+%In Table \ref{tab:lowerbound}, columns DFS, MKM, and BF indicate average lower bounds of instances in corresponding data sets calculated by $\mathit{LB}_\mathit{DFS}$, $\mathit{LB}_\mathit{MKM}$ and $\mathit{LB}_\mathit{BF}$, respectively.
+%As such, columns tDFS, tMKM and tBF are the average computational time of the three methods in seconds which can be regarded as no difference.
+%Table \ref{tab:lowerbound} shows that DFS and MKM have better performance than BF, but the improvement is tiny.
+%
+%\begin{table}[!htb]
+%\centering
+%\caption{\label{tab:lowerbound} Lower bound comparison}
+%\begin{tabular}{c|c|c|c|c|c|c}
+%    \hline
+%    data &    DFS         &     MKM   &   BF     & tDFS    & tMKM   & tBF \\
+%    \hline
+%    LC       &   27.12    &   27.02   &  27.02   & $<1$    & $<1$   & $<1$ \\
+%    CV       &   17.725   &   17.725  &  17.725  & $<1$    & $<1$   & $<1$ \\
+%    BF       &   57.239   &   57.233  &  57.231  & $<1$    & $<1$   & $<1$ \\
+%    \hline
+%    \end{tabular}%
+%
+%\end{table}
 
 \subsection {Parameter configuration}
 \label{sub:config}
@@ -775,8 +779,8 @@ The effectiveness of different evaluation schemes was first investigated.
 Several combinations of parameters such as probing tree width and depth and beam width were selected to make the experiment more robust.
 
 Three evaluation schemes were tested in the experiment.
-The first evaluation scheme, denoted by \texttt{smallF-ran}, is performed by evaluating candidate pairs by $f(c,s)$ plus randomness, where a random pair is selected when some pairs have the same $f$ function value.
-The second evaluation scheme (denoted by \texttt{smallF-lowT}) prefers small two-tuple $(f(c,s),h(s)-\mathit{uf}(s))$, which are the same as the one used in TGH, BS-G and BS-B.
+The first evaluation scheme, denoted by \texttt{smallF-ran}, prefers small $f(c,s)$ and a random pair is selected when some pairs have the same $f$ function value.
+The second evaluation scheme (denoted by \texttt{smallF-lowT}) prefers lexicographically small two-tuple $(f(c,s),h(s)-\mathit{uf}(s))$, which are the same as the one used in TGH, BS-G and BS-B.
 The last evaluation scheme, denoted by \texttt{smallF-largeS}, prefers small $f(c,s)$ and large $\mathit{sum}$, where $\mathit{sum}$ is the sum of group labels of containers above the target container if the target container and stack are within the same stack; otherwise, $\mathit{sum}$ is the sum of group labels of containers above the target container, in conjunction with those unfixed containers in the target stack.
 
 The above evaluation schemes were only tested on BS-G and the probing tree width is set equal to the beam width.
@@ -876,7 +880,7 @@ The dirty ratio is the number of dirty containers in the initial layout divided 
 Columns BF2012, TGH, BS-G and BS-B are the average movements on each data group by the respective algorithms.
 The average run time in seconds by BF2012, BS-G and BS-B is reported in columns tBF2012, tBS-G and tBS-B, respectively.
 The run time of TGH is omitted from the table because it is less than 0.2s.
-Column $\mathit{LB}_\mathit{DFS}$ indicates the average lower bounds $\mathit{LB}_\mathit{DFS}$ on each data group and column gap is the gap between BS-B and $\mathit{LB}_\mathit{DFS}$.
+Column $\mathit{LB}$ indicates the average lower bound of \cite{BF2012} on each data group and column gap is the gap between BS-B and $\mathit{LB}$.
 The last row of the table shows the mean number of movements on LC.
 When calculating average time, times with ``$<1$''  and ``$<0.1$" are regarded as 1 and 0.1 s, respectively.
 Those results that our algorithms outperform BF2012 are highlighted in bold.
@@ -890,16 +894,15 @@ However, the improvement is minimal, because the size of test instances is too s
     \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
 
     \hline
-    group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}_\mathit{DFS}$ & gap\\
+    group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}$ & gap\\
     \hline
-    LC1   & 10   & 5  & 0.7  & 0.37 & 17   & $<1$ & 22   & 17         & $<0.1$ & 17             & $<1$  & 15 & 13.33\%\\
-    LC2a  & 12   & 6  & 0.69 & 0.38 & 22.6 & 1    & 26.9 & 23.2       & $<0.1$ & \textbf{22.3}  & $<1$  & 21.1 & 5.69\%\\
-    LC2b  & 12   & 6  & 0.69 & 0.7  & 38.4 & 2.1  & 46.7 & \textbf{38}& $<0.1$ & \textbf{37.9}  & 1.37  & 37.3 & 1.61\%\\
-    LC3a  & 12   & 6  & 0.75 & 0.39 & 23.7 & 1.4  & 29.1 & 23.9       & $<0.1$ & 23.7           & $<1$  & 22.3 & 6.28\%\\
-    LC3b  & 12   & 6  & 0.75 & 0.67 & 42.7 & 4.2  & 54.8 & 43.6       & $<1$   & \textbf{42.3}  & 10.33 & 39.9 & 6.02\%\\
+    LC1   & 10   & 5  & 0.7  & 0.37 & 17   & $<1$ & 22   & 17         & $<0.1$ & 17             & $<1$   & 15 & 13.33\%\\
+    LC2a  & 12   & 6  & 0.69 & 0.38 & 22.6 & 1    & 26.9 & 23.2       & $<0.1$ & \textbf{22.3}  & $<1$   & 21.1 & 5.69\%\\
+    LC2b  & 12   & 6  & 0.69 & 0.7  & 38.4 & 2.1  & 46.7 & \textbf{38}& $<0.1$ & \textbf{37.9}  & 1.37   & 37.3 & 1.61\%\\
+    LC3a  & 12   & 6  & 0.75 & 0.39 & 23.7 & 1.4  & 29.1 & 23.9       & $<0.1$ & 23.7           & $<1$   & 21.8 & 8.72\%\\
+    LC3b  & 12   & 6  & 0.75 & 0.67 & 42.7 & 4.2  & 54.8 & 43.6       & $<1$   & \textbf{42.3}  & 10.33  & 39.9 & 6.02\%\\
     \hline
-    Ave   & 11.6 & 5.8& 0.72 & 0.5  & 28.88& 1.94 & 35.9 & 29.14      & $<1$   & \textbf{28.64} & 2.69  & 27.12&
-    5.6\% \\
+    Ave   & 11.6 & 5.8& 0.72 & 0.5  & 28.88& 1.94 & 35.9 & 29.14      & $<1$   & \textbf{28.64} & 2.69   & 27.02& 6\%\\
     \hline
     \end{tabular}%
 \end{table*}%
@@ -914,7 +917,7 @@ Table \ref{tab:cv} illustrates the comparative result that both BS-G and BS-B su
   \caption{\label{tab:cv} Comparison on data set CV}
     \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
     \hline
-    group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}_\mathit{DFS}$ & gap\\
+    group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}$ & gap\\
     \hline
     CV1  & 3  & 9   & 0.33 & 0.6  & 10.5 & $<1$ & 12.1 & 10.6          & $<0.01$ & \textbf{10}   & $<0.01$ &7.9 & 26.58\%\\
     CV2  & 4  & 16  & 0.25 & 0.66 & 19.1 & $<1$ & 20.3 & \textbf{17.8} & $<0.01$ & \textbf{17.2} & $<0.1$ &13.6 & 26.47\%\\
@@ -935,7 +938,7 @@ Finally, the result of data set BF is shown in Table \ref{tab:bf}. BF is generat
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c}
   \hline
-  group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}_\mathit{DFS}$ & gap\\
+  group & stack & height & usage rate & dirty ratio & BF2012 & tBF2012 & TGH   & BS-G  & tBS-G & BS-B  & tBS-B & $\mathit{LB}$ & gap\\
     \hline
     BF1   & 16 & 5  & 0.6 & 0.6  & 29.1  & $<1$  & 29.1   & 29.1          & $<0.01$ & 29.1           & $<0.01$ & 29.1  & 0\\
     BF2   & 16 & 5  & 0.6 & 0.75 & 36    & $<1$  & 36     & 36            & $<0.01$ & 36             & $<0.01$ & 36    & 0\\
@@ -951,7 +954,7 @@ Finally, the result of data set BF is shown in Table \ref{tab:bf}. BF is generat
     BF12  & 16 & 8  & 0.6 & 0.75 & 60.2  & 28.2  & 63.45  & \textbf{59.2} & $<0.1$  & \textbf{58.65} & 3.47    & 58.2  & 0.77\%\\
     BF13  & 16 & 8  & 0.8 & 0.6  & 84.6  & 60    & 107.45 & \textbf{79.75}& 2.67    & \textbf{75.4}  & 167.50  & 65.95 & 14.33\%\\
     BF14  & 16 & 8  & 0.8 & 0.76 & 105.6 & 60    & 125.25 & \textbf{96.3} & 4.62    & \textbf{93.1}  & 293.56  & 81.25 & 14.58\%\\
-    BF15  & 16 & 8  & 0.8 & 0.6  & 95.5  & 60    & 110.9  & \textbf{82.8} & 2.66    & \textbf{78.7}  & 176.51  & 65.85 & 19.51\%\\
+    BF15  & 16 & 8  & 0.8 & 0.6  & 95.5  & 60    & 110.9  & \textbf{82.8} & 2.66    & \textbf{78.7}  & 176.51  & 65.75 & 19.7\%\\
     BF16  & 16 & 8  & 0.8 & 0.76 & 109.8 & 60    & 133.3  & \textbf{98}   & 4.28    & \textbf{93.55} & 275.25  & 81.75 & 14.43\%\\
     BF17  & 20 & 5  & 0.6 & 0.6  & 36.3  & 3.5   & 36.45  & \textbf{36.25}& $<0.01$ & \textbf{36.25} & $<0.01$ & 36.25 & 0\\
     BF18  & 20 & 5  & 0.6 & 0.75 & 45    & $<1$  & 45     & 45            & $<0.01$ & 45             & $<0.01$ & 45    & 0\\
@@ -965,12 +968,12 @@ Finally, the result of data set BF is shown in Table \ref{tab:bf}. BF is generat
     BF26  & 20 & 8  & 0.6 & 0.75 & 74    & 30.8  & 74.35  & \textbf{72.6} & $<0.1$  & \textbf{72.35} & 2.53    & 72.1  & 0.35\%\\
     BF27  & 20 & 8  & 0.6 & 0.6  & 64    & 55.9  & 71.8   & \textbf{62.75}& $<0.1$  & \textbf{61.85} & 16.12   & 60.35 & 2.49\%\\
     BF28& 20 & 8  & 0.6 & 0.75 & 74.9  & 44.7  & 76.1   & \textbf{73}   & $<0.1$  & \textbf{72.65} & 5.82    & 72.35 & 0.41\%\\
-    BF29  & 20 & 8  & 0.8 & 0.6  & 106.6 & 60    & 120.55 & \textbf{96.05}& 8.5     & \textbf{92.05} & 396.10  & 81.6  & 12.81\%\\
+    BF29  & 20 & 8  & 0.8 & 0.6  & 106.6 & 60    & 120.55 & \textbf{96.05}& 8.5     & \textbf{92.05} & 396.10  & 81.5  & 12.94\%\\
     BF30  & 20 & 8  & 0.8 & 0.75 & 128.5 & 60    & 143.05 &\textbf{ 114.3}& 11.4    & \textbf{110.25}& 581.61  & 99.65 & 10.64\%\\
-    BF31  & 20 & 8  & 0.8 & 0.6  & 115.2 & 60    & 128.15 & \textbf{98.9} & 9.17    & \textbf{93.95} & 429.09  & 81.15 & 15.77\%\\
+    BF31  & 20 & 8  & 0.8 & 0.6  & 115.2 & 60    & 128.15 & \textbf{98.9} & 9.17    & \textbf{93.95} & 429.09  & 81.10 & 15.84\%\\
     BF32  & 20 & 8  & 0.8 & 0.75 & 132.3 & 60    & 147.3  & \textbf{115.55}& 8.32   & \textbf{111.8} & 612.55  & 99.2  & 12.7\%\\
     \hline
-    Ave   & 18 & 6.5& 0.7 & 0.68 & 65.02 & 29.35 & 72.81  & \textbf{62.12}& 1.64    & \textbf{60.66} & 96.97   & 57.24 & 5.97\%\\
+    Ave   & 18 & 6.5& 0.7 & 0.68 & 65.02 & 29.35 & 72.81  & \textbf{62.12}& 1.64    & \textbf{60.66} & 96.97   & 57.23 & 5.99\%\\
    \hline
 \end{tabular}
 \end{table*}
@@ -1046,7 +1049,7 @@ The results by TGH, BS-G and BS-B are shown in Table \ref{tab:cpmpds}.
 The container pre-marshalling problem is an important topic at container terminals, and its solution significantly affects the efficient use of container yards as well as competitiveness of container terminals.
 In particular, the CPMP with a dummy stack has been overlooked by the research community for a long time, although in reality, many terminals deploy layouts with transfer lanes.
 In this paper, the classical CPMP is solved, and a new variant the CPMPDS is proposed.
-A new improved lower bound is devised to compute the number of required movements.
+%A new improved lower bound is devised to compute the number of required movements.
 Three algorithms that guarantee termination are developed based on the idea of fixing containers one by one to solve the classical CPMP and new CPMPDS.
 Experiments show that our algorithms outperform existing methods on benchmark data for the CPMP; thus, BS-B can be regarded as the best algorithm for the CPMP/CPMPDS at present.
 Finally, a new data set for the CPMPDS is constructed for future reference.
