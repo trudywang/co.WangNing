@@ -213,8 +213,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-*.xlsx
-*.csv
 CPMP/major/latex-major/CPMP.aux
 CPMP/major/latex-major/CPMP.aux
 CPMP/major/latex-major/CPMP.aux
