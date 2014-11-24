@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{31}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\bibinfo}[2]{#2}
 \ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
@@ -17,6 +17,14 @@
   pre-marshalling problem}}.
 \newblock {\it \bibinfo{journal}{European Journal of Operational Research}\/},
   {\it \bibinfo{volume}{217}\/}, \bibinfo{pages}{531--540}.
+%Type = Article
+\bibitem[{Boysen et~al.(2013)Boysen, Fliedner, Jaehn \& Pesch}]{Boysen2013}
+\bibinfo{author}{Boysen, N.}, \bibinfo{author}{Fliedner, M.},
+  \bibinfo{author}{Jaehn, F.}, \& \bibinfo{author}{Pesch, E.},
+  \bibinfo{year}{2013}.
+\newblock \bibinfo{title}{A survey on container processing in railway yards}.
+\newblock {\it \bibinfo{journal}{Transportation Science}\/},  {\it
+  \bibinfo{volume}{47}\/}, \bibinfo{pages}{312--329}.
 %Type = Article
 \bibitem[{Carlo et~al.(2014)Carlo, Vis \& Roodbergen}]{Carlo2014}
 \bibinfo{author}{Carlo, H.~J.}, \bibinfo{author}{Vis, I.~F.}, \&
@@ -101,6 +109,16 @@
   and instances generator}}.
 \newblock {\it \bibinfo{journal}{Expert Systems with Applications}\/},  {\it
   \bibinfo{volume}{39}\/}, \bibinfo{pages}{8337--8349}.
+%Type = Article
+\bibitem[{Farahani et~al.(2014)Farahani, Rezapour, Drezner \&
+  Fallah}]{Farahani2014}
+\bibinfo{author}{Farahani, R.~Z.}, \bibinfo{author}{Rezapour, S.},
+  \bibinfo{author}{Drezner, T.}, \& \bibinfo{author}{Fallah, S.},
+  \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{Competitive supply chain network design: An overview
+  of classifications, models, solution techniques and applications}.
+\newblock {\it \bibinfo{journal}{Omega}\/},  {\it \bibinfo{volume}{45}\/},
+  \bibinfo{pages}{92 -- 118}.
 %Type = Article
 \bibitem[{Forster \& Bortfeldt(2012)}]{Forster2012A}
 \bibinfo{author}{Forster, F.}, \& \bibinfo{author}{Bortfeldt, A.},
@@ -194,8 +212,8 @@
 \newblock {\it \bibinfo{journal}{Computers \& Operations Research}\/},  {\it
   \bibinfo{volume}{37}\/}, \bibinfo{pages}{1139--1147}.
 %Type = Article
-\bibitem[{(Muppant) \& Adil(2008)}]{Muppani2008}
-\bibinfo{author}{(Muppant), V. R.~M.}, \& \bibinfo{author}{Adil, G.~K.},
+\bibitem[{Muppant \& Adil(2008)}]{Muppani2008}
+\bibinfo{author}{Muppant, V. R.~M.}, \& \bibinfo{author}{Adil, G.~K.},
   \bibinfo{year}{2008}.
 \newblock \bibinfo{title}{Efficient formation of storage classes for warehouse
   storage location assignment: A simulated annealing approach}.

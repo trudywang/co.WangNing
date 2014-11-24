@@ -79,7 +79,7 @@ Seaborne transportation is the cornerstone of international trade and undoubtedl
 According to the \textit{Review of Maritime Transport} (2012) released by the United Nations Conference on Trade and Development, approximately 80\% of global trade by volume is carried by sea.
 Among different ship types, container ships account for approximately 62\% of dry cargoes.
 Since the commencement of containerization, containers facilitate smooth flow of goods across multiple transportation modes without direct freight handling during the course of shipping.
-Accompany with the rapid growth of container shipping, container terminals face unprecedented development opportunities.
+Accompany with the rapid growth of container shipping, container terminals face unprecedented development opportunities \citep{Farahani2014}.
 The role of container terminals lies in providing physical spaces for container exchanges between sea and land.
 At terminals, a large proportion of land spaces (known as container yards or warehouses) are reserved for storing containers temporarily.
 A yard acts as a cache that ensures rapid loading and unloading of vessels.
@@ -115,7 +115,7 @@ Such forced movements are known as rehandles.
 Container rehandle is costly because this additional task decreases the efficiency of container retrieval, but consignors do not pay for this task.
 In the ideal situation, containers are piled in an order that is consistent with the retrieval order, i.e., containers retrieved earlier are located at higher tiers.
 However, the practical situation does not always match the ideal wish.
-The placement order of containers is decided by inland transportation or consignors, whereas the retrieval order of containers is decided by stowage planning or ship schedules \citep{Kanet1986}. 
+The placement order of containers is decided by inland transportation or consignors, whereas the retrieval order of containers is decided by stowage planning or ship schedules \citep{Kanet1986}.
 In most situations, the two orders are not exactly reverse. In reality, containers that arrive early do not necessarily depart late.
 
 Prior to ship arrival, containers in a bay can be rearranged to comply with their retrieval order.
@@ -156,7 +156,7 @@ The algorithms fix containers at appropriately chosen positions and avoid furthe
 This mechanism reduces the problem size continuously until the problem is solved.
 Thus, our algorithms guarantee termination.
 Experimental results demonstrate that the proposed algorithms are better than the state-of-the-art algorithm to the best of our knowledge.
-Although the CPMP is discussed in the context of maritime terminals, it is also applicable to other scenarios, such as warehouses \citep{Muppani2008} and railway yards.
+Although the CPMP is discussed in the context of maritime terminals, it is also applicable to other scenarios, such as warehouses \citep{Muppani2008} and railway yards \citep{Boysen2013}.
 
 The remainder of this paper is structured as follows.
 Section \ref{sec:litreview} presents an overview of existing works related to the CPMP.
@@ -607,7 +607,7 @@ At last, $c^*$ is moved to $s^*$.
 \end{enumerate}
 
 This scenario is similar to Scenario 3 of Case 1, where $c^*$ needs an empty slot for temporary storage.
-The selection of a top container from a full stack is the same as the process in Scenario 3 of Case 1.
+When selecting a top container from $s\in \textit{AS}$, the dirty container with the smallest group label is preferred; if no dirty container exists, then the clean container with the smallest group label is preferred.
 The selected top container is denoted by $c$ and its origin stack by $\mathit{cs}$.
 $c$ is first moved to $s^*$, then all the containers above $c^*$ are relocated to $s^*$.
 $c^*$ is moved to $\mathit{cs}$ for temporary storage.
@@ -737,7 +737,7 @@ If the dummy stack is ignored and a CPMPDS instance is attempted to be solved by
 \label{sec:ce}
 
 The proposed algorithms are tested against the benchmark test data sets provided by \cite{BF2012} to evaluate their effectiveness.
-%The performance of the proposed lower bounds and that of \cite{BF2012} is first compared. 
+%The performance of the proposed lower bounds and that of \cite{BF2012} is first compared.
 A series of experiments are conducted to evaluate the performance of the evaluation scheme and search parameters, which is followed by the results on benchmark data.
 A data set for the new CPMPDS is generated, and the result is presented for further reference.
 Experiments were conducted on a PC with Intel Core i7 CPU clocked at 3.40 GHz with Windows 7 operating system.

@@ -217,3 +217,7 @@ CPMP/major/latex-major/CPMP.aux
 CPMP/major/latex-major/CPMP.aux
 CPMP/major/latex-major/CPMP.aux
 CPMP/major/latex-major/CPMP.pdf
+*.aux
+*.aux
+*.bbl
+*.gz
