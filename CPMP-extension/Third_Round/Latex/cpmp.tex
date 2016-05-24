@@ -82,7 +82,7 @@
 
 
 \author[cityu]{Bo Jin\corref{cor}}
-\ead{msjinbo@cityu.edu.hk}
+\ead{bojin4-c@my.cityu.edu.hk}
 
 \author[syu]{Zizhen Zhang}
 \ead{zhangzizhen@gmail.com}
@@ -134,7 +134,7 @@ Containers in the same stack are operated in a last-in-first-out manner. To retr
 Container pre-marshalling addresses the reorganization of containers inside a storage area such that no reshuffle is further required when containers are retrieved. Hence, the aim of pre-marshalling is to improve terminals' performance level, including throughput rate per berth and turnaround time of vessels or road trucks \citep{kim2015}.
 
 The container pre-marshalling problem (CPMP) can be formally defined as follows. Containers are categorized into various groups, and each group is assigned with a group value. Given an initial layout of containers in a single bay, the CPMP aims at rearranging containers within the bay, such that containers in each stack are placed in a descending order of group values from the bottom up.
-The objective of CPMP is to find the best container rearrangement plan with the fewest number of container movements.
+The objective of the CPMP is to find the best container rearrangement plan with the fewest number of container movements.
 It is assumed that the future retrieval order of containers is known beforehand and no container arrives at or leaves from the bay during pre-marshalling.
 
 This paper designs a constructive heuristic which can be embedded later into frameworks such as beam search, large neighborhood search (LNS) and the greedy randomized adaptive search procedure (GRASP).
@@ -146,7 +146,7 @@ The second contribution lies in the new techniques proposed: container stability
 The third contribution is the improvement of single container rearrangement which is achieved based on the relationship between the number of available slots and that of the blocking containers. This improvement avoids unnecessary container movements in certain situations.
 
 The remainder of this paper is structured as follows. Section \ref{sec:literature} reviews existing approaches in the literature. Section \ref{sec:problem} formally describes the problem and lists the notation used throughout this paper. The concepts of state, state feasibility and container stability are introduced in Section \ref{sec:state}.
-The proposed heuristic and the associated techniques are explained in Section \ref{sec:fbh}. Section \ref{sec:experiment} illustrates the experimental results of benchmark instances, and Section \ref{sec:conclusion} concludes this paper and identifies future research directions.
+The proposed heuristic and the associated techniques are explained in Section \ref{sec:fbh}. Section \ref{sec:experiment} illustrates the experimental results for benchmark instances, and Section \ref{sec:conclusion} concludes this paper and identifies future research directions.
 
 \section{Recent work}
 \label{sec:literature}
@@ -165,7 +165,7 @@ A neighborhood search was proposed by \citet{lee2009}, which repeatedly modifies
 A feasible solution is further improved by a four-step procedure, and the diversity of the neighborhood is raised by multiple subroutines. The main drawback of the approach is the unreliability of random solution modifications, i.e., the feasibility of the new resultant solution is not always ensured.
 
 \citet{bort2012} described a tree search procedure for solving the problem.
-In the tree search procedure, solutions are constructed by compound moves instead of single moves. Moves are classified into four types, and only the most promising ones are adopted in the branching scheme. \citet{tierney2014} realized an A* algorithm with symmetry breaking rules, and \citet{van2014} presented an exact algorithm based on the branch and bound.
+In the tree search procedure, solutions are constructed by compound moves instead of single moves. Moves are classified into four types, and only the most promising ones are adopted in the branching scheme. \citet{tierney2014} realized an A* algorithm with symmetry breaking rules, and \citet{van2014} presented an exact algorithm based on the branch and bound algorithm.
 
 
 \citet{cas2009} provided a greedy heuristic named the corridor method for solving the problem. The heuristic selects the direction of movements in a randomized manner according to the attractiveness of available successors confined by the corridor.
@@ -186,7 +186,7 @@ The CPMP is restricted to the bay size, or more precisely, the dimensions of the
 Every container is labeled a group value $g \in\{1,\dots,G\}$. A container is \emph{orderly} if it is supported directly by the ground or another orderly container with equal or larger group value; otherwise, it is \emph{disorderly}. Other phrases in the recent literature that have the same meaning of ``orderly{\slash}disorderly''  include ``well{\slash}badly placed'' \citep{bort2012}, ``well-{\slash}non-located'' \citep{exp2012}, and ``clean{\slash}dirty'' \citep{wang2015}.
 
 Figure \ref{fig:bay} gives an example of a bay with $S=5$, $H=4$, and $N=13$. Containers are represented by boxes with their group values marked inside.
-Specially, disorderly containers are highlighted by gray backgrounds.
+Specially, disorderly containers are highlighted with gray backgrounds.
 The objective of the CPMP is to find an optimized sequence with the fewest container movements. By applying the obtained movement sequence to the initial layout, all the containers could be rearranged to be orderly.
 
 \begin{figure}[htbp]
@@ -255,7 +255,7 @@ If the skyline of stack $s$ coincides with the ground, then stack $s$ has $H$ sl
 For example, in Figure \ref{fig:exp2}, stack 1, 2 and 3 have 3, 2 and 5 slots with capabilities 2, 1 and 5, respectively. The total number of slots with capability $g$ in the whole bay is denoted by $r(g)$ (resource for group $g$).
 Similarly, the number of unfixed containers with group value $g$ is denoted by $d(g)$ (demand of group $g$).
 
-In a feasible state, the slots available for group $g$ (i.e., slots with capabilities no smaller than $g$) must exceed the demand of group $g$. That is,
+In a feasible state, the slots available for group $g$ (i.e., slots with capabilities no smaller than $g$) must meet the demand of group $g$. That is,
 \begin{equation*}
 \sum^G_{i=g+1}r(i)-\sum^G_{i=g+1}d(i)+r(g)\ge d(g),
 \end{equation*}
@@ -311,7 +311,7 @@ Consider a given feasible state. Disorderly containers are unstable. For any ord
 According to the definition, an unstable container is not allowed to be fixed in the current slot even if it is orderly, because the resultant state would be infeasible.
 Unstable containers must be moved in the future. Denote the stable height (number of stable containers) of stack $s$ by $\mathit{sh}(s)$, then we have $\boldsymbol{f}\le \boldsymbol{\mathit{sh}}\le \boldsymbol{o}\le \boldsymbol{h}$. If a container $c$ could become stable by moving it onto stack $s$, we say that stack $s$ can \emph{stabilize} $c$.
 
-Figure \ref{fig:stable} gives another example of a state. Fixed containers are labeled with solid squares and unstable containers are highlighted in gray backgrounds. Notice that the container in slot $(2,1)$ with group value $6$ is orderly but unstable.
+Figure \ref{fig:stable} gives another example of a state. Fixed containers are labeled with solid squares and unstable containers are highlighted with gray backgrounds. Notice that the container in slot $(2,1)$ with group value $6$ is orderly but unstable.
 
 \begin{figure}[htbp]
 \centering
@@ -333,7 +333,7 @@ A state $(\mathsf{L},\boldsymbol{f})$ is called an extreme state if $|\{s\in\mat
 The definition of extreme state is to emphasize the special case where $S-2$ stacks are fully fixed. In such a case, unfixed containers can only be moved between the other two stacks, say $a$ and $b$. An extreme state is feasible if and only if one of the following conditions is satisfied:
 \begin{enumerate}
 \item Both stacks $a$ and $b$ are orderly;
-\item Stack $a$ is orderly, and stack $b$ is disorderly. Stack $a$ is still orderly after all the disorderly containers of stack $b$ are moved to stack $a$.
+\item Stack $a$ is orderly, and stack $b$ is disorderly. Stack $a$ is still orderly after all the disorderly containers from stack $b$ are moved to stack $a$.
 \end{enumerate}
 
 \begin{definition}[Dead-end state]
@@ -347,7 +347,7 @@ We have the following proposition.
 In extremely dense instances such that $E<2(H-1)$, there exist possibilities of generating a dead-end state, while in instances with $E\ge2(H-1)$, dead-end states will never be generated.
 \end{proposition}
 
-When $E\ge 2(H-1)$, it has $N\le SH-2H+2$. When fewer than $S-2$ stacks are fully occupied, the state is not a dead-end state; when $S-2$ stacks are fully occupied, there are at most two extra containers in the left two stacks. The state is not a dead-end state, either. 
+When $E\ge 2(H-1)$, it has $N\le SH-2H+2$. When fewer than $S-2$ stacks are fully occupied, the state is not a dead-end state; when $S-2$ stacks are fully occupied, there are at most two extra containers in the remaining two stacks. The state is not a dead-end state, either. 
 Figure \ref{fig:non-dead-end} gives an example of an instance with $E\ge2(H-1)$, which has no chance to generate any dead-end state.
 
 For instances with $E<2(H-1)$, there exist possibilities of generating a dead-end state.
@@ -371,7 +371,7 @@ The heuristic can be implemented independently as a greedy algorithm, or be a ma
 In this paper, we optimize the order of container rearrangements as well as the sequence of movements in one rearrangement.
 
 The optimization is partially due to the concept of state feasibility.
-This is also the reason why our algorithm is called feasibility-based heuristic.
+This is also the reason why our algorithm is called a feasibility-based heuristic.
 Before a certain container is rearranged, the feasibility of the resultant state is always ensured.
 In other words, any rearrangement that leads to an infeasible state is eliminated.
 Due to the state feasibility check, we can explore larger space without sacrificing efficiency. The order of container rearrangements is dynamically determined as the algorithm goes on.
@@ -463,7 +463,7 @@ When $S-3$ stacks are fully fixed ($|i \in \mathbb S : f(i)= H| = S- 3$), and at
 
 \item If $\sum_{i\in\mathbb{S}}f(i) = N-2$, two containers remain unfixed. Suppose the last two unfixed containers are $a$ and $b$, and the valid task is $a\rightarrow s$ with $f(s)=H-1$. Because $a\rightarrow s$ is a valid task, so the fourth condition ($\Delta(\varphi)\ge H-f(s)$, for $\varphi\in (g(c),g(s,f(s))]$) is satisfied. Therefore, the resultant layout satisfies $\boldsymbol \Delta' \ge \boldsymbol{0}$ and only $b$ remains unfixed in the resultant layout. Hence, performing task $a\rightarrow s$ does not result in a dead-end state.
 
-\item If $\sum_{i\in\mathbb{S}} f(i)\le N-3$, at least 3 containers remain unfixed. If the next task is to fix a container to a stack $s$ with $f(s)=H-1$, the resultant layout might be a dead-end state. Taking Figure~\ref{fig:pre-extreme} as an example. Boxes with a solid square represent fixed containers. The task $1\rightarrow 3$ is valid since the surplus vector of the resultant state is non-negative, however, the resultant state is a dead-end state.
+\item If $\sum_{i\in\mathbb{S}} f(i)\le N-3$, at least 3 containers remain unfixed. If the next task is to fix a container to a stack $s$ with $f(s)=H-1$, the resultant layout might be a dead-end state. Taking Figure \ref{fig:pre-extreme} as an example. Boxes with a solid square represent fixed containers. The task $1\rightarrow 3$ is valid since the surplus vector of the resultant state is non-negative, however, the resultant state is a dead-end state.
 \end{enumerate}
 
 \begin{figure}[htbp]
@@ -486,7 +486,7 @@ Every valid task $c\rightarrow s$ in $\mathbb{T}$ is evaluated by a tuple with s
 \item the number of stable containers that need to be moved from the aim stack;
 \item the affected demand;
 \item the fixed height of aim stack;
-\item the negative of $g(c)$;
+\item the negative of $g(c)$.
 \end{enumerate}
 The tuples of valid tasks are compared lexicographically, and the task with the minimum tuple is selected as the next task. The six elements in the tuple will be explained in the following.
 
@@ -775,7 +775,7 @@ The most unattractive stack for receiving blocking containers is selected as the
 \BlankLine
 \end{algorithm}
 
-Function \BiSender{$\mss_1,k_1,\mss_2,k_2,\mathbb{R}$} performs relocations from two senders $\mss_1$ and $\mss_2$ to a receiver set $\mathbb{R}$, and the respective relocation quantities are $k_1$ and $k_2$ (Algorithm \ref{algo:bisender}).
+Function \BiSender{$\mss_1,k_1,\mss_2,k_2,\mathbb{R}$} performs relocations from two senders $\mss_1$ and $\mss_2$ to a receiver set $\mathbb{R}$, and the respective relocation quantities are $k_1$ and $k_2$ (refer to Algorithm \ref{algo:bisender}).
 The two top containers from two senders are compared and the one with a smaller tuple is moved first. In Algorithm \ref{algo:bisender}, $\vec{v}_1$ and $\vec{v}_2$ are tuple results of function \EvalMove.
 
 Likewise, function \BiReceiver{$\mss,k_1,\mathbb{R}_1,k_2,\mathbb{R}_2$} in the external case relocates $k_1$ and $k_2$ containers from one sender $\mss$ to two receiver sets $\mathbb{R}_1$ and $\mathbb{R}_2$, respectively.
@@ -957,7 +957,7 @@ For an external task, the number of empty slots in $\mathbb{S}\setminus\{s^+,s^*
 In this section, the proposed FBH is compared to four benchmark approaches. Three of them are heuristics. They are: the target-guided heuristic (TGH) proposed in our previous work \citep{wang2015}, an implementation of the largest priority first heuristic (LPFH) proposed by \citet{exp2012}, and an implementation of the multi-heuristic proposed by \citet{jovanovic2014}. The last benchmark approach is called BS-B, that is a beam search framework consolidating TGH as a component \citep{wang2015}. By far, BS-B has the best performance on the CPMP\@. It is necessary to evaluate the quality level of FBH with the best known values.
 
 Our algorithm is tested on the CVS data set and the BF data set, which are initially presented by \citet{cas2011} and \citet{bort2012}, respectively.
-Since LPFH and the multi-heuristic approach do not report results on the BF data set, we reimplemented LPFH and the multi-heuristic approach to compute results of the CVS and BF.
+Since LPFH and the multi-heuristic approach do not report results on the BF data set, we reimplemented LPFH and the multi-heuristic approach to compute results for the CVS and BF.
 
 The original LPFH involves randomness. We developed a deterministic version instead, referred to as the largest group value first heuristic (LGVFH). The LGVFH selects the next target container from unfixed ones with the largest group value, and then accomplish it by the STAP\@. The pseudo-code for the LGVFH is given in Algorithm \ref{algo:lpvfh}.
 
@@ -995,7 +995,7 @@ The original LPFH involves randomness. We developed a deterministic version inst
 
 
 \Function{\Fill{$s$}}
-{%\tcp*[1]{$s$ is a stack}
+{
   \While{$h(s)<H$}
   {
     $\mathbb{S}'\gets\varnothing$\;
@@ -1029,7 +1029,7 @@ Experiments were conducted on a computer with Intel Core i7 CPU clocked at 3.40 
 This section shows the effect of the tier-protection indicator. We tested six settings of parameters $(P1,P2)$: $(0,N)$, $(\frac{1}{4}H,\frac{1}{2}N)$, $(\frac{1}{3}H,\frac{1}{4}N)$, $(\frac{1}{2}H,\frac{1}{6}N)$, $(\frac{2}{3}H,\frac{1}{8}N)$, and $(H,\frac{1}{10}N)$. We made $P1$ and $P2$ proportional to $H$ and $N$, respectively, because $f(s)$  and the affected demand are related to the maximum height and the number of containers, respectively.
 
 The six settings are in a loose-intermediate-tight order; algorithms using latter settings will filter out more tasks when selecting the next task. The computational results are shown in Table \ref{tab:tier-protection}.
-The first column indicates the particular values of $(P1,P2)$. The second and third columns give the average movements of the CVS and BF data sets, respectively.
+The first column indicates the particular values of $(P1,P2)$. The second and third columns give the average movements for the CVS and BF data sets, respectively.
 Parameter $(0,N)$ means that there is no tier-protection indicator so no task is filtered out.
 As the setting becomes tighter, the performance on both CVS and BF is improved, until a peak is achieved.
 When the setting becomes extremely tight, the performance decreases.
@@ -1054,20 +1054,20 @@ When the setting is $(H,\frac{1}{10}N)$, the algorithm even fails to find soluti
 
 
 
-\subsection{Results of the CVS instances}
+\subsection{Results for the CVS instances}
 
 \citet{cas2011} present the complete CVS data set (named after the authors' surnames, Caserta, Vo{\ss} and Sniedovich) originally for the container relocation problem. The CVS instances are classified into 21 groups, each consisting of 40 instances.
 For any instance, the heights of piled containers in each stack are the same, denoted by $K$, hence $N=SK$. It is worth noting that the height limitation of each stack is not specified in the original data.
 Researchers add two extra tiers above the initial layout in order to make the data suit for the CPMP; that is, $H=K+2$.
 
 The CVS instances can be considered as typical dense CPMP instances.
-Table \ref{tab:cvs} illustrates the computational results of the CVS instances by the TGH, the LGVFH, the multi-heuristic approach, the FBH, and the BS-B\@.
-The values under the ``moves'' heading represent the average numbers of moves for every CVS group, whereas the values under the ``time (ms)'' heading are the average runtime in millisecond.
+Table \ref{tab:cvs} illustrates the computational results for the CVS instances by the TGH, the LGVFH, the multi-heuristic approach, the FBH, and the BS-B\@.
+The values under the ``moves'' heading represent the average numbers of moves for every CVS group, whereas the values under the ``time (ms)'' heading are the average runtime in milliseconds.
 The values under the ``improvement'' heading are the improvements of the FBH compared to the TGH, the LGVFH, and the multi-heuristic in percentage.
 The results showcase that the FBH surpasses the TGH and the LGVFH. The improvement gets larger as $N$ increases. Compared to the multi-heuristic approach, generally speaking, the FBH is better when $N$ is large while the multi-heuristic is better when $N$ is small.
 \begin{landscape}
 \begin{table}[htbp]
-\caption{Results of the CVS instances.}
+\caption{Results for the CVS instances.}
 \label{tab:cvs}
 
 \settab
@@ -1120,14 +1120,14 @@ Average   & 64.48  & 0.21 & 48.81  & 0.72 & 45.77  & 6.47 &44.29  & 0.58  & 36.3
 \end{table}
 \end{landscape}
 
-\subsection{Results of the BF instances}
+\subsection{Results for the BF instances}
 
 \citet{bort2012} introduce 32 groups of CPMP instances (referred to as the BF instances); each group consists of 20 instances. In the BF instances, the bay size is $S=16$ or $20$ and $H=5$ or $8$. The number of containers $N$ is either $0.6\times SH$ or $0.8\times SH$, the number of groups $G$ is either $0.2\times N$ or $0.4\times N$, and the number of disorderly containers $B$ is either $0.6\times N$ or $0.75\times N$ in the initial layout.
 
-The BF instances can be considered as typical loose CPMP instances. Table \ref{tab:bf} illustrates the computational results of the BF instances by the five approaches. The values under the ``moves'' heading represent the average numbers of moves of every BF group solved by different algorithms, whereas the values under the ``time (ms)'' heading are the average runtime in millisecond. The values under the ``improvement'' heading are the improvements of the FBH compared to the TGH, the LGVFH and the multi-heuristic approach in percentage.
+The BF instances can be considered as typical loose CPMP instances. Table \ref{tab:bf} illustrates the computational results for the BF instances by the five approaches. The values under the ``moves'' heading represent the average numbers of moves of every BF group solved by different algorithms, whereas the values under the ``time (ms)'' heading are the average runtime in milliseconds. The values under the ``improvement'' heading are the improvements of the FBH compared to the TGH, the LGVFH and the multi-heuristic approach in percentage.
 \begin{landscape}
 \begin{table}[htbp]
-\caption{Results of the BF instances.}
+\caption{Results for the BF instances.}
 \label{tab:bf}
 
 \settab
@@ -1188,7 +1188,7 @@ The BF instances can be considered as typical loose CPMP instances. Table \ref{t
 
 \end{table}
 \end{landscape}
-Table \ref{tab:bfsum} shows the computational results based on the dimensions of instance density and height limitation. It shows that the instance density $N/SH$ (or bay utilization) and the height of the bay $H$ are key factors for the number of moves needed in pre-marshalling. In other words, denser or higher instances are more difficult to solve. The computational results of the BF instances also prove that the performance of the FBH is considerable; in most instances, the FBH performs the best.
+Table \ref{tab:bfsum} shows the computational results based on the dimensions of instance density and height limitation. It shows that the instance density $N/SH$ (or bay utilization) and the height of the bay $H$ are key factors for the number of moves needed in pre-marshalling. In other words, denser or higher instances are more difficult to solve. The computational results for the BF instances also prove that the performance of the FBH is considerable; in most instances, the FBH performs the best.
 
 
 
@@ -1231,8 +1231,7 @@ In this paper, we assume that the containers in a bay are deterministic and no c
 
 \section*{Acknowledgments}
 
-This research was partially supported by the National Natural Science Foundation of China (No.\ 71371114, 71301102), Guangdong Natural Science Funds (No.\ 2014A030310312), and Fundamental Research Funds for the Central Universities (No. 15LGPY37).
-.
+This research was partially supported by the National Natural Science Foundation of China (No.\ 71371114, 71301102), Guangdong Natural Science Funds (No.\ 2014A030310312), and Fundamental Research Funds for the Central Universities (No.\ 15LGPY37).
 
 \section*{References}
 
