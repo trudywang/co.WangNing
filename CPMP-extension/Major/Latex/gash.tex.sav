@@ -1,0 +1,1297 @@
+%\documentclass[final,5p,twocolumn,10pt,number]{elsarticle}\usepackage{amsmath}\usepackage{pxfonts,amssymb}
+
+\documentclass[review,3p,times,12pt,number]{elsarticle}\usepackage{amsmath}\usepackage{amssymb}
+
+
+
+
+
+
+\usepackage{multicol,enumitem,multirow,booktabs,amsthm,subfigure}
+
+
+\newlength{\smalltable}
+\setlength{\smalltable}{252pt}
+
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+
+
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\SetKwComment{tcp}{/\!/\,}{}
+\SetArgSty{textrm}
+\SetKwProg{Procedure}{procedure}{}{end~procedure}
+\SetKwProg{Function}{function}{}{end~function}
+\SetKwFor{Repeat}{repeat}{times do}{end~loop}
+\SetKwFunction{Move}{Move}
+\SetKwFunction{Relocate}{Relocate}
+\SetKwFunction{EvalMove}{EvalMove}
+\SetKwFunction{Valid}{ValidTasks}
+\SetKwFunction{Largest}{LargestPriorityTasks}
+\SetKwFunction{EvalTask}{EvalTask}
+\SetKwFunction{MoveNeed}{MoveNeed}
+\SetKwFunction{Fill}{Fill}
+\SetKwFunction{BiReceiver}{BiReceiver}
+\SetKwFunction{BiSender}{BiSender}
+\SetKwFunction{Interim}{Interim}
+\SetKwFunction{InterimFull}{InterimFull}
+\SetKw{Break}{break~while}
+
+\renewcommand{\citet}[1]{\citeauthor{#1}~\citep{#1}}
+\makeatletter
+\def\NAT@def@citea{\def\@citea{\NAT@separator}}
+\makeatother
+
+
+\usepackage[colorlinks=true]{hyperref}
+%\AtBeginDocument
+{
+\hypersetup{linkcolor =magenta,
+anchorcolor =red,
+citecolor =cyan,
+filecolor =red,
+menucolor =red,
+runcolor =red,
+urlcolor =cyan
+}
+}
+
+
+\usepackage{caption}
+\captionsetup[figure]{font=small}
+\captionsetup[table]{skip=0.5ex,font=small}
+
+
+
+\renewcommand{\gets}{\coloneqq}
+\renewcommand{\emph}[1]{\textbf{\textit{#1}}}
+
+
+
+\newcommand{\mss}{s^\mathrm{src}}
+\newcommand{\mds}{s^\mathrm{dst}}
+\newcommand{\mts}{s^\mathrm{tmp}}
+
+
+
+
+\newcommand{\setalgo}{\linespread{1}\fontsize{10}{12}\selectfont}
+\newcommand{\settab}{\linespread{1}\fontsize{10}{12}\selectfont}
+
+\sloppy
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+\journal{EJOR}
+\title{A generic feasibility-based heuristic scheme for the container pre-marshalling problem}
+\author[cityu]{Bo Jin\corref{cor}}
+\ead{msjinbo@cityu.edu.hk}
+\author[cityu]{Andrew Lim\fnref{lim}}
+\ead{alim.china@gmail.com}
+
+\author[shu]{Ning Wang}
+\ead{ningwang@shu.edu.cn}
+
+\cortext[cor]{Corresponding author. Tel: +852 3442 5296}
+
+
+
+\address[cityu]{Department of Management Sciences, City University of Hong Kong, Tat Chee Avenue, Kowloon Tong, Hong Kong}
+%\address[andrew]{School of Physical and Mathematical Sciences, Nanyang Technological University, Singapore 637371, Singapore}
+\fntext[lim]{Andrew Lim is currently on no pay leave from City University of Hong Kong.}
+\address[shu]{Department of Information Management, School of Management, Shanghai University, Shanghai, China}
+
+\begin{abstract}
+
+This paper addresses the container pre-marshalling problem (CPMP) which rearranges containers inside a storage bay to a desired order.
+By far, target-driven kind of algorithms have the relatively good performance among all algorithms; it has two key components: 1) containers are rearranged to their desired slots one by one in a certain order; and 2) rearranging one container is completed by a series of movements. Our algorithm improves the performance from the two components.
+Instead of rearranging containers in descending order of their group labels (traditional idea), this paper determines the order as the algorithm goes on by an evaluation function. To efficiently explore the enlarged search space, we come up with a concept of state feasibility to cut branches. This is the first time that uses feasibility to cut branches in CPMP algorithms.
+The concept can recognize a useless branch without really carrying out a series of movements to reach that branch.
+Computational experiments showcase that the performance of our proposed heuristic is better than other heuristics.
+\end{abstract}
+
+\begin{keyword}
+container pre-marshalling problem \sep feasibility-based \sep heuristic scheme
+\end{keyword}
+\end{frontmatter}
+
+
+
+
+\section{Introduction}
+
+
+
+Since the commencement of containerization, the global use of standardized containers has dramatically improved international trade. Containers enable the smooth flow of goods between multiple transportation modes without directly handling the freight. Over the years, stringent requirements such as just-in-time operations from consignors have created additional challenges for the container transportation industry.
+
+Container yards --- the spaces dedicated to the transshipment, handover, loading, consolidation, maintenance, and storage of containers --- are key components of maritime container terminals. Some yards act as exchange venues for container transfers between different transportation modes while others are used as caches for temporary storage or as warehouses for long-term storage.
+
+Generally, a container yard is divided into several yard blocks, each of which consists of several parallel bays.  A bay is formed by a row of stacks. Usually the containers stored in the same bay have the same dimensions. Equipments such as rubber tyre gantry cranes, rail-mounted gantry cranes, and reach stackers are frequently used in container yards. Figure~\ref{fig:block} illustrates an example of a yard block.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figs/block.pdf}
+\caption{Yard block.}
+\label{fig:block}
+\end{figure}
+
+Containers in the same stack are organized in a last-in-first-out matter, to retrieve containers placed in lower levels, containers on top of them must first be relocated to other places (other slots or the yard). Such forced movements are known as container reshuffles.
+Container pre-marshalling problem (CPMP) addresses the reorganization of containers inside a storage area such that no reshuffling is further required when containers are retrieved. Hence, CPMP is to improve terminals' performance level, including their throughput rate per berth and the turnaround time of vessels or road trucks~\citep{kim2015}.
+
+The CPMP can be formally defined as follows: containers are initially placed in several stacks. These stacks forms a bay. Each container is marked with a group label. CPMP is to rearrange the containers within the bay, so that containers in each stack are placed in a descending order of group labels from bottom to top. The objective is to carry out the rearrangement with the fewest number of container movements.
+This paper investigates the CPMP, and it is assumed that the retrieval order of the containers is known beforehand and that no container arrives at or leaves from the bay during pre-marshalling.
+
+This paper makes three main contributions to the literature. First, a generic feasibility-based heuristic scheme is proposed. The proposed scheme is target-driven algorithm, therefore it can be implemented solely or be combined with existing framework in the literature such as tree search, greedy or GRASP. The second contribution is the idea behind the proposed scheme. In the traditional algorithms, containers are allocated according to a certain order, such as the descending order of their groups \citep{exp2012}; in this research, the order to allocate containers is not fixed beforehand, rather it is decided as the algorithm goes on. This innovation undoubtedly enlarges the search space and decreases the search efficiency. To avoid efficiency decrease, we proposed the concept of state feasibility to check the feasibility of allocating a certain container before we actually allocate it. The time complexity of check feasibility is only $o(g)$, here $g$ is the number of groups. Our paper is the first work that uses feasibility to cut branches in CPMP algorithms.
+The third contribution is that the proposed heuristic performs outstandingly on both dense and loose instances, compared with existing heuristics.
+
+The remainder of this paper is structured as follows. Section~\ref{sec:literature} reviews existing approaches in the literature. Section~\ref{sec:notation} lists the notation used throughout this paper and Section~\ref{sec:problem} gives a mathematical description of the problem. Comprehensive description of the heuristic scheme, four available techniques, and the proposed GASH can be found successively in Sections~\ref{sec:scheme}--\ref{sec:gash}. Section~\ref{sec:experiment} illustrates the results of our computational experiments, and the last section concludes this paper and identifies future research directions.
+
+\section{Recent work}
+\label{sec:literature}
+According to recent reviews~\citep{carlo2014,lehnfeld2014}, problems related to or caused by container reshuffling at terminals include three major kinds of decision problems. The first problem is the container relocation problem~\citep{jin2015} which minimizes the total operational cost in the container retrieval process. The operational cost is commonly measured by the number of relocations conducted or the total operational time. The second is the container pre-marshalling problem addressed in this paper. The third problem is container stacking problem which decides the selection of storage locations or sequences the movements of cranes for arriving containers~\citep{Dayama2014}.
+
+
+To the best of our knowledge, only seven works study the solutions to the pre-marshalling problem, which is rather few compared with other problems in ports, such as berth allocation problems and quay crane scheduling problems. The aforementioned two problems have been studied in more than 120 publications just since 2009 \citep{Bierwirth2015}. One reason behind is that the variants of pre-marshalling problem by far are few. Known variants appear in \citet{wang2015} which considers truck lanes and in \citet{Huang2012} which requires containers of different groups be separately located in the final layout. In the following, the only seven works will be discussed in sequence.
+
+\citet{lee2007} developed an integer programming model for the CPMP\@. In this work, the problem is formulated as a multi-commodity network flow problem. The overall network is divided into several subnetworks, with each subnetwork representing an intermediate layout. The nodes in a subnetwork correspond to the slots that accommodate containers, and the commodities correspond to the containers stored in the bay. Every valid flow in the network represents a solution to the pre-marshalling problem. The model provides an innovative viewpoint to the problem, however, its performance is limited because the network is too large even for small problem instances.
+
+
+\citet{cas2009} provide a greedy heuristic, the corridor method, for solving the problem. The heuristic selects the direction of movement in a randomized manner according to the attractiveness of available successors confined by the corridor. The attractiveness is measured by an estimated number of additional relocations needed for the particular successor.
+A local improvement procedure is also conducted to accelerate the heuristic process.
+
+A neighborhood search approach is proposed by \citet{lee2009}, which repeatedly modifies the current solution until some termination condition is met. Unlike the other existing solution construction approaches, the neighborhood search  is required to start from a pre-generated initial solution.
+A feasible solution can be further improved by a four-step procedure, and the diversity of the neighborhood is raised by multiple subroutines. The main drawback of the approach is the unreliability of random solution modifications, i.e., the feasibility of the resulting new solutions are not always ensured.
+
+\citet{bort2012} describe a tree search procedure for solving the problem.
+In the tree search structure, solutions are constructed by compound moves  instead of single moves. Moves are classified into four types, and only the most promising ones are adopted in the branching scheme.
+
+There are two studies in the literature regarding heuristic approaches. They adopt the same heuristic strategy that containers are handled in reverse of their retrieval order.
+
+\citet{exp2012} provide the first container-oriented heuristic for the CPMP, named the lowest priority first heuristic (LPFH). The LPFH iteratively handles containers in descending order of the container priority values. After handling all containers with a specific priority, a stack filling process is applied to reduce the number of disorderly containers in the bay.
+
+\citet{Huang2012} solved two variants of CPMP by a heuristic algorithm. One variant is commonly used which allows containers of different groups to mix within a bay. The other variant is newly proposed, which requires containers of different groups be separately located in the final layout.
+
+\citet{wang2015} propose the target-guided heuristic (TGH) and two beam search algorithms. The TGH also handles containers in descending order of the container priority values. A gap utilization process is applied to enhance the heuristic performance. This work provides the first comprehensive analysis on every situation that the heuristic may face during the pre-marshalling process, especially for dense instances with fewer empty slots.
+
+\section{Problem description}
+\label{sec:problem}
+
+The CPMP is restricted to the bay size, or more precisely, the dimensions of the operating crane. As shown in Figure \ref{fig:bay}, an instance (problem input) includes an initial layout of $N$ containers, which are distributed in a single bay with $S$ stacks ($S\ge 3$) and $H$ tiers ($H\ge 2$), leaving $E$ empty slots ($E=SH-N$, $E\ge 2$).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figs/bay.pdf}
+\caption{Container bay.}
+\label{fig:bay}
+\end{figure}
+
+Each container is labeled with a group value $g \in[1,G]$. A container is \emph{orderly} if it is supported directly by the ground or another orderly container with equal or larger group value; otherwise, it is \emph{disorderly}.
+The containers in bold in Figure \ref{fig:bay} are disorderly while others are orderly.
+The objective of the CPMP is to find an optimized sequence with the fewest container movements, by which all containers are rearranged to be orderly.
+The movement sequence is called ``applied to" the CPMP case.
+
+The $t$-th slot (from the bottom up) of stack $s$ or the container located inside is denoted by a pair $(s,t)$.
+The priority values of a container $c$ and the container located in slot $(s,t)$ are denoted by $p(c)$ and $p(s,t)$, respectively.
+
+
+The orderly height (number of orderly containers) of stack $s$ is denoted by $o(s)$. Other phrases referring to ``orderly{\slash}disorderly'' in the recent literature include ``well{\slash}badly placed''~\citep{bort2012}, ``well-{\slash}non-located''~\citep{exp2012}, and ``clean{\slash}dirty''~\citep{wang2015}. Table~\ref{fig:bay} gives an example of a bay for which $S=5$, $H=4$, and $N=13$. Containers are represented by boxes with their priority values marked inside. In addition, boxes with gray background are the disorderly containers.
+
+
+
+
+Let us define the capability of an occupied slot $(s,t)$ by $q(s,t)=p(s,t)$ if the container inside is orderly, otherwise $q(s,t)=0$; specifically, regarding the ground as an occupied slot at tier $0$ with priority value $P$. Thus, we can easily verify the placement of a container $(s,t)$ by checking whether $p(s,t)\le q(s,t-1)$.
+
+
+
+
+
+
+
+Let $\mathbb{S}=\{1,\dots,S\}$ be the set of stacks. Hereafter, for simplification of description, when a stack $s$ is mentioned without declaring its domain, it is assumed that $s\in\mathbb{S}$. The height of stack $s$ is denoted by $h(s)$ and $e(s)=H-h(s)$ denotes the number of empty slots in this stack. Note that the height of stacks should not exceed $H$.
+
+\section{Notation}
+\label{sec:notation}
+
+\newlength{\mylongest}
+\settowidth{\mylongest}{$\alpha(s^+,s)$}
+\addtolength{\mylongest}{\labelsep}
+\SetLabelAlign{LabelCenter}{\makebox[\mylongest]{#1}}
+
+The notation for describing the problem is as follows.
+
+\subsubsection*{I\@. Global constants}
+
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$N$] number of containers
+\item[$S$] number of stacks
+\item[$H$] height limitation of stacks
+\item[$P$] number of priorities
+\item[$E$] number of empty slots, $E=SH-N$
+\item[$U$] number of unreachable tiers, $U=\max\{H-E,0\}$
+\item[$\mathbb{C}$] set of containers
+\item[$\mathbb{S}$] set of stacks, $\mathbb{S}=\{1,\dots,S\}$
+\end{enumerate}
+
+
+
+\subsubsection*{II\@. Common symbols and functions}
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$\mathsf{L}$] layout
+\item[$c$] container
+\item[$s$] stack index
+\item[$t$] tier index
+\item[$p$] priority value
+\item[$(s, t)$] slot or the container located in
+\item[$h(s)$] height of stack $s$, vectorized as $\boldsymbol{h}$
+\item[$e(s)$] number of empty slots in stack $s$, $e(s)=H-h(s)$
+\item[$o(s)$] orderly height of stack $s$, vectorized as $\boldsymbol{o}$
+\item[$f(s)$] fixed height of stack $s$, vectorized as $\boldsymbol{f}$
+\item[$(\mathsf{L},\boldsymbol{f})$] state
+\item[$p(c)$] priority value of container $c$
+\item[$p(s,t)$] priority value of container $(s,t)$
+\item[$q(s,t)$] capability of an occupied slot $(s,t)$
+\item[$q^f(s)$] capability of the top fixed slot in stack $s$, $q^f(s)=q(s,f(s))$
+\end{enumerate}
+
+\subsubsection*{III\@. Resource-{\slash}demand-related functions}
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$d(p)$] order-$p$ demand, i.e., the number of unfixed containers with priority $p$
+\item[$D(p)$] order-$p$ accumulate demand, $D(p)=\sum_{\varphi=p}^P d(\varphi)$, vectorized as $\boldsymbol{D}$
+\item[$r(p)$] order-$p$ resource, $r(p)=\sum_{q^f(s)=p} (H-f(s))$
+\item[$R(p)$] order-$p$ accumulate resource, $R(p)=\sum_{\varphi=p}^P r(\varphi)$, vectorized as $\boldsymbol{R}$
+\item[$\Delta(p)$] order-$p$ surplus, $\Delta(p)=R(p)-D(p)$, vectorized as $\boldsymbol{\Delta}$
+\end{enumerate}
+
+The following is the extra notation used to describe the proposed algorithms.
+
+
+\subsubsection*{IV\@. Task-related symbols}
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$c^*$] target container
+\item[$s^+$] stack of the target container
+\item[$t^+$] tier of the target container
+\item[$s^-$] aim stack
+\item[$b$] number of blocking containers
+\item[$a$] number of slots available for blocking containers
+\end{enumerate}
+
+\subsubsection*{V\@. Extra symbols}
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$\mss$] source stack (sender) of a move
+\item[$\mds$] destination stack (receiver) of a move
+\item[$\mts$] interim stack for temporarily storing the target container
+\item[$\vec{v}$] evaluation tuple of a move, lexicographically comparable\item[$\mathbb{R}$] receiver set
+\item[$\mathbb{I}$] set of potential interim stacks
+\item[$\mathbb{F}$] set of potential interim stacks which are  currently full
+\item[$\mathbb{T}$] set of valid tasks
+\end{enumerate}
+
+\subsubsection*{VI\@. Extra functions}
+\begin{enumerate}[noitemsep, align=LabelCenter,labelwidth=\mylongest,leftmargin=!]
+\item[$g(s)$] stable height of stack $s$, vectorized as $\boldsymbol{ g}$
+\item[$m(s)$] messiness (largest unstable priority value) of stack $s$, $m(s)=\max_{ g(s)<t\le h(s)}p(s,t)$
+\item[$\alpha(s^+,s)$] number of slots available after the move from stack $s^+$ to stack $s$
+\item[$\delta(p,q)$] demand between $p$ exclusive and $q$ inclusive, $\delta(p,q)=\sum_{\varphi=p+1}^{q}d(\varphi)$
+\end{enumerate}
+
+
+\section{State and State Feasibility}
+\label{sec:state}
+\begin{definition}[Fixed containers]
+A fixed container is an orderly container and not allowed to be moved in the following movement sequence.
+\end{definition}
+If a container is a fixed container, then the containers under it must be fixed containers.
+\begin{definition}[State]
+A state $(\mathsf{L},\boldsymbol{f})$ is a pair composed of a layout $\mathsf{L}$ and a fix vector $\boldsymbol{f}$.
+\end{definition}
+The {fix} vector $\boldsymbol{f}$ indicates the number of fixed containers (fixed height) in each stack of $\mathsf{L}$. $\boldsymbol f(s)$ is the $s$th element. Fixed and unfixed containers are separated by a line (a skyline), as shown in Figure~\ref{fig:skyline}.
+In Figure \ref{fig:exp1}, $\boldsymbol f=(2,3,1)$; in Figure \ref{fig:exp2}, $\boldsymbol f=(2,3,0)$.
+
+\begin{figure}[htbp]
+\centering
+\subfigure[]{
+    \label{fig:exp1}
+    \resizebox{0.38\textwidth}{!}{\includegraphics{figs/exp1.pdf}}}
+\subfigure[]{
+    \label{fig:exp2}
+    \resizebox{0.38\textwidth}{!}{\includegraphics{figs/exp2.pdf}}}
+\caption{Fix vector and skyline}
+\label{fig:skyline}
+\end{figure}
+
+
+It is noteworthy that if two states have the same layout but different fix vectors, then they are two different states.
+
+\begin{definition}[Feasibility of a state]
+A state $(\mathsf{L},\boldsymbol{f})$ is feasible if there exists a movement sequence that can convert $\mathsf{L}$ to an orderly layout without moving fixed containers.
+\end{definition}
+
+The necessary condition for state feasibility has been talked about in \citet{wang2014}. To make the content self-contained, we briefly explain it in this paper. Containers above the skyline can be moved, therefore slots and containers above the skyline now are separately considered. In one stack $s$, suppose the smallest group label under the skyline is $g$, then $H-f(s)$ slots above the skyline can only be placed with containers with group label no larger than $g$, or the stack is disorderly. We say stack $s$ has $H-f(s)$ slots with group label $g$. If the skyline of stack $s$ is the ground , then $s$ has $H$ slots with group label $G$.
+For example, in Figure \ref{fig:exp2}, stack 1, 2, 3 have 3, 2, 5 slots with group label 2, 1, 5, respectively. The total number of slots with group label $g$ in the whole bay is denoted as $r(g)$ (resource for group $g$). Similarly, the number of unfixed containers with group label $g$ is denoted as $d(g)$ (demand of group $g$).
+For a feasible state, the recourse for group $g$ must be more than the demand of group $g$. That is,
+\begin{equation*}
+\sum^G_{i=g+1}r(g)-\sum^G_{i=g+1}d(g)+r(g)\ge d(g)
+\end{equation*}
+which is equivalent to
+\begin{equation*}
+\sum^G_{i=g}r(g)\ge \sum^G_{i=g} d(g)
+\end{equation*}
+
+Denote $R(g)=\sum^G_{i=g}r(g)$ and $D(g)=\sum^G_{i=g}d(g)$. $\boldsymbol R$ and $\boldsymbol D$ are the two G-dimension vectors with elements $R(g)$ and $D(g)$, respectively. The above condition is expressed as $\boldsymbol{\Delta}=\boldsymbol{R}-\boldsymbol{D}\ge \boldsymbol{0}$
+
+\begin{proposition}[Necessary condition for state feasibility]\label{prop:necessary}
+The necessary condition for a feasible state $(\mathsf{L},\boldsymbol{f})$ is $\boldsymbol{\Delta}=\boldsymbol{R}-\boldsymbol{D}\ge \boldsymbol{0}$.
+\end{proposition}
+
+Here $\boldsymbol \Delta$ is called `surplus vector'.
+
+Taking the layouts in Figure~\ref{fig:exp1} and \ref{fig:exp2} as an example.In terms of the surplus vectors, Table~\ref{tab:feasible} illustrates the computational result for both cases. Case a is infeasible as only $\Delta(1)\ge0$; while the feasibility of Case b is not sure since the above conditions are necessary conditions. Intuitively, it can be seen that none of the three stacks in Figure~\ref{fig:exp1} can accommodate containers with group label 5 orderly, and this is the reason why Case a is infeasible.
+
+\begin{table}[htbp]
+\caption{Computation for the surplus vector.}
+\centering
+
+\begin{tabular}{c|c|c|c|c|c||c|c|c|c|c|c}
+\hline
+\multicolumn{6}{c||}{Case a} & \multicolumn{6}{c}{Case b}\\
+\hline
+$g$ & $d(g)$ & $D(g)$ & $r(g)$ & $R(g)$ & $\Delta(g)$ & $g$ & $d(g)$ & $D(g)$ & $r(g)$ & $R(g)$ & $\Delta(g)$\\
+\hline
+1   & 0      & 5      & 6      & 9      & 3           & 1   &  1     & 6       & 2      & 10     & 4\\
+2   & 0      & 5      & 3      & 3      & -2          & 2   &  0     & 5       & 3      & 8      &  3\\
+3   & 1      & 5      & 0      & 0      & -5          & 3   &  1     & 5       & 0      & 5      &  0\\
+4   & 2      & 4      & 0      & 0      & -4          & 4   &  2     & 4       & 0      & 5      &  1\\
+5   & 2      & 2      & 0      & 0      & -2          & 5   &  2     & 2       & 5      & 5      &  3\\
+\hline
+\end{tabular}
+\label{tab:feasible}
+\end{table}
+
+
+
+\begin{definition}[Container stability]
+Given a feasible state, we check the stability of any unfixed container in the following way. First, a disorderly container is unstable. For any orderly container $c$ in slot $(s,t)$, if the resulting state by raising fixed height $f(s)$ to $t$ remains feasible, it is stable; otherwise, it is unstable.
+\end{definition}
+
+According to the definition, an unstable container cannot be fixed in the current slot even if it is orderly, because the resultant state will be infeasible. Unstable must to be moved in the future. Denote the stable height (number of stable containers) of stack $s$ by $ g(s)$, then we have $\boldsymbol{f}\le \boldsymbol{ g}\le \boldsymbol{o}\le \boldsymbol{h}$. If the top container of some stack, named $c$ for example, will be stable after being moved to a non-full stack $s$, we say stack $s$ can \emph{stabilize} container $c$.
+
+Figure~\ref{fig:stable} gives an example of a state, where unstable containers are labelled with gray background. Notice that the container $(2,1)$ with priority value $6$ is orderly but unstable.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figs/stable.pdf}
+\caption{Stability of containers.}
+\label{fig:stable}
+\end{figure}
+
+An orderly but unstable container indicates that its orderliness is valueless because it definitely requires reshuffling.
+Using the concept of container stability instead of container orderliness is more precise, as an orderly but unstable container has no opportunity to be fixed to its slot.
+For example, when a blocking container is becoming orderly but unstable onto a destination stack, the attractiveness of such a move should be reconsidered.
+
+
+
+
+
+
+Note that the stability of containers should be recomputed after any container is fixed.
+
+\begin{definition}[Extreme state]
+A state $(\mathsf{L},\boldsymbol{f})$ is called an extreme state if $|\{s\in\mathbb{S}: f(s)=H\}|= S-2$.
+\end{definition}
+
+The definition of extreme state is to emphasize the especial case where $S-2$ stacks are fully fixed. In such a case, unfixed containers can only be moved between two stacks, say $a$ and $b$; the case is feasible if and only if one of the following conditions is satisfied:
+\begin{enumerate}
+\item Both stacks $a$ and $b$ are orderly;
+\item One stack $a$ is orderly, and stack $b$ is disorderly. Disorderly containers in $b$ can be allocated to $a$ and $a$ is still orderly after the allocation.
+\end{enumerate}
+
+\begin{definition}[Dead-end state]
+A state is called a dead-end state if it is an infeasible extreme state.
+\end{definition}
+
+The dead-end states are infeasible, therefore we should know the property of dead-end states and avoid generating them in search.
+We have the following proposition:
+
+\begin{proposition}[Existence of dead-end states]\label{prop:tricky}
+No dead-end state can be generated whatever movements are applied to cases with $E\ge2(H-1)$.
+\end{proposition}
+When $E\ge2(H-1)$, it has $N\le SH-2H+2$, that is, there are at most $S-2$ stacks fully occupied with fixed containers. When the number of full stacks are less than $S-2$, the state is not a dead-end state; when the number of full stacks is $S-2$, there are at most two extra containers left. The state is not a dead-end state, either.
+\section{Generic feasibility-based heuristic scheme}
+\label{sec:scheme}
+
+In this section, a generic feasibility-based heuristic scheme is developed for solving the CPMP\@. The proposed scheme is a target-driven algorithm. Target-driven algorithm have appeared in other works\citep{exp2012}: generally, containers (targets) are rearranged to certain slots one by one, and each rearrangement is achieved by a series of movements. The scheme can be implemented solely, then it is a greedy algorithm; the scheme can also be the major component of other frameworks, such as GRASP and beam search. Therefore, we call the scheme 'generic'.
+Target-driven algorithms are effective among all existing algorithms, and our algorithm in this work is more effective. We optimize the order of rearranging containers as well as the series of movements in one rearrangement.
+
+The optimization is due to the concept of state feasibility. This is why our algorithm is called generic feasibility-based heuristic scheme.
+Before really rearranging a certain container, the feasibility of such a rearrangement is checked. If such a rearrangement is infeasible, then we give up this attempt of rearrangement.
+Due to the feasibility, we can explore larger space without sacrificing efficiency: the order to rearrange containers is not fixed beforehand, rather it is decided as the algorithm goes on.
+
+
+
+
+
+
+\subsection{Feasibility-based heuristic}
+According to \citet{wang2014}, in dense instances such that $E<H$, containers in the bottom $H-E$ tiers of the bay are unreachable, that is, no sequence can ). In loose instances with $E>=H$ Let $U=\max\{H-E,0\}$ denotes the number of unreachable tiers. %Containers above tier $U$ are reachable containers; reachable containers can be permuted into any wanted arrangement.
+The feasibility-based heuristic first constructs the initial state according to the unreachable tiers. In the initial state, $\mathsf L$ is the initial layout $\mathsf{L}^0$ and containers in unreachable tiers are fixed, i.e., $\boldsymbol f=U\cdot\boldsymbol{1}$, where $\boldsymbol 1$ is a S-dimension all-ones vector.
+
+Starting from the initial state, the heuristic repeatedly fixes a target container $c^*$ to a target stack $s^*$. Stack $s^*$ has $f(s^*)$ fixed containers; hence, $c^*$ is fixed at tier $f(s^*)+1$. The algorithm continues until all containers are fixed. The procedure of the heuristic scheme is concisely described in Algorithm~\ref{algo:fbhs}.
+
+\begin{algorithm}[htbp]
+\caption{Feasibility-based heuristic scheme.}
+\label{algo:fbhs}
+
+
+\setalgo
+
+
+\Begin
+{
+  $(\mathsf{L},\boldsymbol{f})\gets (\mathsf{L}^0,U\cdot\boldsymbol{1})$\;
+  \Repeat{$N-SU$}
+  {
+    $(c^*, s^*)\gets \textrm{the chosen valid task}$\;
+    $\mathsf{L}$ = resultant layout after moving $c^*$ to $s^*$\;
+    $f(s^*)\gets f(s^*)+1$\;
+  }
+}
+
+\end{algorithm}
+
+The procedure of choosing a target container $c^*$ and a target stack $s^*$ and the procedure of moving $c^*$ to $s^*$ will be explained in the following.
+
+
+\subsection{Valid task}
+\label{sec:valid}
+
+At every step of the generic heuristic scheme, a {task} determines which unfixed container (target container) to fix and to which stack (target stack) the container is fixed.
+
+A container--stack pair $(c,s)$ is a valid task for the current state $( \mathsf{L},\boldsymbol{f})$ only if
+\begin{itemize}
+\item $c$ is unfixed,
+\item $f(s)<H$,
+\item $g(c)\le g(s,f(s))$, and
+\item $\Delta(\varphi)\ge H-f(s)$, for $g(c)< \varphi\le g(s,f(s))$.
+\end{itemize}
+
+The first condition is easy to understand. The second condition ensures that $s$ has a slot to accommodate $c$. The third condition make sure that the group label of $c$ is no larger than that of the highest fixed container of $s$, here, $g(c)$ and $g(s,f(s))$ denotes the group labels of $c$ and highest fixed container of $s$, respectively.
+The last condition ensures the non-negativity of the resulting surplus vector. If $c$ is moved to $s$, then the $g(c)$th element of demand vector $d[g(c)]$ decreases 1, i.e., $d'[g(c)]=d[g(c)]-1$, while other elements do not change. In the meanwhile, for the resource vector, $r'[g(s,f(s))]=r[g(s,f(s))]-(H-f(s))$ while $r'[g(c)]=r[g(c)]+H-f(s)$, and other elements do not change. Then for $\varphi \in(g(c),g(s,f(s))]$, the feasible condition in new layout is $D'(\varphi)=\sum_{g\ge \varphi}d'(g)=D(\varphi)\le R'(\varphi)=\sum_{g\ge\varphi}r'(g)=R(\varphi)-(H-f(s))$, i.e., $\Delta(\varphi)\ge H-f(s)$.
+
+The above condition is a necessary condition, the feasibility of the resulting state is not sufficiently ensured, due to the possibility of dead-end states.
+
+There are three methods for resolving the dead-end state issue.
+\begin{enumerate}
+\item Prevent from entering a dead-end state when deciding the next task;
+\item Design an ideal task accomplishment procedure that makes the resulting extreme state feasible;
+\item Allow entering a dead-end state and relabel a fixed container as unfixed to run away from the dead-end state.
+\end{enumerate}
+
+Our previous work~\citep{wang2015} adopts the last method listed above. When the algorithm enters into a dead-end state, the algorithm relabels a fixed container as unfixed and moves it to a temporary slot; then the state becomes non-dead-end. After taking a series of movements, the relabeled container is recovered to its original slot. The disadvantage of such a choice is that running away from existing dead-end states costs many movements and these movements are unnecessary per se. A more choice is to avoid dead-end states when choosing valid tasks. 
+
+\begin{definition}[Pre-dead-end state]\label{def:pre-tricky}
+A state is a pre-dead-end state if $|\{s\in\mathbb{S}: f(s)=H\}|=S-3$, $|\{s\in\mathbb{S}: f(s)=H-1\}|\ge 1$ and $\sum_{s\in\mathbb{S}}f(s)<N-2$.
+\end{definition}
+
+When the current state is a pre-dead-end state, we eliminate the container--stack pairs $(c,s)$ such that $f(s)=H-1$ to avoid entering a dead-end state.
+\subsection{Task Evaluation}
+Every valid task $(c,s)\in\mathbb{T}$ is evaluated by function \EvalTask{$c,s$}. The evaluation of a container--stack pair $(c,s)$ is a six-tuple starting with the protected-tier indicator, followed by the number of moves required by the STAP, the number of stable containers that need to be moved from the aim stack, the affected demand, fixed height of the aim stack, and the opposite of the target container's group value. The next task is determined by the lexicographically minimum value of the six-tuple. The six elements will be explained in the following.
+
+The protected-tier indicator is to balances the trade-off between the target freedom and the surplus loss. In principle, a target can be moved to any valid stack, but if a container with small group label occupies an (relatively) empty stack, then the loss of the surplus vector is large: after the target container $c^*$ is fixed to the aim slot $(s^*,f(s^*)+1)$, the surplus $\Delta(\varphi)$ is reduced by $H-f(s^*)$, for $\varphi\in (g(c^*),g(s,f(s)]$. The larger the spread between $g(c^*)$ and $g(s,f(s))$ is, the more the surplus vector will decrease. Therefore, if a pair $(c,s)$ satisfies $f(s)<P1$ and affected demand $\sum_{\varphi=g(c)+1}^{g(s,f(s))}d(\varphi)\ge P2$, then the task cannot be carried out and is deleted from the evaluation list. As customizable parameters, the number of tiers protected $P1$ and the threshold value $P2$ can be adjusted optionally.
+
+The number of moves of the STAP is the movement needed to fix $c$ to $s$, the number is precise while in \cite{wang2015} the number is just a estimation. The process to calculate the number is introduced in Section \ref{sec:speedy}.
+
+
+
+
+
+\subsection{Speedy task accomplishment procedure}
+
+\label{sec:speedy}
+
+After the task is decided by specific rules, it is accomplished by a sequence of moves, resulting in a new state. The speedy task accomplishment procedure (STAP) provides a structured framework to finish the given task with the fewest moves, providing customizable interfaces with several user-defined functions.
+
+\subsubsection{Common functions}
+
+The pseudo-code for the common functions of the STAP is given in Algorithm~\ref{algo:common}.
+
+\begin{algorithm*}[htbp]
+
+\caption{Common functions.}
+\label{algo:common}
+\setalgo
+
+
+\begin{multicols}{2}
+
+\Procedure{\Move{$\mss,k,\mds$}}
+{
+  Move $k$ containers from stack $\mss$ to stack $\mds$\;
+
+}
+
+\Procedure{\Relocate{$\mss,k,\mathbb{R}$}}
+{
+  \Repeat{k}
+  {
+    $\mathbb{R}'\gets \{s\in \mathbb{R}:h(s)<H\}$\;
+    $\mds\gets \arg\min_{s\in\mathbb{R}'} \EvalMove{$\mss,s$}$\;
+    \Move{$\mss,1,\mds$}\;
+  }
+}
+
+
+\Procedure{\BiSender{$\mss_1,k_1,\mss_2,k_2,\mathbb{R}$}}
+{
+  $i\gets k_1$, $j\gets k_2$\;
+  \Repeat{$k_1+k_2$}
+  {
+    \uIf{$j=0$}{
+      \Relocate{$\mss_1,i,\mathbb{R}$}\;
+      $i\gets 0$\;
+    }
+    \uElseIf{$i=0$}{
+      \Relocate{$\mss_2,j,\mathbb{R}$}\;
+      $j\gets 0$\;
+    }
+    \Else
+    {
+      $\mathbb{R}'\gets \{s\in \mathbb{R}:h(s)<H\}$\;
+      $\mds_1\gets \arg\min_{s\in\mathbb{R}'} \EvalMove{$\mss_1,s$}$\;
+      $\vec{v}_1\gets \EvalMove{$\mss_1,\mds_1$}$\;
+      $\mds_2\gets \arg\min_{s\in\mathbb{R}'} \EvalMove{$\mss_2,s$}$\;
+      $\vec{v}_2\gets \EvalMove{$\mss_2,\mds_2$}$\;
+      \eIf{$\vec{v}_1\le^{\mathrm{lex}} \vec{v}_2$}
+      {
+        \Move{$\mss_1,1,\mds_1$}\;
+        $i\gets i-1$;
+      }
+      {
+        \Move{$\mss_2,1,\mds_2$}\;
+        $j\gets j-1$\;
+      }
+    }
+  }
+}
+\Function{\MoveNeed{$c,s$}}
+{
+  \uIf{$(c,s)$ is immediate}
+  {
+    \Return 0\;
+  }
+  \Else
+  {
+    \Return actual number of moves needed by the STAP to accomplish the task $(c,s)$\;
+    }
+}
+\Procedure{\BiReceiver{$\mss,k_1,\mathbb{R}_1,k_2,\mathbb{R}_2$}}
+{
+  $i\gets k_1$, $j\gets k_2$\;
+  \Repeat{$k_1+k_2$}
+  {
+    \uIf{$j=0$}{
+      \Relocate{$\mss,i,\mathbb{R}_1$}\;
+      $i\gets 0$\;
+    }
+    \uElseIf{$i=0$}
+    {
+      \Relocate{$\mss,j,\mathbb{R}_2$}\;
+      $j\gets 0$\;
+    }
+    \Else
+    {
+      $\mathbb{R}_1'\gets \{s\in \mathbb{R}_1:h(s)<H\}$\;
+      $\mathbb{R}_2'\gets \{s\in \mathbb{R}_2:h(s)<H\}$\;
+
+
+      $\mds_1\gets \arg\min_{s\in\mathbb{R}_1'} \EvalMove{$\mss,s$}$\;
+      $\vec{v}_1\gets \EvalMove{$\mss,\mds_1$}$\;
+      $\mds_2\gets \arg\min_{s\in\mathbb{R}_2'} \EvalMove{$\mss,s$}$\;
+      $\vec{v}_2\gets \EvalMove{$\mss,\mds_2$}$\;
+
+      \eIf{$\vec{v}_1\le^{\mathrm{lex}}\vec{v}_2$}
+      {
+        \Move{$\mss,\mds_1$}\;
+        $i\gets i-1$\;
+      }
+      {
+        \Move{$\mss,\mds_2$}\;
+        $j\gets j-1$\;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+\end{multicols}
+
+\BlankLine
+\BlankLine
+\end{algorithm*}
+
+
+Function \Move{$\mss,k,\mds$} performs $k$ relocations from stack $\mss$ to stack $\mds$.
+Function \Relocate{$\mss,k,\mathbb{R}$} performs $k$ relocations from a {sender} stack $\mss$ to a {receiver} set $\mathbb{R}$. For each of the top $k$ containers of the sender, the destination stack $\mds$ is properly selected from $\mathbb{R}$ according to the evaluations by the user-defined function \EvalMove{$\mss,\mds$}. The evaluations of moves are represented by numerical tuples, which are lexicographically comparable.
+Function \MoveNeed{$c,s$} returns the actual number of moves performed by the STAP to accomplish the given task $(c,s)$.
+
+Function \BiReceiver{$\mss,k_1,\mathbb{R}_1,k_2,\mathbb{R}_2$} relocates $k_1$ and $k_2$ containers from one sender stack $\mss$ to two receiver sets, $\mathbb{R}_1$ and $\mathbb{R}_2$, respectively. Similarly, function \BiSender{$\mss_1,k_1,\mss_2,k_2,\mathbb{R}$} performs relocations from two senders, stacks $\mss_1$ and $\mss_2$, to the same receiver set $\mathbb{R}$, and the respective quantities are $k_1$ and $k_2$. The moving order of the two top containers from two senders is determined by the smaller evaluation tuple.
+
+\subsubsection{User-defined functions}
+
+User-defined functions in the STAP include
+\begin{itemize}
+\item  \EvalMove{$\mss,\mds$} returns the penalty of the move from stack $\mss$ to $\mds$;
+\item \Interim{$\mathbb{I}$} selects the interim stack from set $\mathbb{I}$; and
+\item \InterimFull{$\mathbb{F}$} selects the interim stack from set $\mathbb{F}$, which consists of $S-2$ full stacks.
+\end{itemize}
+
+
+
+\subsubsection{Task types}
+
+
+Let the target container be denoted by $c^*(s^+,t^+)$ and the aim stack by $s^-$. The task is \emph{immediate} if it is already located in the aim slot; \emph{internal} if the aim slot is below the target container in the same stack; and \emph{external} if the aim slot is in a different stack.
+
+
+\subsubsection{Immediate task}
+
+An immediate task does not require a move because the target container is already located in the aim slot; that is, $\MoveNeed{$c^*,s^-$}=0$ for an immediate task $(c^*,s^-)$.
+
+\subsubsection{Internal task}
+
+For an internal task, let $a$ denote the number of empty slots in $\mathbb{S}\setminus\{s^+\}$ with the exclusion of the highest non-full stack; that is, $a=E-e(s^+)-\min\{e(s)>0: s\neq s^+\}$. If multiple stacks are with the maximum height, only one is excluded. Let $b_1$ and $b_2$ denote the numbers of blocking containers above and below $c^*$ in stack $s^+$, respectively. The accomplishment for an internal tack is given in  Algorithm~\ref{algo:internal}, which is divided into three situations:
+\begin{itemize}
+\item I1: $a\ge b_2$;
+\item I2: $a<b_2$ \& $|\{s\neq s^+: h(s)<H\}|>1$; and
+\item I3: $a<b_2$ \& $|\{s\neq s^+: h(s)<H\}|=1$.
+\end{itemize}
+
+
+\begin{algorithm*}[htbp]
+
+\caption{Accomplish an internal task.}
+\label{algo:internal}
+
+\setalgo
+
+\SetKwProg{One}{case I1:}{}{end~case}
+\SetKwProg{Two}{case I2:}{}{end~case}
+\SetKwProg{Three}{case I3:}{}{end~case}
+\SetKwInput{Target}{target container}
+\SetKwInput{Aim}{aim slot}
+\SetKwInput{Above}{blocking above}
+\SetKwInput{Below}{blocking below}
+\SetKwInput{Slot}{slot supply}
+
+
+\begin{multicols}{2}
+
+\Target{$c^*(s^+,t^+)$}
+
+\Aim{$(s^+,f(s^+)+1)$}
+\Slot{$a=E-e(s^+)-\min\{e(s)>0: s\neq s^+\}$}
+
+\Above{$b_1=h(s^+)-t^+$}
+\Below{$b_2=t^+-f(s^+)-1$}
+\end{multicols}
+
+
+\begin{multicols}{2}
+
+
+
+\Function{$\alpha(s^+,\mds)$}
+{
+  $e^{\min}\gets \min\{e(s)>0:s\neq s^+\}$\;
+  $e^{\sec}\gets \min\{e(s)>e^{\min}:s\neq s^+\}$\;
+  $k^{\min}\gets |\{s\neq s^+ : e(s)=e^{\min}\}|$\;
+  \uIf{$e(\mds)> e^{\min}$}
+  {
+    \Return $E-e(s^+)-e^{\min}-1$\;
+  }
+  \uElseIf{$e^{\min}\ge 2$}
+  {
+    \Return $E-e(s^+)-e^{\min}$\;
+  }
+  \uElseIf{$k^{\min}=1$}
+  {
+     \Return $E-e(s^+)-e^{\sec}-1$\;
+  }
+  \Else
+  {
+    \Return $E-e(s^+)-2$\;
+  }
+}
+
+  \One{$a\ge b_2$}
+  {
+    \Repeat{$b_1$}
+    {
+
+      $\mathbb{R}\gets \{s\neq s^+: h(s)<H,\, \alpha(s^+,s)\ge b_2\}$\;
+
+      \Relocate{$s^+,1,\mathbb{R}$}\;
+    }
+    $\mathbb{I}\gets \{s\neq s^+: h(s)<H,\, E-e(s^+)-e(s)\ge b_2\}$\;
+
+    $\mts\gets \Interim{$\mathbb{I}$}$\;
+    \Move{$s^+,1,s'$}\;
+    \Relocate{$s^+,b_2,\mathbb{S}\setminus\{s^+,\mts\}$}\;
+    \Move{$\mts,1,s^+$}\;
+    \tcp{I1:\ $b_1+b_2+2$ moves}
+  }
+
+  \Two{$a<b_2$ \& $|\{s\neq s^+: h(s)<H\}|>1$}
+  {
+    \Relocate{$s^+, b_1, \mathbb{S}\setminus\{s^+\}$}\;
+    $\mts_1\gets \Interim{$\mathbb{S}\setminus\{s^+\}$}$\;
+    \Move{$s^+, 1, \mts_1$}\;
+    $k_2\gets E-e(s^+)-e(\mts_1)-1$\;
+    \Relocate{$s^+, k_2, \mathbb{S}\setminus\{s^+,\mts_1\}$}\;
+    Find $\mts_2$ s.t.\ $\mts_2\not\in \{s^+,\mts_1\}$ \& $h(\mts_2)<H$\;
+    \Move{$\mts_1, 1, \mts_2$}\;
+    \Move{$s^+, b_2-k_2, \mts_1$}\;
+    \Move{$\mts_2, 1, s^+$}\;
+    \tcp{I2:\ $b_1+b_2+3$ moves}
+  }
+
+  \Three{$a<b_2$ \& $|\{s\neq s^+: h(s)<H\}|=1$}
+  {
+    Find $s'$ s.t.\ $s'\neq s^+$ \& $h(s')<H$\;
+    $\mts\gets \InterimFull{$\mathbb{S}\setminus\{s^+,s'\}$}$\;\label{line:wholly}
+    \BiSender{$\mts, 1, s^+, b_1, \{s'\}$}\;\label{line:dualsender}
+    \Move{$s^+, 1, \mts$}\;
+    \Move{$s^+, b_2, s'$}\;
+    \Move{$\mts, 1, s^+$}\;
+    \tcp{I3:\ $b_1+b_2+3$ moves}
+    \tcp{(regression issue not yet included)}
+    Resolve regression issue (cf.\ Section~\ref{sec:reg})\;
+  }
+
+\end{multicols}
+\BlankLine
+\BlankLine
+\end{algorithm*}
+
+In case I1, a new function $\alpha(s^+,s)$ is defined similar to $a$, representing the number of empty slots in $\mathbb{S}\setminus\{s^+\}$ with the exclusion of the highest non-full stack, after the topmost blocking container of stack $s^+$ is moved to stack $s$. When the blocking containers above the target container are being relocated, the detection of enough slots is performed,  to prevent unnecessary additional moves.
+
+Note that in case I2, the target container $c^*$ is moved to the new interim stack $\mts_2$ from the first interim stack $\mts_1$ when there is only one empty slot remaining in $\mathbb{S}\setminus\{s^+,\mts_1\}$. This can be modified so that $c^*$ can be moved to a new interim stack $\mts_2$ earlier as long as the empty slots in $\mathbb{S}\setminus\{s^+,\mts_2\}$ are enough for the remaining blocking containers in stack $s^+$. Moreover, if there is a full stack in $\mathbb{S}\setminus\{s^+\}$ in case I2, the task can also be completed in a similar way as that used in case I3, with the same operational cost.
+
+\subsubsection{External task}
+
+For an external task, the number of empty slots in $\mathbb{S}\setminus\{s^+,s^-\}$ is denoted by $a$; that is, $a=E-e(s^+)-e(s^-)$. Let $b_1$ and $b_2$ denote the numbers of blocking containers above the target container $c^*$ and the aim slot $(s^-,f(s^-))$, respectively. The pseudo-code describing the accomplishment for an external task is given in Algorithm~\ref{algo:external}, with four situations considered,\begin{itemize}
+\item E1: $a\ge b_1+b_2$;
+\item E2: $b_1+1\le a<b_1+b_2$;
+\item E3: $1\le a<b_1+\min\{1,b_2\}$; and
+\item E4: $a=0<b_1+b_2$.
+\end{itemize}
+
+
+
+\begin{algorithm*}[htbp]
+\caption{Accomplish an external task.}
+\label{algo:external}
+
+\setalgo
+
+\SetKwProg{One}{case E1:}{}{end~case}
+\SetKwProg{Two}{case E2:}{}{end~case}
+\SetKwProg{Three}{case E3:}{}{end~case}
+\SetKwProg{Four}{case E4:}{}{end~case}
+\SetKwInput{Target}{target container}
+\SetKwInput{Aim}{aim slot}
+\SetKwInput{BPlus}{blocking above target}
+\SetKwInput{BMinus}{blocking in aim stack}
+\SetKwInput{Slot}{slot supply}
+
+
+\begin{multicols}{2}
+
+\Target{$c^*(s^+,t^+)$}
+\Aim{$(s^-,f(s^-)+1)$}
+\BPlus{$b_1=h(s^+)-t^+$}
+\BMinus{$b_2=h(s^-)-f(s^-)$}
+\Slot{$a=E-e(s^+)-e(s^-)$}
+
+  \One{$a\ge b_1+b_2$}
+  {
+    \BiSender{$s^+, b_1,s^-,b_2, \mathbb{S}\setminus\{s^+,s^-\}$}\;
+    \Move{$s^+, 1, s^-$}\;
+    \tcp{E1:\ $b_1+b_2+1$ moves}
+  }
+
+  \Two{$b_1+1\le a<b_1+b_2$}
+  {
+    $k_2\gets a-1-b_1$\;
+    \BiSender{$s^+, b_1, s^-, k_2, \mathbb{S}\setminus\{s^+,s^-\}$}\;
+    Find $\mts$ s.t.\ $\mts\not\in \{s^+,s^-\}$ \& $h(\mts)<H$\;
+    \Move{$s^+,1,\mts$}\;
+    \Move{$s^-, b_2-k_2, s^+$}\;
+    \Move{$\mts, 1, s^-$}\;
+    \tcp{E2:\ $b_1+b_2+2$ moves}
+  }
+
+
+  \Three{$1\le a<b_1+\min\{1,b_2\}$}
+  {
+    $k_1\gets a-1$\;
+    \BiReceiver{$s^+, k_1, \mathbb{S}\setminus\{s^+,s^-\}, b_1-k_1, \{s^-\}$}\;\label{line:dualreceiver}
+    Find $\mts$ s.t.\ $\mts\not\in \{s^+,s^-\}$ \& $h(\mts)<H$\;
+    \Move{$s^+,1,\mts$}\;
+    \Move{$s^-, b_1-k_1+b_2, s^+$}\;
+    \Move{$\mts, 1, s^-$}\;
+    \tcp{E3:\ $2b_1+b_2-a+3$ moves}
+  }
+
+  \Four{$a=0<b_1+b_2$}
+  {
+    $\mts\gets \InterimFull{$\mathbb{S}\setminus\{s^+,s^-\}$}$\;\label{line:fixed}
+    \BiSender{$\mts, 1, s^+, b_1, \{s^-\}$}\;
+    \Move{$s^+, 1, \mts$}\;
+    \Move{$s^-, b_1+b_2+1, s^+$}\;
+    \Move{$\mts, 1, s^-$}\;
+    \tcp{E4:\ $2b_1+b_2+4$ moves}
+    \tcp{(regression issue not yet included)}
+    Resolve regression issue (cf.\ Section~\ref{sec:reg})\;
+  }
+
+\end{multicols}
+
+\BlankLine
+\BlankLine
+\end{algorithm*}
+
+
+
+\subsubsection{Regression issue}
+\label{sec:reg}
+
+In cases I3 and E4, if the top container of the full stack selected (cf.\ line~\ref{line:wholly} in Algorithm~\ref{algo:internal} and line~\ref{line:fixed} in Algorithm~\ref{algo:external}) is not fixed, the task is done without any side effect. However, if the top container has been fixed, the container should be returned to its previously fixed slot, requiring additional moves.
+
+The regression issue only occurs in tricky states, and it can be avoided if the tricky state avoidance technique (cf.\ Section~\ref{sec:avoid}) is applied.
+
+
+
+\section{Greedy and speedy heuristic}
+
+\label{sec:gash}
+
+
+The proposed {greedy and speedy heuristic} (GASH) is a realized implementation of the generic feasibility-based heuristic scheme.
+The GASH employs all the techniques introduced above, i.e., the container stability concept, the techniques of tricky state avoidance and bottom tiers protection, and the STAP\@. The procedure of the GASH and the user-defined functions for the STAP are given in Algorithm~\ref{algo:gash}.
+
+
+
+\begin{algorithm*}[htbp]
+\caption{Greedy and speedy heuristic.}
+\label{algo:gash}
+
+
+\setalgo
+
+
+\begin{multicols}{2}
+\Begin
+{
+  $(\mathsf{L},\boldsymbol{f})\gets (\mathsf{L}^0,U\cdot\boldsymbol{1})$\;
+  \Repeat{$N-SU$}
+  {
+    $\mathbb{T}\gets \Valid{}$\;
+    $(c^*, s^-)\gets \arg\min_{(c,s)\in\mathbb{T}} \EvalTask{$c,s$}$\;
+    Accomplish $( c^*, s^-)$ by the STAP\;
+    $f(s^-)\gets f(s^-)+1$\;
+  }
+}
+
+\Function{\Valid{}}
+{
+  $\mathbb{T}\gets \varnothing$\;
+
+  \ForEach{$(c,s)\in\mathbb{C}\times\mathbb{S}$}
+  {
+      \If{$c$ is unfixed \\\& $f(s)<H$ \\\& $p(c)\le q^f(s)$ \\\& $\Delta(\varphi)\ge H-f(s)$, for $p(c)< \varphi\le q^f(s)$}
+      {
+        $\mathbb{T}\gets \mathbb{T}\cup\{(c,s)\}$\;
+      }
+  }
+  \Return $\mathbb{T}$\;
+}
+
+
+
+\Function{\EvalTask{$c,s$}}
+{
+  $p\gets p(c)$\;
+  $q\gets q^f(s,f(s))$\;
+  $\chi\gets 0$ \tcp*[l]{key indicator}
+  \If{$f(s)<2$ \& $\delta(p,q)\ge S$}
+  {
+    \tcp{bottom tiers protection}
+    $\chi\gets \infty$\;
+  }
+  \If{$(\mathsf{L},\boldsymbol{f})$ is pre-tricky \& $f(s)=H-1$}
+  {
+    \tcp{tricky state avoidance}
+    $\chi\gets \infty$\;
+  }
+
+  $n\gets \MoveNeed{$c,s$}$\;
+
+  \Return $\langle \chi,\ n,\  g(s)-f(s),\ \delta(p,q),\ f(s),\ -p(c) \rangle$\;
+}
+
+
+
+\Function{\EvalMove{$\mss,\mds$}}
+{
+  $c\gets (\mss,h(\mss))$\;
+  $p\gets p(c)$\;
+  $q\gets q(\mds,h(\mds))$\;
+  \uCase{$ g(\mds)=h(\mds)$ \& stack $\mds$ can stabilize $c$}
+  {
+    \Return $\langle 1,\ \delta(p,q) \rangle$\;
+  }
+  \uCase{$ g(\mds)<h(\mds)$ \& $p\ge m(\mds)$}
+  {
+    \Return $\langle 2,\ p-m(\mds) \rangle$\;
+  }
+  \uCase{$ g(\mds)<h(\mds)$ \& $p<m(\mds)$}
+  {
+    \Return $\langle 3,\ m(\mds)-p \rangle$\;
+  }
+  \Case{$ g(\mds)=h(\mds)$ \& stack $s_2$ cannot stabilize $c$}
+  {
+    \Return $\langle 4,\ q \rangle$\;
+  }
+}
+
+
+
+\Function{\Interim{$\mathbb{I}$}}
+{
+  $\mathbb{I}_1\gets \{s\in \mathbb{I}:  g(s)<h(s)<H\}$\;
+  $\mathbb{I}_2\gets \{s\in \mathbb{I}:  g(s)=h(s)<H\}$\;
+
+  \uIf{$\mathbb{I}_1\neq \varnothing$}
+  {
+    \Return $\arg\max_{s\in\mathbb{I}_1} m(s)$\;
+  }
+  \Else
+  {
+    \Return $\arg\min_{s\in\mathbb{I}_2} q(s,h(s))$\;
+  }
+
+}
+
+
+
+
+\Function{\InterimFull{$\mathbb{F}$}}
+{
+  $\mathbb{F}_1\gets \{s\in \mathbb{F}: f(s)\le g(s)<h(s)=H\}$\;
+  $\mathbb{F}_2\gets \{s\in \mathbb{F}: f(s)< g(s)=h(s)=H\}$\;
+  $\mathbb{F}_3\gets \{s\in \mathbb{F}: f(s)= g(s)=h(s)=H\}$\;
+  \uIf{$\mathbb{F}_1\neq \varnothing$}
+  {
+    \Return $\arg\min_{s\in\mathbb{F}_1} p(s,h(s))$\;
+  }
+  \uElseIf{$\mathbb{F}_2\neq \varnothing$}
+  {
+    \Return $\arg\min_{s\in\mathbb{F}_2} p(s,h(s))$\;
+  }
+  \Else(\tcp*[h]{cause regression issue})
+  {
+    \Return $\arg\min_{s\in\mathbb{F}_3} p(s,h(s))$\;
+  }
+}
+
+\end{multicols}
+\BlankLine
+\BlankLine
+\end{algorithm*}
+
+
+
+Function \Valid{} returns $\mathbb{T}$, the set of valid tasks for the current state. 
+
+Define the \emph{messiness} of stack $s$ by $m(s)=\max_{g(s)<t\le h(s)}p(s,t)$, that is the largest priority value among the unstable containers in stack $s$. The preferences of selecting a stack $\mds$ as the destination stack for a blocking container are as follows.
+\begin{enumerate}
+\item If stack $\mds$ is entirely stable and can stabilize $c$, the minimum affected demand is preferred;
+\item If stack $\mds$ is not entirely stable and $p(c)\ge m(\mds)$, the minimum gap between $m(\mds)$ and $p(c)$ is preferred;
+\item If stack $\mds$ is not entirely stable and $p(c)> m(\mds)$, the minimum gap between $p(c)$ and $m(\mds)$ is preferred;
+\item If stack $\mds$ is entirely stable but cannot stabilize $c$, the minimum $q(\mds,h(\mds))$ is preferred.
+\end{enumerate}
+
+The first preference indicates that stabilizing a blocking container reduces the total number of unstable containers in the bay. The second and third preferences consider the messiness of the destination stack. Messiness refers to the largest priority value of the unstable containers in a stack; larger messiness implies a higher urgency of reshuffling. The last preference indicates that an entirely stable stack should be protected from being ruined.
+
+In cases I1 and I2, an interim stack is selected to temporarily store the target container.
+The selection prefers stacks that are not entirely stable, with the largest messiness, then entirely stable stacks with the smallest capability. The most unattractive stack for receiving blocking containers is selected as the interim stack. In cases I3 and E4, the interim stack is selected by the minimum priority value of the top containers of these full stacks.
+
+Note that because the tricky state avoidance technique is applied, the regression issue would never happen in the GASH, although it is still considered in function \InterimFull{$\mathbb{F}$} to complete the whole logic.
+
+\section{Computational results}
+\label{sec:experiment}
+
+In this section, the proposed greedy and speedy heuristic (GASH) is compared to two benchmark heuristic approaches. One is the target-guided heuristic (TGH) proposed in our previous work \citep{wang2015}, and the other is a similar implementation to the LPFH proposed by \cite{exp2012}. Since the LPFH only discusses cases with enough empty slots (cases I1 and E1 in our statement) and involves random decisions, it is difficult to implement a deterministic version. Thus, we develop a substitute instead, referred to as the largest priority value first heuristic (LPVFH).
+
+The LPVFH selects the next target container from unfixed containers with the largest priority value, and then accomplish it by the STAP with the same user-defined functions used as that in the GASH\@. Necessary pseudo-code for the LPVFH is given in Algorithm~\ref{algo:lpvfh}.
+
+\begin{algorithm*}[htbp]
+\caption{Largest priority value first heuristic.}
+\label{algo:lpvfh}
+
+
+\setalgo
+
+\begin{multicols}{2}
+
+\Begin
+{
+  $(\mathsf{L},\boldsymbol{f})\gets (\mathsf{L}^0,U\cdot\boldsymbol{1})$\;
+
+  \ForEach{$p=P,\dots,1$}
+  {
+    $\mathbb{C}_p\gets\textrm{containers with priority value $p$}$\;
+    $\mathbb{A}_p\gets\varnothing$\tcp*[l]{set of aim stacks}
+    \While{$\mathbb{C}_p\neq \varnothing$}
+    {
+      $(c^*, s^-)\gets \arg\min_{c\in\mathbb{C}_p, f(s)<H} \MoveNeed{$c,s$}$\;
+      Accomplish $( c^*, s^-)$ by the STAP\;
+      $f(s^-)\gets f(s^-)+1$\;
+      $\mathbb{C}_p\gets\mathbb{C}_p\setminus\{c^*\}$\;
+      $\mathbb{A}_p\gets \mathbb{A}_p\cup \{s^-\}$\;
+    }
+    \ForEach{$s^-\in\mathbb{A}_p$}
+    {
+    	\Fill{$s^-$}\;
+    }
+  }
+}
+
+
+
+\Function{\Fill{$s^-$}}
+{
+  \While{$h(s^-)<H$}
+  {
+    $\mathbb{S}'\gets\varnothing$\;
+    \ForEach{$s\in\{s\neq s^-: g(s)<h(s)\}$}
+    {
+      $c\gets (s,h(s))$\;
+      \If{ stack $s^-$ can stabilize $c$}
+      {
+        $\mathbb{S}'\gets \mathbb{S}'\cup \{s\}$\;
+      }
+    }
+    \eIf{$\mathbb{S}'\neq \varnothing$}
+    {
+      $s'\gets \arg\max_{s\in\mathbb{S}'} p(s,h(s))$\;
+      \Move{$s',1,s^-$}\;
+    }
+    {
+      \Break\;
+    }
+  }
+}
+\end{multicols}
+\BlankLine
+\BlankLine
+\end{algorithm*}
+
+
+
+
+
+The problem instance format of the CPMP is the same as that of the {container relocation problem} (CRP, a.k.a.\ the blocks relocation problem), the problem of minimizing the total number of container moves for retrieving containers from the initial layout.
+In the literature, researchers usually use the same data sets when solving the CPMP~\citep{bort2012,cas2009,exp2012,wang2015} and the CRP~\citep{cas2011,exp2014,forster2012,jin2013,jin2015}.
+
+\subsection{Results for CVS instances}
+
+\citet{cas2011} present the complete CVS data set (named after the authors' surnames, Caserta, Vo{\ss} and Sniedovich) originally for the CRP\@. The CVS instances are classified into 21 groups, each consisting of 40 instances. The stacks of the initial layout have the same height in a CVS instance. The number of containers per stack in the initial layout is denoted by $K$, hence $N=SK$. It is worth noting that the stack height limitation is not specified in the original data. The researchers add two extra tiers above the initial layout; that is, $H=K+2$.
+
+The CVS instances can be considered typical dense CPMP instances. Table~\ref{tab:cvs} illustrates the computational results on CVS instances by the GASH, the TGH, and the LPVFH\@. The values under the ``move'' headings represent average number of moves for every CVS group, whereas the values under the ``gap\%'' headings are the ratios of the difference between each benchmark heuristic and the GASH to the number of containers $N$. The results showcase that the GASH leads the benchmark heuristics by more than $10\%\times N$ moves on most instance groups. Especially on the narrowest group CVS~10-6, the GASH outperforms the TGH and the LPVFH by 319.38\% and 55.54\%, respectively.
+
+\begin{table}[htbp]
+\caption{Results for CVS instances.}
+\label{tab:cvs}
+
+\settab
+
+\centering
+
+
+
+\begin{tabular*}{\smalltable}{l@{\extracolsep{\fill}}@{}r@{}r@{}r@{}r@{}r}
+\toprule
+\multirow{2}{*}[-.5\defaultaddspace]{CVS~K-S}&
+
+\multirow{2}{*}[-.5\defaultaddspace]{\begin{tabular}{@{}c@{}}GASH\\move\end{tabular}}&
+\multicolumn{2}{@{}c@{}}{TGH}&\multicolumn{2}{@{}c}{LPVFH} \\
+
+\cmidrule{3-4}
+\cmidrule(r){5-6}
+&   & move & gap\%    & move & gap\%   \\
+\midrule
+CVS 3-3   &11.28  & 12.95  & 18.61     & 11.25  & $-0.28$     \\
+CVS 3-4   &  10.80  & 12.18  & 11.46     & 12.23  & 11.88     \\
+CVS 3-5   & 12.08  & 12.78  & 4.67      & 13.45  & 9.17      \\
+CVS 3-6   &  12.98  & 14.38  & 7.78      & 14.88  & 10.56     \\
+CVS 3-7   & 14.75  & 16.00  & 5.95      & 16.58  & 8.69      \\
+CVS 3-8   & 15.65  & 16.55  & 3.75      & 17.08  & 5.94      \\
+CVS 4-4   & 21.88  & 23.35  & 9.22      & 21.93  & 0.31      \\
+CVS 4-5   &  23.08  & 26.73  & 18.25     & 26.48  & 17.00     \\
+CVS 4-6   & 24.75  & 27.58  & 11.77     & 27.20  & 10.21     \\
+CVS 4-7   &  27.63  & 29.93  & 8.21      & 31.23  & 12.86     \\
+CVS 5-4   & 35.08  & 44.83  & 48.75     & 35.83  & 3.75      \\
+CVS 5-5   &  35.33  & 42.40  & 28.30     & 36.50  & 4.70      \\
+CVS 5-6   &  39.88  & 50.63  & 35.83     & 43.08  & 10.67     \\
+CVS 5-7   &  41.68  & 48.83  & 20.43     & 46.95  & 15.07     \\
+CVS 5-8   &  47.50  & 56.68  & 22.94     & 51.83  & 10.81     \\
+CVS 5-9   &  50.45  & 57.50  & 15.67     & 55.65  & 11.56     \\
+CVS 5-10  & 54.63  & 62.80  & 16.35     & 60.88  & 12.50     \\
+CVS 6-6   &  55.23  & 74.33  & 53.06     & 57.85  & 7.29      \\
+CVS 6-10  & 75.60  & 88.63  & 21.71     & 79.73  & 6.88      \\
+CVS 10-6  & 140.63 & 332.25 & 319.38    & 173.95 & 55.54     \\
+CVS 10-10 & 179.23 & 302.90 & 123.68    & 190.50 & 11.28     \\[\defaultaddspace]
+Average      & 44.29  & 64.48  & 38.37     & 48.81  & 11.26     \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{Results for BF instances}
+
+\citet{bort2012} introduce 32 groups of CPMP instances (referred to as BF instances), each group consisting of 20 instances. In BF instances, the bay size is $S=16$ or $20$ and $H=5$ or $8$. The number of containers $N$ is either $0.6\times SH$ or $0.8\times SH$, the number of priorities $P$ is either $0.2\times N$ or $0.4\times N$, and the number of disorderly containers  $B$ is either $0.6\times N$ or $0.75\times N$ in the initial layout.
+
+The BF instances can be considered typical loose CPMP instances. Table~\ref{tab:bf} illustrates the computational results on BF instances by the three heuristics. The values under the ``ratio\%'' headings are the relative gap between per heuristic and the number of disorderly containers initially $B$, and the values under the ``gap\%'' headings are the differences between the ``ratio\%'' columns of the GASH and each benchmark heuristic.
+
+
+\begin{table*}[htbp]
+\caption{Results for BF instances.}
+\label{tab:bf}
+
+\settab
+
+\centering
+
+\begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}*5{@{}c}@{}r@{}r@{}r@{}r@{}r@{}r@{}r@{}r}
+\toprule
+\multirow{2}{*}[-.5\defaultaddspace]{BF}&
+\multirow{2}{*}[-.5\defaultaddspace]{S}   &
+\multirow{2}{*}[-.5\defaultaddspace]{H}    &
+\multirow{2}{*}[-.5\defaultaddspace]{N}   &
+\multirow{2}{*}[-.5\defaultaddspace]{P}    &
+\multirow{2}{*}[-.5\defaultaddspace]{B}   &
+\multicolumn{2}{@{}c@{}}{GASH} & \multicolumn{3}{@{}c@{}}{TGH} &\multicolumn{3}{@{}c}{LPVFH} \\
+\cmidrule{7-8}
+\cmidrule{9-11}
+\cmidrule(r){12-14}
+       &  & &   &  &   & move & ratio\% &move & ratio\% & gap\%&move & ratio\% & gap\%\\
+\midrule
+1  & 16 & 5 & 48  & 10 & 29 & 29.15  & 0.52  & 29.10  & 0.34  & $-0.17$ & 29.55  & 1.90  & 1.38  \\
+2  & 16 & 5 & 48  & 10 & 36 & 36.00  & 0.00  & 36.00  & 0.00  & 0.00  & 36.60  & 1.67  & 1.67  \\
+3  & 16 & 5 & 48  & 20 & 29 & 29.35  & 1.21  & 29.45  & 1.55  & 0.34  & 30.90  & 6.55  & 5.34  \\
+4  & 16 & 5 & 48  & 20 & 36 & 36.15  & 0.42  & 36.00  & 0.00  & $-0.42$ & 37.20  & 3.33  & 2.92  \\
+5  & 16 & 5 & 64  & 13 & 39 & 46.30  & 18.72 & 48.50  & 24.36 & 5.64  & 53.00  & 35.90 & 17.18 \\
+6  & 16 & 5 & 64  & 13 & 48 & 55.50  & 15.63 & 57.55  & 19.90 & 4.27  & 62.85  & 30.94 & 15.31 \\
+7  & 16 & 5 & 64  & 26 & 39 & 49.95  & 28.08 & 53.55  & 37.31 & 9.23  & 57.15  & 46.54 & 18.46 \\
+8  & 16 & 5 & 64  & 26 & 48 & 57.60  & 20.00 & 60.00  & 25.00 & 5.00  & 66.90  & 39.38 & 19.38 \\
+9  & 16 & 8 & 77  & 16 & 47 & 56.30  & 19.79 & 60.35  & 28.40 & 8.62  & 62.15  & 32.23 & 12.45 \\
+10 & 16 & 8 & 77  & 16 & 58 & 61.55  & 6.12  & 62.15  & 7.16  & 1.03  & 69.50  & 19.83 & 13.71 \\
+11 & 16 & 8 & 77  & 31 & 47 & 55.00  & 17.02 & 61.25  & 30.32 & 13.30 & 63.70  & 35.53 & 18.51 \\
+12 & 16 & 8 & 77  & 31 & 58 & 61.45  & 5.95  & 63.45  & 9.40  & 3.45  & 68.50  & 18.10 & 12.16 \\
+13 & 16 & 8 & 103 & 21 & 62 & 96.50  & 55.65 & 107.45 & 73.31 & 17.66 & 110.85 & 78.79 & 23.15 \\
+14 & 16 & 8 & 103 & 21 & 78 & 116.05 & 48.78 & 124.75 & 59.94 & 11.15 & 134.90 & 72.95 & 24.17 \\
+15 & 16 & 8 & 103 & 42 & 62 & 99.45  & 60.40 & 110.60 & 78.39 & 17.98 & 110.40 & 78.06 & 17.66 \\
+16 & 16 & 8 & 103 & 42 & 78 & 115.45 & 48.01 & 133.35 & 70.96 & 22.95 & 137.40 & 76.15 & 28.14 \\
+17 & 20 & 5 & 60  & 12 & 36 & 36.50  & 1.39  & 36.50  & 1.39  & 0.00  & 37.35  & 3.75  & 2.36  \\
+18 & 20 & 5 & 60  & 12 & 45 & 45.20  & 0.44  & 45.00  & 0.00  & $-0.44$ & 45.00  & 0.00  & -0.44 \\
+19 & 20 & 5 & 60  & 24 & 36 & 36.75  & 2.08  & 36.80  & 2.22  & 0.14  & 38.50  & 6.94  & 4.86  \\
+20 & 20 & 5 & 60  & 24 & 45 & 45.10  & 0.22  & 45.00  & 0.00  & $-0.22$ & 45.70  & 1.56  & 1.33  \\
+21 & 20 & 5 & 80  & 16 & 48 & 56.55  & 17.81 & 61.65  & 28.44 & 10.63 & 65.65  & 36.77 & 18.96 \\
+22 & 20 & 5 & 80  & 16 & 60 & 65.55  & 9.25  & 67.90  & 13.17 & 3.92  & 74.50  & 24.17 & 14.92 \\
+23 & 20 & 5 & 80  & 32 & 48 & 55.25  & 15.10 & 61.10  & 27.29 & 12.19 & 65.75  & 36.98 & 21.88 \\
+24 & 20 & 5 & 80  & 32 & 60 & 68.00  & 13.33 & 70.95  & 18.25 & 4.92  & 76.65  & 27.75 & 14.42 \\
+25 & 20 & 8 & 96  & 20 & 58 & 66.00  & 13.79 & 69.80  & 20.34 & 6.55  & 73.60  & 26.90 & 13.10 \\
+26 & 20 & 8 & 96  & 20 & 72 & 75.75  & 5.21  & 74.35  & 3.26  & $-1.94$ & 81.75  & 13.54 & 8.33  \\
+27 & 20 & 8 & 96  & 39 & 58 & 65.65  & 13.19 & 71.85  & 23.88 & 10.69 & 73.65  & 26.98 & 13.79 \\
+28 & 20 & 8 & 96  & 39 & 72 & 76.50  & 6.25  & 76.30  & 5.97  & $-0.28$ & 83.55  & 16.04 & 9.79  \\
+29 & 20 & 8 & 128 & 26 & 77 & 115.85 & 50.45 & 118.65 & 54.09 & 3.64  & 128.65 & 67.08 & 16.62 \\
+30 & 20 & 8 & 128 & 26 & 96 & 129.60 & 35.00 & 143.05 & 49.01 & 14.01 & 155.15 & 61.61 & 26.61 \\
+31 & 20 & 8 & 128 & 52 & 77 & 115.85 & 50.45 & 128.15 & 66.43 & 15.97 & 128.80 & 67.27 & 16.82 \\
+32 & 20 & 8 & 128 & 52 & 96 & 134.10 & 39.69 & 147.30 & 53.44 & 13.75 & 157.00 & 63.54 & 23.85\\[\defaultaddspace]
+\multicolumn{6}{l@{}}{Average}  & 68.44  & 19.37 & 72.75  & 26.05 & 6.67  & 76.96 &	33.09 &	13.71 \\
+
+\bottomrule
+
+
+\end{tabular*}
+
+\end{table*}
+
+
+The relative gap between the solution value and the number of disorderly containers in the initial layout is a good measure of the heuristic performance. Table~\ref{tab:bfsum} shows that the instance density $N/SH$ (or bay utilization) and the height of the bay $H$ are key factors in the number of moves needed for pre-marshalling. In other words, denser or higher instances are more difficult to solve. The computational results on BF instances also prove that the GASH outperforms these two benchmark heuristics.
+
+
+
+\begin{table}[htbp]
+\caption{Summary on BF instances.}
+\label{tab:bfsum}
+
+\settab
+
+\centering
+
+\begin{tabular*}{\smalltable}{c@{\extracolsep{\fill}}r@{}*5{@{}r}}
+\toprule
+
+&\multicolumn{2}{@{}c@{}}{GASH} & \multicolumn{2}{@{}c@{}}{TGH} & \multicolumn{2}{@{}c}{LPVFH}\\
+&\multicolumn{2}{@{}c@{}}{ratio\%} & \multicolumn{2}{@{}c@{}}{gap\%} & \multicolumn{2}{@{}c}{gap\%}\\
+\cmidrule{2-3}\cmidrule{4-5}\cmidrule(r){6-7}
+density & $H=5$ & \multicolumn{1}{@{}c@{}}{8} &\multicolumn{1}{@{}c@{}}{5} & \multicolumn{1}{@{}c@{}}{8} & \multicolumn{1}{@{}c@{}}{5} & \multicolumn{1}{@{}c}{8} \\
+\midrule
+0.6&  0.78  & 10.91  & $-0.10$  & 5.18  & 4.85  & 10.50 \\
+0.8&  17.24  & 48.55  & 6.97  & 14.64  & 19.65  & 14.81 \\
+\bottomrule
+\end{tabular*}
+
+\end{table}
+
+
+
+\section{Conclusions}
+\label{sec:conclusion}
+The container pre-marshalling deals with how to rehandle containers in a bay so that the containers are placed in a determined order. By far, only seven works talk about solutions to this problem.
+In this paper we present a generic heuristic scheme to solve the container pre-marshalling problem. The proposed heuristic scheme can be implemented solely or combined with other frameworks.
+The main innovation is the concept of state feasibility, which checks feasibility of states before really searching those states. Thanks to this concept, the search space is enlarged compared with extant methods, whereas the search efficiency is guaranteed.
+Numerical experiments on two commonly used data sets show that our proposed method outperforms other methods.
+
+Our algorithm can be inserted into many heuristic frameworks such as GRASP, LNS and beam search. How these combinations work is worthy of study in the future.
+A major challenge raised in the feasibility-based heuristic scheme is the trade-off between the freedom of selecting target containers and the waste of resource surplus. In this paper, the bottom tiers protection technique is proposed to balance the trade-off. As a future work, more efforts should be dedicated to better balance the trade-off. Moreover, the feasibility of a state is essentially based on a lower bound of current state. If tighter lower bound is found, the performance of the algorithm can be improved. Therefore, finding a better lower bound of current state is a good research question. In this paper, we assume that the containers in the bay are determined and no container comes in or goes out during the pre-marshalling. In the future work, it can be discussed that how to handle dynamic yards in which containers come in or go out from time to time. To some extent, the new setting is similar to container stacking problem, as the close relationship of container pre-marshalling and container stacking problem, the methods proposed for the container pre-marshalling problem may provide a new perspective for the container stacking problem.
+
+
+\section*{References}
+
+%\bibliographystyle{myapa}
+\bibliographystyle{apalike2}
+\bibliography{cpmp}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+

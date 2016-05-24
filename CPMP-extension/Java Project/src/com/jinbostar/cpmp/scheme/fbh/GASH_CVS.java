@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Scanner;
 
+import data.io.DataIO;
 import static com.jinbostar.cpmp.common.Parameter.DualSenderOrder.SmallerEvalFirstOrder;
 import static com.jinbostar.cpmp.common.Parameter.TaskPreference;
 import static com.jinbostar.cpmp.common.Parameter.TaskPreference.*;
@@ -14,37 +15,6 @@ import static com.jinbostar.cpmp.common.Parameter.TopFilter.TrickyAvoid;
 
 public class GASH_CVS
 {
-
-	public static Node read_CVS(File file) throws Exception
-	{
-		Scanner scn = new Scanner(file);
-		scn.nextLine();
-		int S = Integer.parseInt(scn.nextLine().split(" ")[2]);
-		int K = Integer.parseInt(scn.nextLine().split(" ")[2]);
-		int N = Integer.parseInt(scn.nextLine().split(" ")[2]);
-		int P = N;
-		int H = K + 2;
-
-		assert N == S * K;
-
-		int[][] init = new int[S + 1][H + 1];
-
-		for (int s = 1; s <= S; s++)
-		{
-			String[] str = scn.nextLine().split(" ");
-
-			for (int i = 3; i < str.length; i++)
-			{
-				int t = i - 2;
-				init[s][t] = Integer.parseInt(str[i]);
-				assert init[s][t] >= 1;
-			}
-		}
-		scn.close();
-
-		return new Node(S, H, P, N, init);
-	}
-
 	public static void main(String[] args) throws Exception
 	{
 		String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(Calendar.getInstance().getTime());
@@ -65,8 +35,8 @@ public class GASH_CVS
 			String dir = "data/CVS(21)/CVS" + group;
 
 
-			int K = -1;
-			int S = -1;
+//			int K = -1;
+//			int S = -1;
 
 			int res_sum = 0;
 			long tim_sum = 0;
@@ -80,12 +50,12 @@ public class GASH_CVS
 
 				//	System.err.println(file.toString());
 
-				Node fbh = read_CVS(file);
-				if (K == -1)
-				{
-					K = fbh.H - 2;
-					S = fbh.S;
-				}
+				Node fbh = DataIO.read_CVS(file);
+//				if (K == -1)
+//				{
+//					K = fbh.H - 2;
+//					S = fbh.S;
+//				}
 				bad_sum += fbh.M();
 
 				fbh.topFilter = TrickyAvoid;
@@ -97,8 +67,6 @@ public class GASH_CVS
 				fbh.order = SmallerEvalFirstOrder;
 				fbh.setBottomFilter(2, fbh.S);
 				//	fbh.bottomFilter=null;
-
-				Node n = fbh.clone();
 
 				long st = System.currentTimeMillis();
 				int res = fbh.solve();

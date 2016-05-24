@@ -1,0 +1,60 @@
+
+
+\documentclass[10pt]{article}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{pgf}
+\usepackage[active,pdftex,tightpage]{preview}
+\PreviewEnvironment[]{tikzpicture}
+
+\usepackage{ifthen}
+
+\usetikzlibrary{calc,3d,patterns,arrows}
+\usetikzlibrary{decorations.pathreplacing}
+
+
+\usepackage{amsthm,mathtools,pxfonts}
+
+
+\begin{document}
+
+\begin{tikzpicture}[scale=0.7,line join=round]
+
+
+\draw [help lines, step=1] (0,0) grid (4,5);
+
+
+\draw  (-0.5,0)  node[below] {\small Stack};
+\draw  (0.5,0)  node[below] {\small 1};
+\draw  (1.5,0)  node[below] {\small 2};
+\draw  (2.5,0)  node[below] {\small 3};
+\draw  (3.5,0)  node[below] {\small 4};
+
+
+
+\draw [step=1] (0,0) grid (1,1);
+\draw (0.5,0.5) node[] {\small 7};
+
+\draw [step=1] (1,0) grid (2,2);
+\draw (1.5,0.5) node[] {\small 8};
+\draw (1.5,1.5) node[] {\small 9};
+
+\draw [step=1] (2,0) grid (3,4);
+\draw (2.5,0.5) node[] {\small 10};
+\draw (2.5,1.5) node[] {\small 4};
+\draw (2.5,2.5) node[] {\small 2};
+\draw (2.5,3.5) node[] {\small 1};
+
+\draw [step=1] (3,0) grid (4,4);
+\draw (3.5,0.5) node[] {\small 11};
+\draw (3.5,1.5) node[] {\small 6};
+\draw (3.5,2.5) node[] {\small 5};
+\draw (3.5,3.5) node[] {\small 3};
+
+
+
+
+\end{tikzpicture}
+
+
+\end{document}

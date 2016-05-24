@@ -8,10 +8,12 @@ public class State extends Bay implements Cloneable
 	public int fixed[];//fixed height
 	public ArrayList<Operation> path;
 	public int realizedMoves;
-	public int U, F;
+	public int U; //unreachable tiers 
+	public int F; //Fixed Number
 	public int[] resource, demand, RESOURCE, DEMAND;
 	public int[][] minDelta;
 
+	@SuppressWarnings("unchecked")
 	public State clone() throws CloneNotSupportedException
 	{
 		State ret = (State) super.clone();

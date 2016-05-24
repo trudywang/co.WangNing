@@ -1,0 +1,205 @@
+
+
+\documentclass[10pt]{article}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{pgf}
+\usepackage[active,pdftex,tightpage]{preview}
+\PreviewEnvironment[]{tikzpicture}
+
+\usepackage{ifthen}
+
+\usetikzlibrary{calc,3d,patterns,arrows}
+\usetikzlibrary{decorations.pathreplacing}
+
+\usepackage{amsthm,mathtools,pxfonts}
+
+
+\begin{document}
+
+\begin{tikzpicture}[scale=0.25,line join=round]
+\newcounter{x}
+\newcounter{y}
+\newcounter{z}
+
+% The angles of x,y,z-axes
+\newcommand\xaxis{0}
+\newcommand\yaxis{90}
+\newcommand\zaxis{-135}
+
+\newcommand\length{4.5}
+\newcommand\lengthL{5.0}
+
+\newcommand\height{1.0}
+\newcommand\heightH{1.0}
+
+\newcommand\width{1.0}
+\newcommand\widthW{1.5}
+
+\newcommand\barbar{0.5}
+
+% The top side of a cube
+\newcommand\frontside[3]{
+  \ifthenelse{\value{x}=1}
+  {
+   \fill[fill=gray!50, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- (\length,\height) --(\length,0)--cycle;
+  }
+  {
+    \ifthenelse{\value{z}=3 \and \value{x}=3}
+    {
+      \fill[fill=gray!50, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- (\length,\height) --(\length,0)--cycle;
+    }
+    {
+    	 \fill[fill=white, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- (\length,\height) --(\length,0)--cycle;
+    }
+  }
+
+}
+
+% The left side of a cube
+\newcommand\topside[3]{
+
+  \ifthenelse{\value{x}=1}
+  {
+    \fill[fill=gray!50, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH+\height)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (45:\width) -- ($(\length,0)+(45:\width)$) --(\length,0)--cycle;
+  }
+  {
+    \ifthenelse{\value{z}=3 \and \value{x}=3}
+    {
+      \fill[fill=gray!50, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH+\height)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (45:\width) -- ($(\length,0)+(45:\width)$) --(\length,0)--cycle;
+    }
+    {
+    	 \fill[fill=white, draw=black,shift={(\xaxis:#1*\lengthL)},shift={(\yaxis:#2*\heightH+\height)},
+  shift={(\zaxis:#3*\widthW)}] (0,0) -- (45:\width) -- ($(\length,0)+(45:\width)$) --(\length,0)--cycle;
+    }
+  }
+}
+
+% The right side of a cube
+\newcommand\rightside[3]{
+
+  \ifthenelse{\value{x}=1}
+  {
+    \fill[fill=gray!50, draw=black, shift={(\xaxis:#1*\lengthL+\length)},shift={(\yaxis:#2*\heightH)},
+    shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- ($(0,\height)+(45:\width)$) --(45:\width)--cycle;
+  }
+  {
+    \ifthenelse{\value{z}=3 \and \value{x}=3}
+    {
+      \fill[fill=gray!50, draw=black, shift={(\xaxis:#1*\lengthL+\length)},shift={(\yaxis:#2*\heightH)},
+      shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- ($(0,\height)+(45:\width)$) --(45:\width)--cycle;
+    }
+    {
+    	\fill[fill=white, draw=black, shift={(\xaxis:#1*\lengthL+\length)},shift={(\yaxis:#2*\heightH)},
+    	shift={(\zaxis:#3*\widthW)}] (0,0) -- (0,\height) -- ($(0,\height)+(45:\width)$) --(45:\width)--cycle;
+    }
+  }
+
+}
+
+% The cube
+\newcommand\cube[3]{
+  \frontside{#1}{#2}{#3} \topside{#1}{#2}{#3} \rightside{#1}{#2}{#3}
+}
+
+% Definition of \planepartition
+% To draw the following plane partition, just write \planepartition{ {a, b, c}, {d,e} }.
+%  a b c
+%  d e
+\newcommand\planepartition[1]{
+ \setcounter{x}{-1}
+  \foreach \a in {#1} {
+    \addtocounter{x}{1}
+    \ifnum \value{x}=5 \addtocounter{x}{1} \fi
+    \setcounter{z}{-1}
+    \foreach \b in \a {
+      \addtocounter{z}{1}
+      \setcounter{y}{-1}
+      \foreach \c in {1,...,\b} {
+        \addtocounter{y}{1}
+        \cube{\value{x}}{\value{y}}{\value{z}}
+      }
+    }
+  }
+}
+
+
+
+\coordinate  (va)  at  (  2*\lengthL+0.5*\length-0.5*\barbar , 4*\heightH+\height   ) ;
+\coordinate  (vb) at  (  $(va)+(\barbar,0)$  );
+\coordinate  (vc) at  (  $(va)+(45:\widthW+\width+\barbar)$  );
+\coordinate  (vd) at  (  $(vc)+(\barbar,0)$  );
+\coordinate  (ve) at  (  $(vc)+(-135:\barbar)$  );
+\coordinate  (vf) at  (  $(ve)+(\barbar,0)$  );
+\coordinate  (vg) at  (  $(va)+(45:\width)$  );
+\coordinate  (vh) at  (  $(vg)+(\barbar,0)$  );
+
+
+
+\coordinate (v1) at ($(vc)+(0,\heightH)$);
+
+\coordinate (v2) at ($(v1)+(\barbar,0)$);
+
+
+\coordinate (v3) at ($(v1)+(-135:\barbar)$);
+\coordinate (v4) at ($(v3)+(\barbar,0)$);
+
+\coordinate (v11) at ($(v1)+(0,\barbar)$);
+\coordinate (v22) at ($(v2)+(0,\barbar)$);
+\coordinate (v33) at ($(v3)+(0,\barbar)$);
+\coordinate (v44) at ($(v4)+(0,\barbar)$);
+
+
+\coordinate (vi) at (intersection of v3--ve and vg--vh);
+\coordinate (vj) at (intersection of v4--vf and vg--vh);
+\coordinate (vk) at (intersection of v2--vd and vg--vh);
+\draw (v3)--(vi){};
+
+
+\planepartition{{5,5,5,5},{5,5,5,5},{5,5,5,5},{5,5,5,5},{5,5,5,5}}
+
+
+\newcommand \drawcube[5]{
+\fill [fill=white, draw=black,shift={(#4,#5)}] (0,0)--(#1,0)--(#1,#3)--(0,#3)--cycle;
+\fill[fill=white, draw=black,shift={(#4,#5)}] ($(0,#3)+(45:#2)$)--($(#1,#3)+(45:#2)$)--(#1,#3)--(0,#3)--cycle;
+\fill[fill=white, draw=black,shift={(#4,#5)}] (#1,0)--(#1,#3)--($(#1,#3)+(45:#2)$)--($(#1,0)+(45:#2)$)--cycle;
+}
+
+
+\coordinate (v5) at ($(v3)+(-135:4.5*\widthW+2*\width)$);
+\coordinate (v6) at ($(v5)+(\barbar,0)$);
+\coordinate (v7) at ($(v5)+(-135:\barbar)$);
+\coordinate (v8) at ($(v7)+(\barbar,0)$);
+\coordinate (v55) at ($(v5)+(0,\barbar)$);
+\coordinate (v66) at ($(v6)+(0,\barbar)$);
+\coordinate (v77) at ($(v7)+(0,\barbar)$);
+\coordinate (v88) at ($(v8)+(0,\barbar)$);
+
+\coordinate (vl) at ($(v5)+(-90:\height+5*\heightH)$);
+\coordinate (vm) at ($(vl)+(\barbar,0)$);
+\coordinate (vn) at ($(vl)+(-135:\barbar)$);
+\coordinate (vo) at($(vn)+(\barbar,0)$);
+
+\draw ($(intersection of vl--vo and vm--vn)+(-0.02,-0.1)$) circle (.3);
+\fill[fill=white, draw=black] (v77)--(v88)--(v22)--(v11)--cycle;
+\fill[fill=white, draw=black] (v6)--(v4)--(vj)--(vk)--(v22)--(v88)--(vo)--(vm)--cycle;
+\fill[fill=white, draw=black] (v77)--(v88)--(vo)--(vn)--cycle;
+
+\draw  ($(1*\lengthL+0.5*\length,0)+(-135:3*\widthW)$)  node[below] { Bay};
+\draw  ($(3*\lengthL+0.5*\length,0)+(-135:3*\widthW)$)  node[below] { Stack};
+
+
+\draw  (v22)  node[right] {Yard Crane};
+
+
+
+
+\end{tikzpicture}
+
+
+\end{document}

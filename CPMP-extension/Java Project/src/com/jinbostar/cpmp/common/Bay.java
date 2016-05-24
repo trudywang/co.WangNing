@@ -30,16 +30,16 @@ public class Bay implements Cloneable
 	}
 
 
-	public Bay(int S, int H, int P, int N, int[][] bay)
+	public Bay(int S, int H, int P, int N, int[][] dataBay)
 	{
 		this.S = S;
 		this.H = H;
 		this.P = P;
 		this.N = N;
-		this.bay = new int[S + 1][H + 1];
+		bay = new int[S + 1][H + 1];
 		for (int s = 1; s <= S; s++)
 			for (int t = 1; t <= H; t++)
-				this.bay[s][t] = bay[s][t];
+				bay[s][t] = dataBay[s][t];
 
 		h = new int[S + 1];
 		orderly = new int[S + 1];
